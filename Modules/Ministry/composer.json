@@ -1,0 +1,30 @@
+{
+    "name": "fsg/ministry",
+    "description": "",
+    "authors": [
+        {
+            "name": "Kal Marsh",
+            "email": "kal.marsh@gov.bc.ca"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Ministry\\": "app/",
+            "Modules\\Ministry\\Database\\Factories\\": "database/factories/",
+            "Modules\\Ministry\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Ministry\\Tests\\": "tests/"
+        }
+    }
+}

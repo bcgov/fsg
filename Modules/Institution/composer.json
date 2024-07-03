@@ -1,0 +1,30 @@
+{
+    "name": "fsg/institution",
+    "description": "",
+    "authors": [
+        {
+            "name": "Kal Marsh",
+            "email": "kal.marsh@gov.bc.ca"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Institution\\": "app/",
+            "Modules\\Institution\\Database\\Factories\\": "database/factories/",
+            "Modules\\Institution\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Institution\\Tests\\": "tests/"
+        }
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "name": "fsg/student",
+    "description": "",
+    "authors": [
+        {
+            "name": "Kal Marsh",
+            "email": "kal.marsh@gov.bc.ca"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Student\\": "app/",
+            "Modules\\Student\\Database\\Factories\\": "database/factories/",
+            "Modules\\Student\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Student\\Tests\\": "tests/"
+        }
+    }
+}
