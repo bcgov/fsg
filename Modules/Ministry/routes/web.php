@@ -8,6 +8,8 @@ use Modules\Ministry\Http\Controllers\InstitutionController;
 use Modules\Ministry\Http\Controllers\MaintenanceController;
 use Modules\Ministry\Http\Controllers\ProgramController;
 use Modules\Ministry\Http\Controllers\StudentController;
+use \Modules\Ministry\Http\Middleware\IsAdmin;
+use \Modules\Ministry\Http\Middleware\IsActive;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +25,7 @@ use Modules\Ministry\Http\Controllers\StudentController;
 Route::prefix('ministry')->group(function () {
     Route::group(
         [
-            'middleware' => [Authenticate::class, ],
+            'middleware' => [Authenticate::class, IsActive::class,],
             'as' => 'ministry.',
         ], function () {
         Route::get('/', [InstitutionController::class, 'index'])->name('home');

@@ -11,12 +11,12 @@ class StudentPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, $ability)
-    {
-        $rolesToCheck = [Role::Ministry_ADMIN, Role::SUPER_ADMIN];
-
-        return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
-    }
+//    public function before(User $user, $ability)
+//    {
+//        $rolesToCheck = [Role::Ministry_ADMIN, Role::SUPER_ADMIN];
+//
+//        return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
+//    }
 
     /**
      * Determine whether the user can view any models.
@@ -42,7 +42,7 @@ class StudentPolicy
      */
     public function create(User $user): bool
     {
-        $rolesToCheck = [Role::Ministry_USER];
+        $rolesToCheck = [Role::Ministry_USER, Role::Student];
 
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }
@@ -52,6 +52,13 @@ class StudentPolicy
      */
     public function update(User $user, Student $model): bool
     {
+        if($user->roles()->pluck('name')->intersect([Role::Student])->isNotEmpty()){
+            if($model->user_guid != $user->guid)
+            {
+                return false;
+            }
+        }
+
         $rolesToCheck = [Role::Ministry_USER, Role::Institution_ADMIN];
 
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;

@@ -60,7 +60,8 @@ class HandleInertiaRequests extends Middleware
                 return (new Ziggy)->toArray();
             },
             'logoutUrl' => env('KEYCLOAK_LOGOUT_URL'),
-            'logoutBcscUrl' => env('KEYCLOAK_BCSC_LOGOUT_URL'),
+//            'logoutBcscUrl' => Session::get('kc_logout'),
+            'logoutBcscUrl' => Session::get('bcsc_logout_uri'),
         ]);
 
     }

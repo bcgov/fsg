@@ -15,9 +15,9 @@ use Modules\Student\Http\Controllers\StudentController;
 |
 */
 
-Route::group([], function () {
-    Route::resource('student', StudentController::class)->names('student');
-});
+//Route::group([], function () {
+//    Route::resource('student', StudentController::class)->names('student');
+//});
 
 
 Route::prefix('student')->group(function () {
@@ -27,6 +27,9 @@ Route::prefix('student')->group(function () {
             'as' => 'student.',
         ], function () {
         Route::get('/', [StudentController::class, 'index'])->name('home');
+        Route::post('/update', [StudentController::class, 'store'])->name('store');
+        Route::put('/update', [StudentController::class, 'update'])->name('update');
+
 
     });
 });

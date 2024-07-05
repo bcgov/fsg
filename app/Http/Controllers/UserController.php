@@ -42,28 +42,17 @@ class UserController extends Controller
 
     public function bcscLogin(Request $request)
     {
-//        $provider = new Keycloak([
-//            'authServerUrl' => env('KEYCLOAK_BCSC_SERVER_URL'),
-//            'realm' => env('KEYCLOAK_REALM'),
-//            'clientId' => env('KEYCLOAK_BCSC_CLIENT_ID'),
-//            'clientSecret' => env('KEYCLOAK_BCSC_CLIENT_SECRET'),
-//            'redirectUri' => env('KEYCLOAK_BCSC_REDIRECT_URI'),
-//        ]);
-//
-//        if (! $request->has('code')) {
-//            $state = $provider->getState();
-//            $request->session()->put('oauth2state', $state);
-//
-//            return Redirect::to(env('KEYCLOAK_BCSC_SERVER_URL') . '?response_type=code&scope=openid%20address%20profile%20email&client_id=' . env('KEYCLOAK_BCSC_CLIENT_ID') . '&redirect_uri=' . env('KEYCLOAK_BCSC_REDIRECT_URI') . '&state=' . $state);
-//        }
-
         $provider = new Keycloak([
-            'authServerUrl' => 'https://dev.loginproxy.gov.bc.ca/auth',
-            'realm' => 'aestsims',
+            'authServerUrl' => env('KEYCLOAK_BCSC_SERVER_URL'),
+            'realm' => env('KEYCLOAK_BCSC_REALM'),
             'clientId' => env('KEYCLOAK_BCSC_CLIENT_ID'),
             'clientSecret' => env('KEYCLOAK_BCSC_CLIENT_SECRET'),
             'redirectUri' => env('KEYCLOAK_BCSC_REDIRECT_URI'),
+            'scopes' => 'openid profile email',  // Scopes as a space-separated string
         ]);
+
+        // This is needed to have the provider logout url formatted correctly
+        $provider->setVersion('18.0.0');
 
         return $this->loginUser($request, $provider, Role::Student);
     }
@@ -86,12 +75,14 @@ class UserController extends Controller
 
         if (! $request->has('code')) {
             // If we don't have an authorization code then get one
-            $authUrl = $provider->getAuthorizationUrl();
+            $authUrl = $provider->getAuthorizationUrl([
+                'scope' => 'openid profile email', // Ensure scopes include 'openid'
+            ]);
+
             $request->session()->put('oauth2state', $provider->getState());
             \Log::info('$authUrl: '.$authUrl);
             \Log::info('$provider->getState(): '.$provider->getState());
 
-//            return Redirect::to(env('KEYCLOAK_BCSC_SERVER_URL') . '?response_type=code&scope=openid%20address%20profile%20email&client_id=' . env('KEYCLOAK_BCSC_CLIENT_ID') . '&redirect_uri=' . env('KEYCLOAK_BCSC_REDIRECT_URI') . '&state=' . $request->session()->get('oauth2state'));
             return Redirect::to($authUrl . "&kc_idp_hint=fsg");
 
             // Check given state against previously stored one to mitigate CSRF attack
@@ -124,6 +115,18 @@ class UserController extends Controller
                 // We got an access token, let's now get the user's details
                 $provider_user = $provider->getResourceOwner($token);
                 $provider_user = $provider_user->toArray();
+
+                //this is needed for BCSC
+                $tokenValues = $token->getValues();
+                if (isset($tokenValues['id_token'])) {
+                    $idToken = $tokenValues['id_token'];
+                    $request->session()->put('bcsc_logout_uri', env('KEYCLOAK_BCSC_LOGOUT_URL') . '?state=' .
+                        $request->state . '&scope=profile%20email&response_type=code&approval_prompt=auto&client_id=fsg&id_token_hint=' .
+                        $idToken . '&post_logout_redirect_uri=' . env('KEYCLOAK_BCSC_REDIRECT_LOGOUT_URI'));
+                }
+                \Log::info('KC Logout : ' . $provider->getLogoutUrl(['access_token' => $token]));
+                \Log::info('idToken: ');
+                \Log::info($token->getValues());
                 \Log::info('We got a token: '.$token);
                 \Log::info('$provider_user: '.json_encode($provider_user));
             } catch (\Exception $e) {
@@ -275,10 +278,10 @@ class UserController extends Controller
                 $valid = 'This BCeID is already in use. Please contact the admin.';
             }
         } elseif (isset($provider_user['bcsc_username']) && $provider_user['bcsc_username']) {
-            $check = User::where('bcsc_username', Str::upper($provider_user['bcsc_username']))->first();
-            if (! is_null($check)) {
-                $valid = 'This BC Services Card is already in use. Please contact the admin.';
-            }
+//            $check = User::where('bcsc_username', Str::upper($provider_user['bcsc_username']))->first();
+//            if (! is_null($check)) {
+//                $valid = 'This BC Services Card is already in use. Please contact the admin.';
+//            }
         }
 
         if ($valid === '200') {
