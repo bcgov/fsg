@@ -1,123 +1,125 @@
 <template>
-    <div v-if="claims != null && claims.data.length > 0" class="card mb-3">
-<!--    <div class="card-header">-->
-<!--            Institution Claims by Course-->
-<!--            <template>-->
-<!--                <span class="badge rounded-pill text-bg-primary me-1">Active Claim Total: {{ claims.data.length }}</span>-->
-<!--            </template>-->
-<!--            <button type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Claim</button>-->
-<!--        </div>-->
-<!--        <div class="card-body">-->
-<!--            <div v-if="claims.data != null && claims.data.length > 0" class="table-responsive pb-3">-->
-<!--                <table class="table table-striped">-->
-<!--                    <thead>-->
-<!--                    <InstitutionClaimsByCourseHeader @update="updateClaims" :page="claims.current_page"-->
-<!--                                                     :guid="results.guid"></InstitutionClaimsByCourseHeader>-->
-<!--                    </thead>-->
-<!--                    <tbody>-->
-<!--                    <template v-for="(row, i) in claims.data">-->
-<!--                        <tr v-if="row !== null">-->
-<!--                            <td><a href="#" @click="openEditForm(row)">{{ row.id }}</a></td>-->
-<!--                            <td>{{ row.first_name }}</td>-->
-<!--                            <td><Link :href="'/ministry/students/' + row.student.id">{{ row.last_name }}</Link></td>-->
-<!--                            <td>{{ row.program.program_name }}</td>-->
-<!--                            <td>${{ row.estimated_hold_amount }}</td>-->
-<!--                            <td>${{ row.total_claim_amount }}</td>-->
-<!--                            <td>${{ row.student.total_grant }}</td>-->
-<!--                            <td>-->
-<!--                                <span v-if="row.claim_status === 'Draft'" class="badge rounded-pill text-bg-info">Draft</span>-->
-<!--                                <span v-else-if="row.claim_status === 'Submitted'" class="badge rounded-pill text-bg-primary">Submitted</span>-->
-<!--                                <span v-else-if="row.claim_status === 'Hold'" class="badge rounded-pill text-bg-warning">Hold</span>-->
-<!--                                <span v-else-if="row.claim_status === 'Claimed'" class="badge rounded-pill text-bg-success">Claimed</span>-->
-<!--                                <span v-else class="badge rounded-pill text-bg-secondary">{{ row.claim_status }}</span>-->
-<!--                            </td>-->
-<!--                            <td>{{ formatDate(row.created_at) }}</td>-->
-<!--                        </tr>-->
-<!--                    </template>-->
-<!--                    </tbody>-->
-<!--                </table>-->
-<!--                <div v-if="claims.links.length > 3">-->
-<!--                    <div class="d-flex flex-row justify-content-center -mb-1">-->
-<!--                        <template v-for="(link, key) in claims.links">-->
-<!--                            <div v-if="link.url === null" :key="key" class="btn btn-light border m-1" v-html="link.label" />-->
-<!--                            <span v-else :key="`link-${key}`" class="btn btn-light btn-link border m-1" :class="{ 'disabled': (link.label == claims.current_page) }" @click="fetchData(link.url)" v-html="link.label" />-->
-<!--                        </template>-->
-<!--                    </div>-->
-<!--                </div>-->
+    <div class="card mb-3">
+        <div class="card-header">
+            Applications
+<!--                <template>-->
+<!--                    <span class="badge rounded-pill text-bg-primary me-1">Active Application Total: {{ claims.data.length }}</span>-->
+<!--                </template>-->
+            <button type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Application</button>
+        </div>
+        <div class="card-body">
+            <div v-if="claims != null && claims.data != null && claims.data.length > 0" class="table-responsive pb-3">
+                <table class="table table-striped">
+                    <thead>
+                    <StudentApplicationsHeader @update="updateClaims" :page="claims.current_page"
+                                                     :guid="results.guid"></StudentApplicationsHeader>
+                    </thead>
+                    <tbody>
+                    <template v-for="(row, i) in claims.data">
+                        <tr v-if="row !== null">
+                            <td><a href="#" @click="openEditForm(row)">{{ row.id }}</a></td>
+                            <td>{{ row.first_name }}</td>
+                            <td><Link :href="'/ministry/students/' + row.student.id">{{ row.last_name }}</Link></td>
+                            <td>{{ row.program.program_name }}</td>
+                            <td>${{ row.estimated_hold_amount }}</td>
+                            <td>${{ row.total_claim_amount }}</td>
+                            <td>${{ row.student.total_grant }}</td>
+                            <td>
+                                <span v-if="row.claim_status === 'Draft'" class="badge rounded-pill text-bg-info">Draft</span>
+                                <span v-else-if="row.claim_status === 'Submitted'" class="badge rounded-pill text-bg-primary">Submitted</span>
+                                <span v-else-if="row.claim_status === 'Hold'" class="badge rounded-pill text-bg-warning">Hold</span>
+                                <span v-else-if="row.claim_status === 'Claimed'" class="badge rounded-pill text-bg-success">Claimed</span>
+                                <span v-else class="badge rounded-pill text-bg-secondary">{{ row.claim_status }}</span>
+                            </td>
+                            <td>{{ formatDate(row.created_at) }}</td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
+                <div v-if="claims.links.length > 3">
+                    <div class="d-flex flex-row justify-content-center -mb-1">
+                        <template v-for="(link, key) in claims.links">
+                            <div v-if="link.url === null" :key="key" class="btn btn-light border m-1" v-html="link.label" />
+                            <span v-else :key="`link-${key}`" class="btn btn-light btn-link border m-1" :class="{ 'disabled': (link.label == claims.current_page) }" @click="fetchData(link.url)" v-html="link.label" />
+                        </template>
+                    </div>
+                </div>
 
-<!--            </div>-->
-<!--            <h1 v-else class="lead">No results</h1>-->
-<!--        </div>-->
-<!--    </div>-->
+            </div>
+            <h1 v-else class="lead">No applications</h1>
+        </div>
 
-<!--    <div v-if="editClaim == ''" class="modal modal-lg fade" id="newClaimModal" tabindex="-1"-->
-<!--         aria-labelledby="newClaimModalLabel" aria-hidden="true" data-bs-backdrop="static">-->
-<!--        <div class="modal-dialog">-->
-<!--            <div class="modal-content">-->
-<!--                <div class="modal-header">-->
-<!--                    <h5 class="modal-title" id="newClaimModalLabel">New Student Claim</h5>-->
-<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--                </div>-->
-<!--                <StudentClaimCreate v-bind="$attrs" :results="results"/>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div v-if="editClaim != ''" class="modal modal-lg fade" id="editClaimModal" tabindex="0"-->
-<!--         aria-labelledby="editClaimModalLabel" aria-hidden="true" data-bs-backdrop="static">-->
-<!--        <div class="modal-dialog">-->
-<!--            <div class="modal-content">-->
-<!--                <div class="modal-header">-->
-<!--                    <h5 class="modal-title" id="editClaimModalLabel">Edit Student Claim</h5>-->
-<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--                </div>-->
-<!--                <StudentClaimEdit v-bind="$attrs" @close="closeEditForm"-->
-<!--                                  :claim="editClaim"-->
-<!--                                  :page="'institutions'" :subPage="'claims-by-course'"-->
-<!--                                  :results="results" />-->
-<!--            </div>-->
-<!--        </div>-->
+
+            <div v-if="editApplication == ''" class="modal modal-lg fade" id="newApplicationModal" tabindex="-1"
+                 aria-labelledby="newApplicationModalLabel" aria-hidden="true" data-bs-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="newApplicationModalLabel">New Student Application</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <StudentApplicationCreate v-bind="$attrs" :results="results"/>
+                    </div>
+                </div>
+            </div>
+            <div v-if="editApplication != ''" class="modal modal-lg fade" id="editApplicationModal" tabindex="0"
+                 aria-labelledby="editApplicationModalLabel" aria-hidden="true" data-bs-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editApplicationModalLabel">Edit Application</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <StudentApplicationEdit v-bind="$attrs" @close="closeEditForm"
+                                          :claim="editApplication"
+                                          :page="'applications'"
+                                          :results="results" />
+                    </div>
+                </div>
+            </div>
     </div>
+
 </template>
 <script>
 import {Link} from '@inertiajs/vue3';
 // import InstitutionClaimsByCourseHeader from "./InstitutionClaimsByCourseHeader";
-// import StudentClaimCreate from "./StudentClaimCreate";
-// import StudentClaimEdit from "./StudentClaimEdit";
+import StudentApplicationCreate from "./StudentApplicationCreate";
+import StudentApplicationEdit from "./StudentApplicationEdit";
 import Pagination from "@/Components/Pagination";
+import StudentApplicationsHeader from "./StudentApplicationsHeader.vue";
 
 export default {
     name: 'DashboardApplications',
     components: {
-        Link, Pagination,
-        // InstitutionClaimsByCourseHeader, StudentClaimCreate, StudentClaimEdit
+        Link, Pagination, StudentApplicationsHeader,
+        StudentApplicationCreate, StudentApplicationEdit
     },
     props: {
         results: Object,
     },
     data() {
         return {
-            editClaim: '',
+            editApplication: '',
             claims: null
         }
     },
     methods: {
         openNewForm: function () {
             setTimeout(function () {
-                $("#newClaimModal").modal('show');
+                $("#newApplicationModal").modal('show');
             }, 10);
         },
 
         openEditForm: function (claim) {
             this.editClaim = claim;
             setTimeout(function () {
-                $("#editClaimModal").modal('show');
+                $("#editApplicationModal").modal('show');
             }, 10);
         },
         closeEditForm: function () {
-            $("#editClaimModal").modal('hide');
-            this.editClaim = '';
-            this.$inertia.visit('/ministry/institutions/' + this.results.id + '/claims-by-student');
-
+            $("#editApplicationModal").modal('hide');
+            this.editApplication = '';
+            this.$inertia.visit('/applications');
         },
         formatDate: function (value) {
             if (value !== undefined && value !== '') {
@@ -130,7 +132,7 @@ export default {
         fetchData: function (page = 1) {
             let vm = this;
 
-            axios.get('/ministry/api/fetch/institutions/claims-by-course?in=' + this.results.guid + '&page=' + page)
+            axios.get('/student/api/fetch/students/applications?page=' + page)
                 .then(function (response) {
                     vm.claims = response.data.body;
                 })

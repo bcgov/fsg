@@ -144,7 +144,7 @@ class ClaimEditRequest extends FormRequest
                 'zip_code' => Str::upper(str_replace(' ', '', $this->zip_code)),
                 'city' => Str::title(str_replace(' ', '', $this->city)),
 
-                'agreement_confirmation' => $this->toBoolean($this->agreement_confirmation),
+                'agreement_confirmed' => $this->toBoolean($this->agreement_confirmed),
             ]);
         } elseif ($this->claim_status === 'Submitted' || $this->claim_status === 'Hold') {
             $this->merge([

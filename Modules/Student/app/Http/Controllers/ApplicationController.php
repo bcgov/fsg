@@ -3,6 +3,7 @@
 namespace Modules\Student\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ApplicationStoreRequest;
 use App\Http\Requests\StudentEditRequest;
 use App\Http\Requests\StudentStoreRequest;
 use App\Models\Claim;
@@ -15,14 +16,8 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Response;
 
-class StudentController extends Controller
+class ApplicationController extends Controller
 {
-    public function index($page = 'profile')
-    {
-        $student = Student::where('user_guid', Auth::user()->guid)->first();
-
-        return Inertia::render('Student::Dashboard', ['status' => true, 'results' => $student, 'page' => $page]);
-    }
 
     /**
      * Update the specified resource in storage.
@@ -38,10 +33,17 @@ class StudentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function store(StudentStoreRequest $request): \Illuminate\Http\RedirectResponse
+    public function store(ApplicationStoreRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $student_id = Student::create($request->validated());
-        $student = Student::find($request->id);
+        $validated = $request->validated();
+
+        // Log the incoming payload
+        \Log::info('Incoming Payload:', $request->all());
+
+        // Log the validated data
+        \Log::info('Validated Data:', $validated);
+
+        Claim::create($validated);
         return Redirect::route('student.home');
     }
 

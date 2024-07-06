@@ -11,12 +11,6 @@ class ClaimPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, $ability)
-    {
-        $rolesToCheck = [Role::Ministry_ADMIN, Role::SUPER_ADMIN];
-
-        return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
-    }
 
     /**
      * Determine whether the user can view any models.

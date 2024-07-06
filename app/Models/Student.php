@@ -20,4 +20,8 @@ class Student extends Model
     {
         return $this->hasMany(Claim::class, 'student_guid', 'guid')->orderBy('created_at');
     }
+    public function applications()
+    {
+        return $this->hasMany(Claim::class, 'student_guid', 'guid')->orderBy('created_at');
+    }
 }

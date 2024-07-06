@@ -20,7 +20,8 @@ class Claim extends Model
         'registration_fee', 'materials_fee', 'program_fee', 'claim_percent',
         'estimated_hold_amount', 'total_claim_amount',
         'stable_enrolment_date', 'expiry_date', 'psi_claim_request_date', 'reporting_completed_date',
-        'fifty_two_week_affirmation', 'agreement_confirmed', 'registration_confirmed'];
+        'fifty_two_week_affirmation', 'agreement_confirmed', 'registration_confirmed',
+        'institution_guid', 'allocation_guid', 'program_guid', 'student_guid'];
 
     public function institution()
     {
