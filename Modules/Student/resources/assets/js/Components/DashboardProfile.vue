@@ -1,5 +1,5 @@
 <template>
-    <div v-if="editForm != null" class="card mb-3">
+    <div class="card mb-3">
         <div class="card-header">
             <div>Profile Details</div>
         </div>
