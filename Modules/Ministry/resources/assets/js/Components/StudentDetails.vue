@@ -8,11 +8,11 @@
             <div class="row g-3">
 
                 <div class="col-md-4">
-                    <Label for="inputFirstName" class="form-label" value="First Name" />
+                    <Label for="inputFirstName" class="form-label" value="Legal Name (First Name)" />
                     <Input type="text" class="form-control" id="inputFirstName" v-model="editForm.first_name" />
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputLastName" class="form-label" value="Last Name" />
+                    <Label for="inputLastName" class="form-label" value="Legal Name (Last Name)" />
                     <Input type="text" class="form-control" id="inputLastName" v-model="editForm.last_name" />
                 </div>
                 <div class="col-md-4">

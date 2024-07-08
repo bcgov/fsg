@@ -18,6 +18,41 @@ class StudentEditRequest extends FormRequest
         return $this->user()->can('update', $student);
     }
 
+    public function messages(): array
+    {
+        return [
+            'id.required' => 'The ID field is required.',
+            'guid.required' => 'The GUID field is required.',
+            'user_guid.required' => 'The User GUID field is required.',
+            'user_guid.exists' => 'The selected User GUID is invalid.',
+            'sin.required' => 'The SIN field is required.',
+            'first_name.required' => 'The First Name field is required.',
+            'last_name.required' => 'The Last Name field is required.',
+            'dob.required' => 'The Date of Birth field is required.',
+            'dob.date_format' => 'The Date of Birth must be in the format YYYY-MM-DD.',
+            'email.required' => 'The Email field is required.',
+            'email.email' => 'The Email must be a valid email address.',
+            'citizenship.required' => 'The Citizenship field is required.',
+            'grade12_or_over19.required' => 'The Grade 12 or Over 19 field is required.',
+            'info_consent.boolean' => 'The Info Consent field must be true.',
+            'info_consent.accepted' => 'The Info Consent field must be true.',
+            'duplicative_funding.boolean' => 'The Duplicative Funding field must be true.',
+            'duplicative_funding.accepted' => 'The Duplicative Funding field must be true.',
+            'tax_implications.boolean' => 'The Tax Implications field must be true.',
+            'tax_implications.accepted' => 'The Tax Implications field must be true.',
+            'lifetime_max.boolean' => 'The Lifetime Max field must be true.',
+            'lifetime_max.accepted' => 'The Lifetime Max field must be true.',
+            'fed_prov_benefits.boolean' => 'The Federal/Provincial Benefits field must be true.',
+            'fed_prov_benefits.accepted' => 'The Federal/Provincial Benefits field must be true.',
+            'workbc_client.boolean' => 'The WorkBC Client field must be true.',
+            'workbc_client.accepted' => 'The WorkBC Client field must be true.',
+            'additional_supports.boolean' => 'The Additional Supports field must be true.',
+            'additional_supports.accepted' => 'The Additional Supports field must be true.',
+            'bc_resident.boolean' => 'The BC Resident field must be true.',
+            'bc_resident.accepted' => 'The BC Resident field must be true.',
+        ];
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -25,8 +60,6 @@ class StudentEditRequest extends FormRequest
      */
     public function rules(): array
     {
-
-
         return [
             'id' => 'required',
             'guid' => 'required',
@@ -42,14 +75,14 @@ class StudentEditRequest extends FormRequest
             'citizenship' => 'required',
             'grade12_or_over19' => 'required',
 
-            'info_consent' => 'boolean',
-            'duplicative_funding' => 'boolean',
-            'tax_implications' => 'boolean',
-            'lifetime_max' => 'boolean',
-            'fed_prov_benefits'  => 'boolean',
-            'workbc_client' => 'boolean',
-            'additional_supports' => 'boolean',
-            'bc_resident' => 'boolean',
+            'info_consent' => 'boolean|accepted:true',
+            'duplicative_funding' => 'boolean|accepted:true',
+            'tax_implications' => 'boolean|accepted:true',
+            'lifetime_max' => 'boolean|accepted:true',
+            'fed_prov_benefits'  => 'boolean|accepted:true',
+            'workbc_client' => 'boolean|accepted:true',
+            'additional_supports' => 'boolean|accepted:true',
+            'bc_resident' => 'boolean|accepted:true',
         ];
     }
 

@@ -7,11 +7,11 @@
             <div class="row g-3">
 
                 <div class="col-md-4">
-                    <Label for="inputFirstName" class="form-label" value="First Name" />
+                    <Label for="inputFirstName" class="form-label" value="Legal Name (First Name)" />
                     <Input type="text" class="form-control" id="inputFirstName" v-model="editForm.first_name" />
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputLastName" class="form-label" value="Last Name" />
+                    <Label for="inputLastName" class="form-label" value="Legal Name (Last Name)" />
                     <Input type="text" class="form-control" id="inputLastName" v-model="editForm.last_name" />
                 </div>
                 <div class="col-md-4">
@@ -44,7 +44,7 @@
                     </Select>
                 </div>
                 <div class="col-md-2">
-                    <Label for="inputG12" class="form-label" value="Grade12 / Over19y" />
+                    <Label for="inputG12" class="form-label" value="Grade 12 or Over 19y" />
                     <Select class="form-select" id="inputG12" v-model="editForm.grade12_or_over19">
                         <option></option>
                         <option v-for="status in $attrs.utils['Grade12/Over19y']" :value="status.field_name">{{ status.field_name }}</option>
@@ -104,7 +104,7 @@
                             {{ $attrs.utils['Additional Supports'][0].field_name }}
                         </label>
                         <input type="checkbox" class="form-check-input" id="flexCheckChecked8"
-                               v-model="editForm.additional_support" :checked="editForm.additional_support" />
+                               v-model="editForm.additional_supports" :checked="editForm.additional_supports" />
                     </div>
                 </div>
 
@@ -150,28 +150,70 @@ export default {
             editForm: '',
             editFormData: {
                 formState: null,
-                sin: "",
                 first_name: "",
                 last_name: "",
-                dob: "",
                 email: "",
+                sin: "",
+                dob: "",
                 city: "",
                 zip_code: "",
                 citizenship: null,
                 grade12_or_over19: null,
+                bc_resident: false,
                 info_consent: false,
                 duplicative_funding: false,
                 tax_implications: false,
                 lifetime_max: false,
                 fed_prov_benefits: false,
                 workbc_client: false,
-                additional_supports: false,
-                bc_resident: false
+                additional_supports: false
             }
         }
     },
     methods: {
+        validateForm: function() {
+            const errors = {};
+            const errors2 = {};
+
+            // Check for empty fields
+            // const requiredFields = [
+            //     'first_name', 'last_name', 'email', 'sin', 'dob', 'city', 'zip_code', 'citizenship', 'grade12_or_over19'
+            // ];
+            // requiredFields.forEach(field => {
+            //     if (!this.editForm[field]) {
+            //         errors[field] = `${field.replace(/_/g, ' ')} is required.`;
+            //     }
+            // });
+
+            // Check for false checkbox fields
+            let trueFieldsValid = true;
+            const requiredTrueFields = [
+                'bc_resident', 'info_consent', 'duplicative_funding', 'tax_implications', 'lifetime_max', 'fed_prov_benefits', 'workbc_client', 'additional_supports'
+            ];
+            requiredTrueFields.forEach(field => {
+                if (!this.editForm[field]) {
+                    errors2[field] = `${field.replace(/_/g, ' ')} is required.`;
+                    trueFieldsValid = false;
+                }
+            });
+            if(!trueFieldsValid) {
+                errors['bc_resident'] = `Please make sure you agree to all of the above fields.`;
+            }
+            console.log(errors2);
+
+            this.editForm.errors = errors;
+            return Object.keys(errors).length === 0;
+        },
         submitForm: function () {
+            this.editForm.hasErrors = false;
+            this.editForm.errors = {};
+
+            if (!this.validateForm()) {
+                // Handle validation errors
+                this.editForm.hasErrors = true;
+                return false;
+            }
+
             if(this.results == null){
                 this.createForm();
             }else{
@@ -181,7 +223,7 @@ export default {
         updateForm: function ()
         {
             this.editForm.formState = null;
-            this.editForm.put('/student/update', {
+            this.editForm.put('/profile', {
                 onSuccess: () => {
                     this.editForm.formState = true;
                 },
@@ -194,7 +236,7 @@ export default {
         createForm: function ()
         {
             this.editForm.formState = null;
-            this.editForm.post('/student/update', {
+            this.editForm.post('/profile', {
                 onSuccess: () => {
                     this.editForm.formState = true;
                 },

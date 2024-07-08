@@ -29,8 +29,8 @@ use Modules\Student\Http\Controllers\StudentController;
         Route::get('/applications', [ApplicationController::class, 'applications'])->name('home');
         Route::post('/applications', [ApplicationController::class, 'store'])->name('applications.store');
         Route::get('/profile', [StudentController::class, 'index'])->name('profile');
-        Route::post('/update', [StudentController::class, 'store'])->name('store');
-        Route::put('/update', [StudentController::class, 'update'])->name('update');
+        Route::post('/profile', [StudentController::class, 'store'])->name('store');
+        Route::put('/profile', [StudentController::class, 'update'])->name('update');
 
         Route::get('/student/api/fetch/students/applications', [ApplicationController::class, 'fetchApplications'])->name('claims.fetchApplications');
         Route::get('/student/api/fetch/institutions/{institution?}', [StudentController::class, 'fetchInstitutions'])->name('claims.fetchInstitutions');
