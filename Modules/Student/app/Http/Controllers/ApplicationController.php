@@ -53,6 +53,9 @@ class ApplicationController extends Controller
     public function applications($page = 'applications')
     {
         $student = Student::with('applications')->where('user_guid', Auth::user()->guid)->first();
+        if(is_null($student)) {
+            $page = 'profile';
+        }
 
         return Inertia::render('Student::Dashboard', ['status' => true, 'results' => $student, 'page' => $page]);
     }
