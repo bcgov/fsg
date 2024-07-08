@@ -140,8 +140,12 @@ class UserController extends Controller
             $user = null;
             $failMsg = null;
             if ($type === Role::Student) {
-                $user = User::where('bcsc_user_guid', 'ilike', $provider_user['bcsc_user_guid'])->first();
-                $failMsg = 'Welcome back!.';
+                if(!isset($provider_user['bcsc_user_guid'])){
+                    $failMsg = 'Session conflict. Please use incognito window';
+                }else{
+                    $user = User::where('bcsc_user_guid', 'ilike', $provider_user['bcsc_user_guid'])->first();
+                    $failMsg = 'Welcome back!.';
+                }
             }
             if ($type === Role::Ministry_GUEST) {
                 $user = User::where('idir_user_guid', 'ilike', $provider_user['idir_user_guid'])->first();
@@ -267,21 +271,23 @@ class UserController extends Controller
     private function newUser($provider_user, $type)
     {
         $valid = '200';
-        if (isset($provider_user['idir_username']) && $provider_user['idir_username']) {
+        if ($type === Role::Ministry_GUEST && isset($provider_user['idir_username']) && $provider_user['idir_username']) {
             $check = User::where('idir_username', Str::upper($provider_user['idir_username']))->first();
             if (! is_null($check)) {
                 $valid = 'This IDIR is already in use. Please contact the admin.';
             }
-        } elseif (isset($provider_user['bceid_username']) && $provider_user['bceid_username']) {
+        } elseif ($type === Role::Institution_GUEST && isset($provider_user['bceid_username']) && $provider_user['bceid_username']) {
             $check = User::where('bceid_username', Str::upper($provider_user['bceid_username']))->first();
             if (! is_null($check)) {
                 $valid = 'This BCeID is already in use. Please contact the admin.';
             }
-        } elseif (isset($provider_user['bcsc_username']) && $provider_user['bcsc_username']) {
-//            $check = User::where('bcsc_username', Str::upper($provider_user['bcsc_username']))->first();
-//            if (! is_null($check)) {
-//                $valid = 'This BC Services Card is already in use. Please contact the admin.';
-//            }
+        } elseif ($type === Role::Student && isset($provider_user['bcsc_user_guid']) && $provider_user['bcsc_user_guid']) {
+            $check = User::where('bcsc_user_guid', Str::upper($provider_user['bcsc_user_guid']))->first();
+            if (! is_null($check)) {
+                $valid = 'This BC Services Card is already in use. Please contact the admin.';
+            }
+        }else{
+            $valid = 'You are not authorized to access this page.';
         }
 
         if ($valid === '200') {
