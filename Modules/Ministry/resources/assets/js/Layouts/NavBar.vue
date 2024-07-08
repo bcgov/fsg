@@ -39,7 +39,7 @@ nav.navbar .form-select {
                             Students
                         </NavLink>
                     </li>
-                    <li class="nav-item">
+                    <li v-if="isAdmin" class="nav-item">
                         <NavLink class="nav-link" href="/ministry/maintenance/staff"
                                  :class="{ 'active': $page.url.indexOf('maintenance') > -1 }">
                             Maintenance

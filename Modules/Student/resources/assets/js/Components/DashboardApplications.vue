@@ -17,11 +17,8 @@
                     <tbody>
                     <template v-for="(row, i) in claims.data">
                         <tr v-if="row !== null">
-                            <td><a href="#" @click="openEditForm(row)">{{ row.id }}</a></td>
-                            <td>{{ row.first_name }}</td>
-                            <td><Link :href="'/ministry/students/' + row.student.id">{{ row.last_name }}</Link></td>
-                            <td>{{ row.program.program_name }}</td>
-                            <td>${{ row.estimated_hold_amount }}</td>
+                            <td><a href="#" @click="openEditForm(row)">{{ row.program.program_name }}</a></td>
+                            <td>{{ row.institution.name }}</td>
                             <td>${{ row.total_claim_amount }}</td>
                             <td>${{ row.student.total_grant }}</td>
                             <td>
@@ -58,7 +55,7 @@
                             <h5 class="modal-title" id="newApplicationModalLabel">New Student Application</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <StudentApplicationCreate v-bind="$attrs" :results="results"/>
+                        <StudentApplicationCreate v-bind="$attrs" :results="results" :institutions="institutions" />
                     </div>
                 </div>
             </div>
@@ -70,10 +67,14 @@
                             <h5 class="modal-title" id="editApplicationModalLabel">Edit Application</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <StudentApplicationEdit v-bind="$attrs" @close="closeEditForm"
-                                          :claim="editApplication"
-                                          :page="'applications'"
-                                          :results="results" />
+                        <StudentApplicationEdit v-if="editApplication.claim_status === 'Draft'" v-bind="$attrs" @close="closeEditForm"
+                                                :application="editApplication"
+                                                :institutions="institutions"
+                                                :results="results" />
+                        <StudentApplicationReadOnly v-else v-bind="$attrs" @close="closeEditForm"
+                                                :application="editApplication"
+                                                :institutions="institutions"
+                                                :results="results" />
                     </div>
                 </div>
             </div>
@@ -85,6 +86,7 @@ import {Link} from '@inertiajs/vue3';
 // import InstitutionClaimsByCourseHeader from "./InstitutionClaimsByCourseHeader";
 import StudentApplicationCreate from "./StudentApplicationCreate";
 import StudentApplicationEdit from "./StudentApplicationEdit";
+import StudentApplicationReadOnly from "./StudentApplicationReadOnly";
 import Pagination from "@/Components/Pagination";
 import StudentApplicationsHeader from "./StudentApplicationsHeader.vue";
 
@@ -92,13 +94,14 @@ export default {
     name: 'DashboardApplications',
     components: {
         Link, Pagination, StudentApplicationsHeader,
-        StudentApplicationCreate, StudentApplicationEdit
+        StudentApplicationCreate, StudentApplicationEdit, StudentApplicationReadOnly
     },
     props: {
-        results: Object,
+        results: Object
     },
     data() {
         return {
+            institutions: '',
             editApplication: '',
             claims: null
         }
@@ -111,9 +114,12 @@ export default {
         },
 
         openEditForm: function (claim) {
-            this.editClaim = claim;
+            let vm = this;
+            this.editApplication = claim;
             setTimeout(function () {
-                $("#editApplicationModal").modal('show');
+                $("#editApplicationModal").modal('show').on('hidden.bs.modal', function () {
+                    vm.editApplication = '';
+                });
             }, 10);
         },
         closeEditForm: function () {
@@ -143,10 +149,22 @@ export default {
         },
         updateClaims: function (e) {
             this.claims = e;
-        }
+        },
+        fetchInstitutions: function () {
+            let vm = this;
+            axios.get('/student/api/fetch/institutions')
+                .then(function (response) {
+                    vm.institutions = response.data.institutions;
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                });
+        },
     },
     mounted() {
         this.fetchData();
+        this.fetchInstitutions();
     }
 }
 </script>

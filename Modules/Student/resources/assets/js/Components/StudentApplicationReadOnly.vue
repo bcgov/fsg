@@ -1,7 +1,7 @@
 <template>
     <form v-if="newApplicationForm != null" class="card-body">
         <div class="modal-body">
-            <div class="row g-3">
+            <div v-if="programs != null && programs.length > 0" class="row g-3">
 
 
                 <div class="col-md-4">
@@ -36,10 +36,10 @@
 
                 <hr/>
 
-                <div v-if="programs != null && programs.length > 0" class="row col-12 g-3 mt-0">
+                <div class="row col-12 g-3 mt-0">
                     <div class="col-12">
                         <Label for="inputInstGuid" class="form-label" value="Institution Name"/>
-                        <Select @change="fetchPrograms($event)" v-if="institutions != null && institutions.length > 0" class="form-select" id="inputInstGuid" v-model="newApplicationForm.institution_guid">
+                        <Select @change="fetchPrograms($event)" v-if="institutions != null && institutions.length > 0" class="form-select" id="inputInstGuid" v-model="newApplicationForm.institution_guid" readonly="readonly" disabled>
                             <template  v-for="p in institutions">
                                 <option v-if="p.active_status === true" :value="p.guid">{{ p.name }}</option>
                             </template>
@@ -47,7 +47,7 @@
                     </div>
                     <div class="col-12">
                         <Label for="inputProgramGuid" class="form-label" value="Program Name"/>
-                        <Select class="form-select" id="inputProgramGuid" v-model="newApplicationForm.program_guid">
+                        <Select class="form-select" id="inputProgramGuid" v-model="newApplicationForm.program_guid"  readonly="readonly" disabled>
                             <option></option>
                             <template  v-for="p in programs">
                                 <option v-if="p.active_status === true" :value="p.guid">{{ p.program_name }}</option>
@@ -60,14 +60,14 @@
                                 {{ $attrs.utils['Student Agreement'][0].field_name }}
                             </label>
                             <input type="checkbox" class="form-check-input" id="flexCheckChecked1"
-                                   v-model="newApplicationForm.agreement_confirmed" :checked="newApplicationForm.agreement_confirmed" />
+                                   v-model="newApplicationForm.agreement_confirmed" :checked="newApplicationForm.agreement_confirmed"  readonly="readonly" disabled/>
                         </div>
                         <div class="form-check">
                             <label for="flexCheckChecked2" class="form-check-label">
                                 {{ $attrs.utils['Student Registration Confirmation'][0].field_name }}
                             </label>
                             <input type="checkbox" class="form-check-input" id="flexCheckChecked2"
-                                   v-model="newApplicationForm.registration_confirmed" :checked="newApplicationForm.registration_confirmed" />
+                                   v-model="newApplicationForm.registration_confirmed" :checked="newApplicationForm.registration_confirmed"  readonly="readonly" disabled/>
                         </div>
                     </div>
 
@@ -87,28 +87,19 @@
                         </div>
                     </div>
                 </div>
-                <div v-else class="row g-3">
-                    <div class="text-center">
-                        <div class="spinner-border" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
+            </div>
+            <div v-else class="row g-3">
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
-
-
-
             </div>
         </div>
         <div class="modal-footer">
-            <button @click="save" type="button" class="btn me-2 btn-primary" :disabled="newApplicationForm.processing ||
-            newApplicationForm.institution_guid == '' || newApplicationForm.program_guid == ''">Save Draft</button>
-            <button @click="submitForm" type="button" class="btn btn-success" :disabled="newApplicationForm.processing ||
-            newApplicationForm.institution_guid == '' || newApplicationForm.program_guid == ''">
-                Submit Application
-            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+
         </div>
-        <FormSubmitAlert :form-state="newApplicationForm.formState" :success-msg="newApplicationForm.formSuccessMsg"
-                         :fail-msg="newApplicationForm.formFailMsg"></FormSubmitAlert>
     </form>
 
 </template>
@@ -120,7 +111,7 @@ import FormSubmitAlert from '@/Components/FormSubmitAlert.vue';
 import {Link, useForm} from '@inertiajs/vue3';
 
 export default {
-    name: 'StudentApplicationEdit',
+    name: 'StudentApplicationReadOnly',
     components: {
         Input, Label, Select, Link, useForm, FormSubmitAlert
     },
@@ -147,27 +138,7 @@ export default {
         }
     },
     methods: {
-        save: function () {
-            this.newApplicationForm.claim_status = 'Draft';
-            this.submitForm();
-        },
-        submitForm: function () {
 
-            this.newApplicationForm.formState = null;
-            this.newApplicationForm.post('/applications', {
-                onSuccess: (response) => {
-                    $("#newApplicationModal").modal('hide');
-                    this.newApplicationForm.reset(this.newApplicationFormData);
-
-                    this.$inertia.visit('/applications');
-                    // console.log(response.props.institution)
-                },
-                onError: () => {
-                    this.newApplicationForm.formState = false;
-                },
-                preserveState: true
-            });
-        },
         fetchPrograms: function (e) {
             let guid = e;
             if(e.target != undefined){

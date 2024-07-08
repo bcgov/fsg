@@ -53,9 +53,9 @@ class StudentPolicy
     public function update(User $user, Student $model): bool
     {
         if($user->roles()->pluck('name')->intersect([Role::Student])->isNotEmpty()){
-            if($model->user_guid != $user->guid)
+            if($model->user_guid === $user->guid)
             {
-                return false;
+                return true;
             }
         }
 

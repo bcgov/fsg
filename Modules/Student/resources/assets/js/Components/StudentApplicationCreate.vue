@@ -114,13 +114,11 @@ export default {
         Input, Label, Select, Link, useForm, FormSubmitAlert
     },
     props: {
-        programYears: Object,
-        results: Object,
-        activeInstCap: Object|null
+        institutions: Object,
+        results: Object
     },
     data() {
         return {
-            institutions: null,
             programs: null,
             newApplicationForm: null,
             newApplicationFormData: {
@@ -164,20 +162,7 @@ export default {
                 preserveState: true
             });
         },
-        fetchInstitutions: function () {
-            this.newApplicationForm.processing = true;
-            let vm = this;
-            axios.get('/student/api/fetch/institutions')
-                .then(function (response) {
-                    vm.institutions = response.data.institutions;
-                    vm.newApplicationForm.processing = false;
-                })
-                .catch(function (error) {
-                    // handle error
-                    vm.newApplicationForm.processing = false;
-                    console.log(error);
-                });
-        },
+
         fetchPrograms: function (e) {
             let vm = this;
             this.programs = null;
@@ -199,7 +184,7 @@ export default {
 
     mounted() {
         this.newApplicationForm = useForm(this.newApplicationFormData);
-        this.fetchInstitutions();
+        // this.fetchInstitutions();
         // this.newApplicationForm.institution_guid = this.results.guid;
     }
 }
