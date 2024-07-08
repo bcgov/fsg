@@ -38,12 +38,15 @@ class ApplicationController extends Controller
         $validated = $request->validated();
 
         // Log the incoming payload
-        \Log::info('Incoming Payload:', $request->all());
+//        \Log::info('Incoming Payload:', $request->all());
+//
+//        // Log the validated data
+//        \Log::info('Validated Data:', $validated);
 
-        // Log the validated data
-        \Log::info('Validated Data:', $validated);
+        $application = Claim::create($validated);
+        event(new ApplicationSubmitted($application, $request->claim_status));
 
-        Claim::create($validated);
+
         return Redirect::route('student.home');
     }
 
@@ -82,7 +85,7 @@ class ApplicationController extends Controller
            return null;
         }
 
-        $claims = Claim::where('student_guid', $student->guid)->with('student', 'program', 'allocation');
+        $claims = Claim::where('student_guid', $student->guid)->with('student', 'program', 'institution');
 //
 //        if (request()->filter_name !== null) {
 //            $institutions = $institutions->where('name', 'ILIKE', '%'.request()->filter_name.'%');
@@ -91,7 +94,7 @@ class ApplicationController extends Controller
         if (request()->sort !== null) {
             $claims = $claims->orderBy(request()->sort, request()->direction);
         } else {
-            $claims = $claims->orderBy('first_name');
+            $claims = $claims->orderBy('created_at', 'desc');
         }
 
         return $claims->paginate(25)->onEachSide(1)->appends(request()->query());

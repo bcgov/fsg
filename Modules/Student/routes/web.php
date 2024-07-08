@@ -32,7 +32,7 @@ use Modules\Student\Http\Controllers\StudentController;
         Route::post('/update', [StudentController::class, 'store'])->name('store');
         Route::put('/update', [StudentController::class, 'update'])->name('update');
 
-        Route::get('/student/api/fetch/students/applications', [StudentController::class, 'fetchApplications'])->name('claims.fetchApplications');
+        Route::get('/student/api/fetch/students/applications', [ApplicationController::class, 'fetchApplications'])->name('claims.fetchApplications');
         Route::get('/student/api/fetch/institutions/{institution?}', [StudentController::class, 'fetchInstitutions'])->name('claims.fetchInstitutions');
 
     });

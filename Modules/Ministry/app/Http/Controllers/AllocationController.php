@@ -32,7 +32,6 @@ class AllocationController extends Controller
 
         $allocation = Allocation::find($allocation->id);
         return Redirect::route('ministry.institutions.show', [$allocation->institution->id, 'allocations']);
-
     }
 
     /**

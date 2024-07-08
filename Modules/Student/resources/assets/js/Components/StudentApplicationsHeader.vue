@@ -1,46 +1,14 @@
 <template>
     <tr>
+
         <th scope="col" class="text-nowrap">
-            <a href="#" @click="switchSort('id')">
-                <span>ID</span>
-                <em v-if="sortClmn === 'id' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
-                <em v-else class="bi bi-sort-numeric-down"></em>
-            </a>
-        </th>
-        <th scope="col" class="text-nowrap">
-            <a href="#" @click="switchSort('first_name')">
-                <span>First Name</span>
-                <em v-if="sortClmn === 'first_name' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
-                <em v-else class="bi bi-sort-alpha-down"></em>
-            </a>
-        </th>
-        <th scope="col" class="text-nowrap">
-            <a href="#" @click="switchSort('last_name')">
-                <span>Last Name</span>
-                <em v-if="sortClmn === 'last_name' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
-                <em v-else class="bi bi-sort-alpha-down"></em>
-            </a>
-        </th>
-        <th scope="col" class="text-nowrap">
-            <a href="#" @click="switchSort('course_name')">
                 <span>Program Name</span>
-                <em v-if="sortClmn === 'course_name' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
-                <em v-else class="bi bi-sort-alpha-down"></em>
-            </a>
         </th>
         <th scope="col" class="text-nowrap">
-            <a href="#" @click="switchSort('estimated_hold_amount')">
-                <span>Estimated Hold</span>
-                <em v-if="sortClmn === 'estimated_hold_amount' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
-                <em v-else class="bi bi bi-sort-numeric-down"></em>
-            </a>
+                <span>Institution Name</span>
         </th>
         <th scope="col" class="text-nowrap">
-            <a href="#" @click="switchSort('total_claim_amount')">
-                <span>Total Claim</span>
-                <em v-if="sortClmn === 'total_claim_amount' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
-                <em v-else class="bi bi bi-sort-numeric-down"></em>
-            </a>
+                <span>Grant Total</span>
         </th>
         <th scope="col" class="text-nowrap">
             <span>Student Claims</span>
@@ -75,7 +43,7 @@ export default {
 
     data() {
         return {
-            sortClmn: 'first_name',
+            sortClmn: 'active_status',
             sortType: 'asc',
             url: '',
             path: 'api/fetch/students/applications',

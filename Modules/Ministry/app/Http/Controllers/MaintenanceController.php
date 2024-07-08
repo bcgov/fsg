@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Response;
+use Illuminate\Support\Facades\Gate;
 
 class MaintenanceController extends Controller
 {
@@ -51,8 +52,9 @@ class MaintenanceController extends Controller
      */
     public function updateStatus(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
-        $this->authorize('update', $user);
-
+        if (Gate::denies('update', $user)) {
+            abort(403);
+        }
         $user->disabled = $request->input('disabled');
         $user->save();
 
@@ -66,8 +68,9 @@ class MaintenanceController extends Controller
      */
     public function updateRole(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
-        $this->authorize('update', $user);
-
+        if (Gate::denies('update', $user)) {
+            abort(403);
+        }
         $newRole = Role::where('name', Role::Ministry_GUEST)->first();
         if ($request->input('role') === 'Admin') {
             $newRole = Role::where('name', Role::Ministry_ADMIN)->first();
@@ -139,43 +142,6 @@ class MaintenanceController extends Controller
         return Redirect::route('ministry.maintenance.utils.list');
     }
 
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Inertia\Response::render
-     */
-    public function faqList(Request $request): \Inertia\Response
-    {
-        $faqs = Faq::orderBy('order', 'asc')->get();
-
-        return Inertia::render('Ministry::Maintenance', ['status' => true, 'results' => $faqs,
-            'page' => 'faqs']);
-    }
-
-    /**
-     * Update a utility resource.
-     *
-     * @return \Illuminate\Http\RedirectResponse::render
-     */
-    public function faqUpdate(FaqEditRequest $request, Faq $faq): \Illuminate\Http\RedirectResponse
-    {
-        $faq->update($request->validated());
-
-        return Redirect::route('ministry.maintenance.faqs.list');
-    }
-
-    /**
-     * Store a utility resource.
-     *
-     * @return \Illuminate\Http\RedirectResponse::render
-     */
-    public function faqStore(FaqStoreRequest $request): \Illuminate\Http\RedirectResponse
-    {
-        Faq::create($request->validated());
-
-        return Redirect::route('ministry.maintenance.faqs.list');
-    }
 
 
     /**
