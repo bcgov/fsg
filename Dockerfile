@@ -5,7 +5,7 @@ ARG TZ=America/Vancouver
 ARG CA_HOSTS_LIST
 ARG USER_ID
 ARG DEBIAN_FRONTEND=noninteractive
-
+ARG DEVENV=prod
 # set entrypoint variables
 ENV USER_NAME=${USER_ID}
 ENV USER_HOME=/var/www/html
@@ -163,7 +163,7 @@ USER ${USER_ID}
 #rm -rf vendor
 #rm -f composer.lock
 #composer install
-RUN composer install && npm install --prefix /var/www/html/ && npm run --prefix /var/www/html/ prod
+RUN composer install && npm install --prefix /var/www/html/ && npm run --prefix /var/www/html/ ${DEVENV}
 
 ENTRYPOINT ["/sbin/entrypoint.sh"]
 # Start!
