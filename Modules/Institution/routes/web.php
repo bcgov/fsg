@@ -14,17 +14,22 @@ use Modules\Institution\Http\Controllers\InstitutionController;
 |
 */
 
-Route::group([], function () {
-    Route::resource('institution', InstitutionController::class)->names('institution');
-});
-
-
 Route::prefix('institution')->group(function () {
     Route::group(
         [
             'middleware' => ['auth', 'institution_active'],
             'as' => 'institution.',
         ], function () {
-        Route::get('/', [InstitutionController::class, 'index'])->name('home');
+        Route::get('/dashboard', [InstitutionController::class, 'index'])->name('dashboard');
+
+
+        Route::post('/program_years/default', [ProgramYearController::class, 'setDefault'])->name('program_years.set-default');
+
+    });
+
+    Route::group([
+        'middleware' => ['institution_admin'],
+    ], function () {
+
     });
 });
