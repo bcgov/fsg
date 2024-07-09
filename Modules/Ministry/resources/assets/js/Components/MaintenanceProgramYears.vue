@@ -189,7 +189,7 @@ export default {
         switchStatus: function (programYear, status) {
             const statusMessage = status === 'inactive'
                 ? 'You are about to switch this Program Year to INACTIVE. This will disable all institutions\' allocations associated to this program year.'
-                : 'You are about to switch this Program Year to ACTIVE. This will enable all institutions\' allocations associated to this program year.';
+                : 'You are about to switch this Program Year to ACTIVE. This will disabled any Active program year and enable all institutions\' allocations associated to this program year.';
 
             alert(statusMessage);
 
