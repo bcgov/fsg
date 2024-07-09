@@ -1,0 +1,83 @@
+<template>
+    <Head title="Dashboard" />
+
+    <AuthenticatedLayout v-bind="$attrs">
+
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="display-5">{{ results.name }}</div>
+                            <p>Welcome {{$attrs.auth.user.first_name}} {{$attrs.auth.user.last_name}}</p>
+                            <br/>
+                            <h4 class="fw-light">Active Program Year: <strong>{{ programYear.start_date }} to {{ programYear.end_date }}</strong></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <div class="card text-center">
+                        <div class="card-header">
+                            Submitted Claims
+                        </div>
+                        <div class="card-body display-5 m-4">{{ submittedApps }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card text-center">
+                        <div class="card-header">
+                            Hold Claims
+                        </div>
+                        <div class="card-body display-5 m-4">{{ holdApps }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card text-center">
+                        <div class="card-header">
+                            Claimed
+                        </div>
+                        <div class="card-body display-5 m-4">{{ claimedApps }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card text-center">
+                        <div class="card-header">
+                            Reporting Completed
+                        </div>
+                        <div class="card-body display-5 m-4">{{ reportingCompleteApps }}</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </AuthenticatedLayout>
+
+</template>
+<script>
+import AuthenticatedLayout from '../Layouts/Authenticated.vue';
+import { Link, Head } from '@inertiajs/vue3';
+import DashboardProfile from "../Components/DashboardProfile.vue";
+import DashboardApplications from "../Components/DashboardApplications.vue";
+import DashboardMenu from "../Components/DashboardMenu.vue";
+
+export default {
+    name: 'Dashboard',
+    components: {
+        DashboardMenu, DashboardProfile, DashboardApplications,
+        AuthenticatedLayout, Head, Link
+    },
+    props: {
+        results: Object,
+        activeAllocation: Object,
+        programYear: Object,
+        submittedApps: Number,
+        holdApps: Number,
+        claimedApps: Number,
+        reportingCompleteApps: Number,
+    }
+}
+</script>

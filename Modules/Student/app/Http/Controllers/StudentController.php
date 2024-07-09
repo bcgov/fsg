@@ -63,11 +63,17 @@ class StudentController extends Controller
     public function fetchInstitutions(Request $request, $institution = null)
     {
         if(!is_null($institution)) {
-            $institution = Institution::where('guid', $institution)->with('activePrograms')->first();
+            $institution = Institution::where('guid', $institution)->with('activePrograms')
+                ->whereHas('allocations', function ($query) {
+                $query->where('status', 'active');
+            })->first();
             return Response::json(['status' => true, 'institution' => $institution]);
         }
 
-        $institutions = Institution::active()->get();
+        $institutions = Institution::active()->whereHas('allocations', function ($query) {
+            $query->where('status', 'active');
+        })->get();
+
         return Response::json(['status' => true, 'institutions' => $institutions]);
     }
 
