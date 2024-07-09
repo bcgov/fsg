@@ -2,12 +2,16 @@
 
 namespace Modules\Ministry\Http\Controllers;
 
+use App\Events\ProgramYearUpdated;
 use App\Events\StaffRoleChanged1;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProgramYearEditRequest;
+use App\Http\Requests\ProgramYearStoreRequest;
 use App\Http\Requests\UtilEditRequest;
 use App\Http\Requests\UtilStoreRequest;
 use App\Models\Institution;
 use App\Models\InstitutionStaff;
+use App\Models\ProgramYear;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Util;
@@ -140,6 +144,45 @@ class MaintenanceController extends Controller
         Cache::put('sorted_utils', $sortedUtils, 3600);
 
         return Redirect::route('ministry.maintenance.utils.list');
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Inertia\Response::render
+     */
+    public function pyList(Request $request): \Inertia\Response
+    {
+        $programYears = ProgramYear::orderBy('start_date', 'asc')->get();
+
+        return Inertia::render('Ministry::Maintenance', ['status' => true, 'results' => $programYears,
+            'page' => 'program_years']);
+    }
+
+    /**
+     * Update a utility resource.
+     *
+     * @return \Illuminate\Http\RedirectResponse::render
+     */
+    public function pyUpdate(ProgramYearEditRequest $request, ProgramYear $programYear): \Illuminate\Http\RedirectResponse
+    {
+        $programYear->update($request->validated());
+
+        event(new ProgramYearUpdated($programYear, $request->status));
+        return Redirect::route('ministry.maintenance.program_years.list');
+    }
+
+    /**
+     * Store a utility resource.
+     *
+     * @return \Illuminate\Http\RedirectResponse::render
+     */
+    public function pyStore(ProgramYearStoreRequest $request): \Illuminate\Http\RedirectResponse
+    {
+        ProgramYear::create($request->validated());
+
+        return Redirect::route('ministry.maintenance.program_years.list');
     }
 
 

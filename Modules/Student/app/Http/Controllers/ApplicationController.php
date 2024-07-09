@@ -2,7 +2,9 @@
 
 namespace Modules\Student\Http\Controllers;
 
+use App\Events\ApplicationSubmitted;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ApplicationEditRequest;
 use App\Http\Requests\ApplicationStoreRequest;
 use App\Http\Requests\StudentEditRequest;
 use App\Http\Requests\StudentStoreRequest;
@@ -22,10 +24,11 @@ class ApplicationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StudentEditRequest $request): \Illuminate\Http\RedirectResponse
+    public function update(ApplicationEditRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $student_id = Student::where('id', $request->id)->update($request->validated());
-        $student = Student::find($request->id);
+        $application_id = Claim::where('id', $request->id)->update($request->validated());
+        $application = Claim::find($request->id);
+        event(new ApplicationSubmitted($application, $request->claim_status));
         return Redirect::route('student.home');
     }
 
@@ -36,12 +39,6 @@ class ApplicationController extends Controller
     public function store(ApplicationStoreRequest $request): \Illuminate\Http\RedirectResponse
     {
         $validated = $request->validated();
-
-        // Log the incoming payload
-//        \Log::info('Incoming Payload:', $request->all());
-//
-//        // Log the validated data
-//        \Log::info('Validated Data:', $validated);
 
         $application = Claim::create($validated);
         event(new ApplicationSubmitted($application, $request->claim_status));
