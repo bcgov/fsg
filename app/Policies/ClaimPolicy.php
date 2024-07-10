@@ -46,7 +46,8 @@ class ClaimPolicy
      */
     public function update(User $user, Claim $model): bool
     {
-        $rolesToCheck = [Role::Ministry_USER, Role::Institution_ADMIN, Role::SUPER_ADMIN, Role::Student];
+        $rolesToCheck = [Role::Ministry_ADMIN, Role::Ministry_USER, Role::Institution_ADMIN, Role::Institution_USER,
+            Role::SUPER_ADMIN, Role::Student];
 
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }

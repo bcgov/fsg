@@ -45,7 +45,7 @@
                     </Select>
                 </div>
                 <div class="col-md-2">
-                    <Label for="inputG12" class="form-label" value="Grade12 / Over19y" />
+                    <Label for="inputG12" class="form-label" value="Grade 12 or Over 19y" />
                     <Select class="form-select" id="inputG12" v-model="editForm.grade12_or_over19">
                         <option></option>
                         <option v-for="status in $attrs.utils['Grade12/Over19y']" :value="status.field_name">{{ status.field_name }}</option>
