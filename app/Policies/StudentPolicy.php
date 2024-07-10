@@ -59,7 +59,7 @@ class StudentPolicy
             }
         }
 
-        $rolesToCheck = [Role::Ministry_USER, Role::Institution_ADMIN];
+        $rolesToCheck = [Role::Ministry_ADMIN, Role::SUPER_ADMIN, Role::Ministry_USER, Role::Institution_ADMIN, Role::Institution_USER];
 
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }

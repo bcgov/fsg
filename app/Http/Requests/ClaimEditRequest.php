@@ -74,7 +74,7 @@ class ClaimEditRequest extends FormRequest
                 'dob' => 'required|date_format:Y-m-d',
                 'email' => 'required|email',
                 'city' => 'required|string',
-                'zip_code' => 'required|string|regex:/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/',
+                'zip_code' => 'required|string|regex:/^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/',
                 'agreement_confirmed' => 'required|boolean',
                 'registration_confirmed' => 'required|boolean',
             ]);
