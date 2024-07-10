@@ -28,15 +28,15 @@
                 </div>
 
                 <div class="col-md-3">
-                    <Label for="inputDli" class="form-label" value="DLI #" />
+                    <Label for="inputDli" class="form-label" value="Applicant Number" />
                     <Input type="text" class="form-control" id="inputDli" v-model="editForm.dli" />
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputPrimaryContact" class="form-label" value="Primary Contact" />
+                    <Label for="inputPrimaryContact" class="form-label" value="Primary Contact Name" />
                     <Input type="text" class="form-control" id="inputPrimaryContact" v-model="editForm.primary_contact" />
                 </div>
                 <div class="col-md-3">
-                    <Label for="inputPrimaryEmail" class="form-label" value="Primary Email" />
+                    <Label for="inputPrimaryEmail" class="form-label" value="Primary Contact Email" />
                     <Input type="email" class="form-control" id="inputPrimaryEmail" v-model="editForm.primary_email" />
                 </div>
                 <div class="col-md-3">

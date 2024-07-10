@@ -2,10 +2,14 @@
 
 namespace Modules\Institution\Http\Controllers;
 
+use App\Events\StaffRoleChanged;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\InstitutionStaffEditRequest;
 use App\Models\Allocation;
 use App\Models\Claim;
+use App\Models\InstitutionStaff;
 use App\Models\ProgramYear;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -69,50 +73,70 @@ class InstitutionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('institution::create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        //
-    }
-
-    /**
      * Show the specified resource.
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        return view('institution::show');
+        $user = User::find(Auth::user()->id);
+        $institution = $user->institution;
+
+        return Inertia::render('Institution::Institution', ['institution' => $institution]);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Display a listing of the resource.
+     *
+     * @return \Inertia\Response::render
      */
-    public function edit($id)
+    public function staffList(Request $request): \Inertia\Response
     {
-        return view('institution::edit');
+        $user = User::find(Auth::user()->id);
+        $institution = $user->institution->staff()->with('user.roles')->get();
+
+        return Inertia::render('Institution::Staff', ['status' => true, 'results' => $institution]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function staffUpdate(InstitutionStaffEditRequest $request): \Inertia\Response
     {
-        //
+        InstitutionStaff::where('id', $request->id)->update($request->validated());
+        $user = User::find(Auth::user()->id);
+        $institution = $user->institution->staff;
+
+        return Inertia::render('Institution::Staff', ['status' => true, 'results' => $institution]);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Update the specified resource role in storage.
      */
-    public function destroy($id)
+    public function staffUpdateRole(Request $request): \Inertia\Response
     {
-        //
+        $newRole = Role::where('name', Role::Institution_GUEST)->first();
+        if ($request->input('role') === 'User') {
+            $newRole = Role::where('name', Role::Institution_USER)->first();
+        }
+
+        $rolesToCheck = [Role::Ministry_ADMIN, Role::SUPER_ADMIN, Role::Institution_ADMIN, Role::Institution_USER];
+        if (Auth::user()->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && Auth::user()->disabled === false) {
+            $staff = InstitutionStaff::where('id', $request->input('id'))->first();
+
+            if (! is_null($staff)) {
+                //reset roles
+                $roles = Role::whereIn('name', [Role::Institution_ADMIN, Role::Institution_USER, Role::Institution_GUEST])->get();
+                foreach ($roles as $role) {
+                    $staff->user->roles()->detach($role);
+                }
+
+                $staff->user->roles()->attach($newRole);
+                event(new StaffRoleChanged($staff->user, $newRole));
+            }
+        }
+
+        $user = User::find(Auth::user()->id);
+        $institution = $user->institution->staff;
+
+        return Inertia::render('Institution::Staff', ['status' => true, 'results' => $institution]);
     }
 }

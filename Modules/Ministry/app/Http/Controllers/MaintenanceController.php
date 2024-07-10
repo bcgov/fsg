@@ -3,7 +3,7 @@
 namespace Modules\Ministry\Http\Controllers;
 
 use App\Events\ProgramYearUpdated;
-use App\Events\StaffRoleChanged1;
+use App\Events\StaffRoleChanged;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProgramYearEditRequest;
 use App\Http\Requests\ProgramYearStoreRequest;

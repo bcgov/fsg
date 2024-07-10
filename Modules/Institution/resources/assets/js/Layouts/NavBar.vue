@@ -40,6 +40,27 @@ nav.navbar .form-select {
                             Dashboard
                         </NavLink>
                     </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/institution/claims"
+                                 :class="{ 'active':
+                                     $page.url.indexOf('/claims') > -1  }">
+                            Student Claims
+                        </NavLink>
+                    </li>
+                    <li v-if="isAdmin" class="nav-item">
+                        <NavLink class="nav-link" href="/institution/account"
+                                 :class="{ 'active': $page.url.indexOf('/account') > -1 ||
+                            $page.url.indexOf('/account') > -1 }">
+                            Account Information
+                        </NavLink>
+                    </li>
+                    <li v-if="isAdmin" class="nav-item">
+                        <NavLink class="nav-link" href="/institution/staff"
+                                 :class="{ 'active': $page.url.indexOf('staff') > -1 ||
+                            $page.url.indexOf('staff') > -1 }">
+                            Staff
+                        </NavLink>
+                    </li>
 
 
                     <li class="nav-item dropdown">
@@ -84,6 +105,7 @@ export default {
     props: [],
     data() {
         return {
+            isAdmin: ref(false),
             programYearsList: [],
             selectedProgramYearGuid: ''
         }

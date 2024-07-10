@@ -35,8 +35,8 @@ class ProgramEditRequest extends FormRequest
             'credential_type' => 'required',
             'high_priority_industry' => 'required',
 
-            'start_date' => 'required|date_format:Y-m-d',
-            'end_date' => 'required|date_format:Y-m-d',
+//            'start_date' => 'required|date_format:Y-m-d',
+//            'end_date' => 'required|date_format:Y-m-d',
 
             'creditable' => 'required|boolean',
             'full_time' => 'required|boolean',

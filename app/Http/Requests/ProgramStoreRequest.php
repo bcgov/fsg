@@ -32,8 +32,8 @@ class ProgramStoreRequest extends FormRequest
             'credential_type' => 'required',
             'high_priority_industry' => 'required',
 
-            'start_date' => 'required|date_format:Y-m-d',
-            'end_date' => 'required|date_format:Y-m-d',
+//            'start_date' => 'required|date_format:Y-m-d',
+//            'end_date' => 'required|date_format:Y-m-d',
 
             'creditable' => 'required|boolean',
             'full_time' => 'required|boolean',
@@ -56,8 +56,8 @@ class ProgramStoreRequest extends FormRequest
             'online_delivery_type.required' => 'Online delivery method is required',
             'credential_type.required' => 'Credential type is required',
             'high_priority_industry.required' => 'High priority industry is required',
-            'start_date.required' => 'Start date is required',
-            'end_date.required' => 'End date is required',
+//            'start_date.required' => 'Start date is required',
+//            'end_date.required' => 'End date is required',
             'creditable.required' => 'Creditable is required',
             'full_time.required' => 'Full time is required',
 
