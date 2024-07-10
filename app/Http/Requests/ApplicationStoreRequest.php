@@ -7,6 +7,7 @@ use App\Models\Claim;
 use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use App\Rules\ValidSin;
 
 class ApplicationStoreRequest extends FormRequest
 {
@@ -50,7 +51,7 @@ class ApplicationStoreRequest extends FormRequest
             'allocation_guid' => 'required|exists:allocations,guid',
             'program_guid' => 'required|exists:programs,guid',
             'student_guid' => 'required|exists:students,guid',
-            'sin' => 'required|numeric',
+            'sin' => ['required', new ValidSin],
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'dob' => 'required|date_format:Y-m-d',

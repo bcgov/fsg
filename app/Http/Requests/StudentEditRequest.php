@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use App\Rules\ValidSin;
 
 class StudentEditRequest extends FormRequest
 {
@@ -66,7 +67,7 @@ class StudentEditRequest extends FormRequest
             'id' => 'required',
             'guid' => 'required',
             'user_guid' => 'required|exists:users,guid',
-            'sin' => 'required',
+            'sin' => ['required', new ValidSin],
             'first_name' => 'required',
             'last_name' => 'required',
             'dob' => 'required|date_format:Y-m-d',

@@ -6,6 +6,7 @@ use App\Models\Claim;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use App\Rules\ValidSin;
 
 class ClaimEditRequest extends FormRequest
 {
@@ -68,7 +69,7 @@ class ClaimEditRequest extends FormRequest
                 'program_guid' => 'required|exists:programs,guid',
                 'student_guid' => 'required|exists:students,guid',
 
-                'sin' => 'required|numeric',
+                'sin' => ['required', new ValidSin],
                 'first_name' => 'required|string',
                 'last_name' => 'required|string',
                 'dob' => 'required|date_format:Y-m-d',

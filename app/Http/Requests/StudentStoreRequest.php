@@ -6,6 +6,7 @@ use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use App\Rules\ValidSin;
 
 class StudentStoreRequest extends FormRequest
 {
@@ -77,7 +78,7 @@ class StudentStoreRequest extends FormRequest
         return [
             'guid' => 'required',
             'user_guid' => 'required|exists:users,guid',
-            'sin' => 'required',
+            'sin' => ['required', new ValidSin],
             'first_name' => 'required',
             'last_name' => 'required',
             'dob' => 'required|date_format:Y-m-d',
