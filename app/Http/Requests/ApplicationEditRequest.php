@@ -57,7 +57,8 @@ class ApplicationEditRequest extends FormRequest
             'dob' => 'required|date_format:Y-m-d',
             'email' => 'required|email',
             'city' => 'required|string',
-            'zip_code' => 'required|string',
+            'zip_code' => 'required|string|regex:/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/',
+
         ];
 
         if ($this->claim_status === 'Submitted') {

@@ -80,8 +80,8 @@ class StudentStoreRequest extends FormRequest
             'last_name' => 'required',
             'dob' => 'required|date_format:Y-m-d',
             'email' => 'required|email',
-            'city' => 'nullable',
-            'zip_code' => 'nullable',
+            'city' => 'required',
+            'zip_code' => 'required|regex:/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/',
 
             'citizenship' => 'required',
             'grade12_or_over19' => 'required',
