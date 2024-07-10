@@ -28,7 +28,6 @@
                         <option v-for="stat in $attrs.utils['Credential Type']" :value="stat.field_name">{{ stat.field_name }}</option>
                     </Select>
                 </div>
-
                 <div class="col-md-4">
                     <Label for="inputPriority" class="form-label" value="High Priority Industry"/>
                     <Select class="form-select" id="inputPriority" v-model="editForm.high_priority_industry">
