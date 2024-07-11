@@ -55,7 +55,7 @@
                             <h5 class="modal-title" id="newApplicationModalLabel">New Student Application</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <StudentApplicationCreate v-bind="$attrs" :results="results" :institutions="institutions" />
+                        <StudentApplicationCreate v-if="institutions != '' && institutions.length > 0" v-bind="$attrs" :results="results" :institutions="institutions" />
                     </div>
                 </div>
             </div>

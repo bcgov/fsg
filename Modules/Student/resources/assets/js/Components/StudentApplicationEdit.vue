@@ -154,9 +154,9 @@ export default {
         submitForm: function () {
 
             this.newApplicationForm.formState = null;
-            this.newApplicationForm.post('/applications', {
+            this.newApplicationForm.put('/applications', {
                 onSuccess: (response) => {
-                    $("#newApplicationModal").modal('hide');
+                    $("#editApplicationModal").modal('hide');
                     this.newApplicationForm.reset(this.newApplicationFormData);
 
                     this.$inertia.visit('/applications');

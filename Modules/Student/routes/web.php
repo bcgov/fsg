@@ -28,6 +28,7 @@ use Modules\Student\Http\Controllers\StudentController;
         ], function () {
         Route::get('/applications', [ApplicationController::class, 'applications'])->name('home');
         Route::post('/applications', [ApplicationController::class, 'store'])->name('applications.store');
+        Route::put('/applications', [ApplicationController::class, 'update'])->name('applications.update');
         Route::get('/profile', [StudentController::class, 'index'])->name('profile');
         Route::post('/profile', [StudentController::class, 'store'])->name('store');
         Route::put('/profile', [StudentController::class, 'update'])->name('update');

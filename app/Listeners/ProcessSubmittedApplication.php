@@ -27,6 +27,7 @@ class ProcessSubmittedApplication
         // If the claim submitted against an inactive allocation stop there.
         if($claim->allocation->status != 'active'){
             $claim->claim_status = "Draft";
+            $claim->process_feedback = "Claim submitted against an inactive allocation";
         }else{
 
 

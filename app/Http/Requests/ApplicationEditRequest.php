@@ -62,7 +62,7 @@ class ApplicationEditRequest extends FormRequest
 
         ];
 
-        if ($this->claim_status === 'Submitted') {
+        if ($this->claim_status === 'Draft') {
             $rules = array_merge($rules, [
                 'agreement_confirmed' => 'boolean',
                 'registration_confirmed' => 'boolean',
