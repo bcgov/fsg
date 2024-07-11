@@ -33,10 +33,8 @@ class ProgramEditRequest extends FormRequest
             'delivery_method' => 'required',
             'online_delivery_type' => 'required',
             'credential_type' => 'required',
+            'micro_credential_type' => 'nullable',
             'high_priority_industry' => 'required',
-
-//            'start_date' => 'required|date_format:Y-m-d',
-//            'end_date' => 'required|date_format:Y-m-d',
 
             'creditable' => 'required|boolean',
             'full_time' => 'required|boolean',
