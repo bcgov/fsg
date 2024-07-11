@@ -74,6 +74,7 @@ class UserController extends Controller
     {
 
         if (! $request->has('code')) {
+            \Log::info('No code');
             // If we don't have an authorization code then get one
             $authUrl = $provider->getAuthorizationUrl([
                 'scope' => 'openid profile email', // Ensure scopes include 'openid'
@@ -87,8 +88,8 @@ class UserController extends Controller
 
             // Check given state against previously stored one to mitigate CSRF attack
         } elseif (! $request->has('state') || ($request->state !== $request->session()->get('oauth2state'))) {
-            $request->session()->forget('oauth2state');
             \Log::info('messed up state '.$request->state.' !== '.$request->session()->get('oauth2state'));
+            $request->session()->forget('oauth2state');
 
             //Invalid state, make sure HTTP sessions are enabled
             return Inertia::render('Auth/Login', [
