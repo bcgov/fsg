@@ -43,25 +43,25 @@ class InstitutionEditRequest extends FormRequest
         return [
             'id' => 'required',
             'guid' => 'required',
-            'dli' => 'required|unique:institutions,dli,'.$this->id,
+
             'name' => 'required|unique:institutions,name,'.$this->id,
-            //'bceid_business_guid' => 'required|unique:institutions,bceid_business_guid,'.$this->id,
             'legal_name' => 'nullable',
+
             'address1' => 'required',
             'address2' => 'nullable',
+            'category' => 'nullable|exists:utils,field_name',
 
             'primary_contact' => 'required',
             'primary_email' => 'required',
             'city' => 'required',
             'postal_code' => 'required',
+
             'province' => 'required',
-            'public' => 'required|boolean',
+            'economic_region' => 'nullable',
+            'size' => 'nullable',
             'active_status' => 'required|boolean',
-            'standing_status' => 'nullable',
+
             'last_touch_by_user_guid' => 'required|exists:users,guid',
-            'comment' => 'nullable',
-            'info_sharing_agreement' => 'required|boolean',
-            'category' => 'nullable|exists:utils,field_name',
         ];
     }
 
@@ -74,11 +74,9 @@ class InstitutionEditRequest extends FormRequest
     {
         $this->merge([
             'active_status' => $this->toBoolean($this->active_status),
-            'public' => $this->toBoolean($this->public),
             'last_touch_by_user_guid' => $this->user()->guid,
             'postal_code' => Str::upper(str_replace(' ', '', $this->postal_code)),
             'primary_email' => Str::lower(str_replace(' ', '', $this->primary_email)),
-            'info_sharing_agreement' => $this->toBoolean($this->info_sharing_agreement),
         ]);
     }
 

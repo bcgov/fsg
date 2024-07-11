@@ -36,6 +36,8 @@ objects:
           env:
             - name: USER_ID
               value: ${OC_USER_ID}
+            - name: NPM_ENV
+              value: ${NPM_ENV}
         type: Docker
       successfulBuildsHistoryLimit: 5
     metadata:
@@ -112,6 +114,8 @@ parameters:
   - name: MIN_REPLICAS
     required: true
   - name: MAX_REPLICAS
+    required: true
+  - name: NPM_ENV
     required: true
   - name: CPU_REQUESTS
     required: false

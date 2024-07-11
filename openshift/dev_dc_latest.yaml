@@ -234,3 +234,5 @@ parameters:
     required: false
   - name: BUILD_MEM_LIMITS
     required: false
+  - name: NPM_ENV
+    required: false

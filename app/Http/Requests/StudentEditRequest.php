@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use App\Rules\ValidSin;
 
 class StudentEditRequest extends FormRequest
 {
@@ -32,6 +33,8 @@ class StudentEditRequest extends FormRequest
             'dob.date_format' => 'The Date of Birth must be in the format YYYY-MM-DD.',
             'email.required' => 'The Email field is required.',
             'email.email' => 'The Email must be a valid email address.',
+            'zip_code.required' => 'The Postal Code field is required.',
+            'zip_code.regex' => 'The Postal Code must be a valid Canadian postal code in the format A1A1A1.',
             'citizenship.required' => 'The Citizenship field is required.',
             'grade12_or_over19.required' => 'The Grade 12 or Over 19 field is required.',
             'info_consent.boolean' => 'The Info Consent field must be true.',
@@ -64,13 +67,13 @@ class StudentEditRequest extends FormRequest
             'id' => 'required',
             'guid' => 'required',
             'user_guid' => 'required|exists:users,guid',
-            'sin' => 'required',
+            'sin' => ['required', new ValidSin],
             'first_name' => 'required',
             'last_name' => 'required',
             'dob' => 'required|date_format:Y-m-d',
             'email' => 'required|email',
-            'city' => 'nullable',
-            'zip_code' => 'nullable',
+            'city' => 'required',
+            'zip_code' => 'required|string|regex:/^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/',
 
             'citizenship' => 'required',
             'grade12_or_over19' => 'required',

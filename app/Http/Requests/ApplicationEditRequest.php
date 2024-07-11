@@ -7,6 +7,7 @@ use App\Models\Claim;
 use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use App\Rules\ValidSin;
 
 class ApplicationEditRequest extends FormRequest
 {
@@ -51,16 +52,17 @@ class ApplicationEditRequest extends FormRequest
             'allocation_guid' => 'required|exists:allocations,guid',
             'program_guid' => 'required|exists:programs,guid',
             'student_guid' => 'required|exists:students,guid',
-            'sin' => 'required|numeric',
+            'sin' => ['required', new ValidSin],
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'dob' => 'required|date_format:Y-m-d',
             'email' => 'required|email',
             'city' => 'required|string',
-            'zip_code' => 'required|string',
+            'zip_code' => 'required|string|regex:/^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/',
+
         ];
 
-        if ($this->claim_status === 'Submitted') {
+        if ($this->claim_status === 'Draft') {
             $rules = array_merge($rules, [
                 'agreement_confirmed' => 'boolean',
                 'registration_confirmed' => 'boolean',

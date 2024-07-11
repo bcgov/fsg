@@ -31,6 +31,7 @@ Route::prefix('ministry')->group(function () {
         Route::get('/', [InstitutionController::class, 'index'])->name('home');
         Route::get('/institutions', [InstitutionController::class, 'index'])->name('institutions.index');
         Route::get('/institutions/{institution}/{page?}', [InstitutionController::class, 'show'])->name('institutions.show');
+        Route::put('/institutions', [InstitutionController::class, 'update'])->name('institutions.update');
 
         Route::get('/students', [StudentController::class, 'index'])->name('students.index');
         Route::get('/students/{student}/{page?}', [StudentController::class, 'show'])->name('students.show');
