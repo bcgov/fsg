@@ -151,6 +151,7 @@ export default {
             this.newApplicationForm.claim_status = 'Draft';
             this.submitForm();
         },
+
         submitForm: function () {
 
             this.newApplicationForm.formState = null;
@@ -193,6 +194,7 @@ export default {
 
     mounted() {
         this.newApplicationForm = useForm(this.application);
+        this.newApplicationForm.claim_status = 'Submitted';
         this.fetchPrograms(this.application.institution_guid);
         // this.newApplicationForm.institution_guid = this.results.guid;
     }
