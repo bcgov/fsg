@@ -5,7 +5,7 @@
             <template>
                 <span class="badge rounded-pill text-bg-primary me-1">Active Claim Total: {{ claims.data.length }}</span>
             </template>
-            <button type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Claim</button>
+<!--            <button type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Claim</button>-->
         </div>
         <div class="card-body">
             <div v-if="claims.data != null && claims.data.length > 0" class="table-responsive pb-3">
@@ -48,18 +48,18 @@
         </div>
     </div>
 
-    <div v-if="editClaim == ''" class="modal modal-lg fade" id="newClaimModal" tabindex="-1"
-         aria-labelledby="newClaimModalLabel" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="newClaimModalLabel">New Student Claim</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <StudentClaimCreate v-bind="$attrs" :results="results"/>
-            </div>
-        </div>
-    </div>
+<!--    <div v-if="editClaim == ''" class="modal modal-lg fade" id="newClaimModal" tabindex="-1"-->
+<!--         aria-labelledby="newClaimModalLabel" aria-hidden="true" data-bs-backdrop="static">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <h5 class="modal-title" id="newClaimModalLabel">New Student Claim</h5>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--                </div>-->
+<!--                <StudentClaimCreate v-bind="$attrs" :results="results"/>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
     <div v-if="editClaim != ''" class="modal modal-lg fade" id="editClaimModal" tabindex="0"
          aria-labelledby="editClaimModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
@@ -99,11 +99,11 @@ export default {
         }
     },
     methods: {
-        openNewForm: function () {
-            setTimeout(function () {
-                $("#newClaimModal").modal('show');
-            }, 10);
-        },
+        // openNewForm: function () {
+        //     setTimeout(function () {
+        //         $("#newClaimModal").modal('show');
+        //     }, 10);
+        // },
 
         openEditForm: function (claim) {
             this.editClaim = claim;
