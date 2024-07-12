@@ -198,12 +198,15 @@ export default {
     methods: {
 
         submitForm: function () {
-            if(this.editStudentClaimForm.claim_status === 'Hold'){
+            // Show confirm only if the user is switching the status from Submitted to Hold
+            if(this.claim.claim_status === 'Submitted' && this.editStudentClaimForm.claim_status === 'Hold'){
                 if(!confirm("You are about to switch the status of this claim to Hold. The field Estimated Hold Amount is going to be locked. Proceed?")){
                     return false;
                 }
             }
-            if(this.editStudentClaimForm.claim_status === 'Claimed'){
+
+            // Show confirm only if the user is switching the status from Hold to Claimed
+            if(this.claim.claim_status === 'Hold' && this.editStudentClaimForm.claim_status === 'Claimed'){
                 if(!confirm("You are about to switch the status of this claim to Claimed. " +
                     "The fields Registration, Materials, and Program Fee are going to be locked. Proceed?")){
                     return false;
