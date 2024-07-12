@@ -88,7 +88,7 @@ class ProcessSubmittedClaim
                 if (((float)$totalHoldClaims + (float)$totalActiveClaims) > (float)env('TOTAL_GRANT')) {
                     $claim->process_feedback = "Student total claims of Hold and Claimed, including this,
                     is $" . (float)$totalHoldClaims + (float)$totalActiveClaims . " > $" . (float)env('TOTAL_GRANT');
-                    $claim->claim_status = "Draft";
+                    $claim->claim_status = "Submitted";
                 }
 
             }

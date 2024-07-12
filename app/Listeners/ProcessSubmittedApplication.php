@@ -77,7 +77,7 @@ class ProcessSubmittedApplication
                 // If the student has reached the grant limit, prevent moving it to Submitted
                 if (((float)$totalHoldClaims + (float)$totalActiveClaims) > (float)env('TOTAL_GRANT')) {
                     $claim->process_feedback = "Student has reached the total claim amount";
-                    $claim->claim_status = "Draft";
+                    $claim->claim_status = "Submitted";
                 }
 
             }
