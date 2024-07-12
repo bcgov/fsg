@@ -104,16 +104,16 @@
                     </div>
 
                     <div class="col-md-4">
+                        <Label for="inputProgramFee" class="form-label" value="Program/Tuition Fee" />
+                        <Input type="number" step=".01" class="form-control" id="inputProgramFee" v-model="editStudentClaimForm.program_fee" />
+                    </div>
+                    <div class="col-md-4">
                         <Label for="inputRegistrationFee" class="form-label" value="Registration Fee" />
                         <Input type="number" step=".01" class="form-control" id="inputRegistrationFee" v-model="editStudentClaimForm.registration_fee" />
                     </div>
                     <div class="col-md-4">
                         <Label for="inputMaterialsFee" class="form-label" value="Materials Fee" />
                         <Input type="number" step=".01" class="form-control" id="inputMaterialsFee" v-model="editStudentClaimForm.materials_fee" />
-                    </div>
-                    <div class="col-md-4">
-                        <Label for="inputProgramFee" class="form-label" value="Program Fee" />
-                        <Input type="number" step=".01" class="form-control" id="inputProgramFee" v-model="editStudentClaimForm.program_fee" />
                     </div>
 
                 </template>
