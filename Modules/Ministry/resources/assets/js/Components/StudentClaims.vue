@@ -29,6 +29,8 @@
                                 <span v-else-if="row.claim_status === 'Hold'" class="badge rounded-pill text-bg-warning">Hold</span>
                                 <span v-else-if="row.claim_status === 'Claimed'" class="badge rounded-pill text-bg-success">Claimed</span>
                                 <span v-else class="badge rounded-pill text-bg-secondary">{{ row.claim_status }}</span>
+
+                                <span v-if="row.process_feedback != null" class="badge rounded-pill text-bg-danger ms-1">!</span>
                             </td>
                         </tr>
                     </template>
