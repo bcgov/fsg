@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Institution;
 use App\Models\InstitutionStaff;
 use App\Models\Role;
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -311,8 +312,11 @@ class UserController extends Controller
             $this->checkRoles($user, $type);
 
             if(isset($provider_user['bceid_business_guid'])) {
-                \Log::info('isset $provider_user');
+                \Log::info('isset bceid $provider_user');
                 $this->checkInstitutionStaff($user, $provider_user);
+            }elseif(isset($provider_user['bcsc_user_guid'])) {
+                \Log::info('isset bcsc $provider_user');
+                $this->addNewStudent($user, $provider_user);
             }else{
                 \Log::info('net set $provider_user');
             }
@@ -364,4 +368,29 @@ class UserController extends Controller
             $user->roles()->attach($role);
         }
     }
+
+
+    private function addNewStudent($user, $provider_user)
+    {
+        $user = User::find($user->id);
+        $student = Student::where('dob', $provider_user['birthdate'])->where('email', $provider_user['email'])->first();
+
+        if (is_null($student)) {
+            \Log::info('New Student: ' . $provider_user['email']);
+
+            $st = new Student();
+            $st->guid = Str::orderedUuid()->getHex();
+            $st->user_guid = $user->guid;
+            $st->first_name = Str::title($provider_user['given_name']);
+            $st->last_name = Str::title($provider_user['family_name']);
+            $st->email = $provider_user['email'];
+            $st->dob = $provider_user['birthdate'];
+            $st->gender = $provider_user['gender'];
+
+            $st->save();
+        }else{
+            \Log::info('Can not create New Student: ' . $provider_user['email']);
+        }
+    }
+
 }
