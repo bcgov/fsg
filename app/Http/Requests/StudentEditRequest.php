@@ -77,6 +77,7 @@ class StudentEditRequest extends FormRequest
 
             'citizenship' => 'required',
             'grade12_or_over19' => 'required',
+            'gender' => 'nullable',
 
             'info_consent' => 'boolean|accepted:true',
             'duplicative_funding' => 'boolean|accepted:true',
