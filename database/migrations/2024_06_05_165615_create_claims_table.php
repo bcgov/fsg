@@ -51,10 +51,12 @@ return new class extends Migration
             $table->float('total_claim_amount', 2)->default(0)->nullable();
 
             $table->date('stable_enrolment_date')->nullable();
+            $table->date('expected_stable_enrolment_date')->nullable();
             $table->date('expiry_date')->nullable();
             $table->date('psi_claim_request_date')->nullable();
             $table->date('reporting_completed_date')->nullable();
             $table->date('claimed_date')->nullable();
+            $table->date('expected_completion_date')->nullable();
 
             $table->boolean('fifty_two_week_affirmation')->default(true);
             $table->boolean('agreement_confirmed')->default(false);

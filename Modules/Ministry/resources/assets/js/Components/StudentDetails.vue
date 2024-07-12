@@ -7,17 +7,23 @@
         <form class="card-body" @submit.prevent="submitForm">
             <div class="row g-3">
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputFirstName" class="form-label" value="Legal Name (First Name)" />
                     <Input type="text" class="form-control" id="inputFirstName" v-model="editForm.first_name" />
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputLastName" class="form-label" value="Legal Name (Last Name)" />
                     <Input type="text" class="form-control" id="inputLastName" v-model="editForm.last_name" />
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputEmail" class="form-label" value="Email" />
                     <Input type="email" class="form-control" id="inputEmail" v-model="editForm.email" />
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputGender" class="form-label" value="Gender" />
+                    <Select class="form-select" id="inputGender" v-model="editForm.gender">
+                        <option v-for="status in $attrs.utils['Gender']" :value="status.field_name">{{ status.field_name }}</option>
+                    </Select>
                 </div>
 
                 <div class="col-md-2">
@@ -105,7 +111,7 @@
                             {{ $attrs.utils['Additional Supports'][0].field_name }}
                         </label>
                         <input type="checkbox" class="form-check-input" id="flexCheckChecked8"
-                               v-model="editForm.additional_support" :checked="editForm.additional_support" />
+                               v-model="editForm.additional_supports" :checked="editForm.additional_support" />
                     </div>
                 </div>
 

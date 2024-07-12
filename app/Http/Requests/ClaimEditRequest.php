@@ -55,6 +55,8 @@ class ClaimEditRequest extends FormRequest
             'id' => 'required',
             'guid' => 'required',
             'claim_status' => 'required|string',
+            'expected_stable_enrolment_date' => 'nullable',
+            'expected_completion_date' => 'nullable',
             ];
 
         // If the status is "Cancelled" or 'Expired', do not validate other fields
