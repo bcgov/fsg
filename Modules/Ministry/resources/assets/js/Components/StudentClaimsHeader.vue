@@ -1,9 +1,6 @@
 <template>
     <tr>
         <th scope="col" class="text-nowrap">
-                <span>SIN</span>
-        </th>
-        <th scope="col" class="text-nowrap">
             <span>Program</span>
         </th>
         <th scope="col" class="text-nowrap">
@@ -13,13 +10,16 @@
                 <span>Est. Hold</span>
         </th>
         <th scope="col" class="text-nowrap">
-                <span>Total Claim</span>
+            <span title="Registration Fee">Reg. Fee</span>
         </th>
         <th scope="col" class="text-nowrap">
-            <span>Granted Claims</span>
+            <span title="Materials Fee">Mat. Fee</span>
         </th>
         <th scope="col" class="text-nowrap">
-                <span>Status</span>
+            <span title="Program Fee">Prog. Fee</span>
+        </th>
+        <th scope="col" class="text-nowrap">
+            <span>Status</span>
         </th>
     </tr>
 </template>

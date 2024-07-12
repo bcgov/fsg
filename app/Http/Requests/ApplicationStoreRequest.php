@@ -98,9 +98,11 @@ class ApplicationStoreRequest extends FormRequest
             return;
         }
 
-
         $student = Student::where('user_guid', $this->user()->guid)->first();
-        $allocation = Allocation::where('institution_guid', $this->institution_guid)->where('status', 'active')->first();
+        $allocation = Allocation::where('institution_guid', $this->institution_guid)
+            ->where('status', 'active')
+            ->orderByDesc('created_at')
+            ->first();
 
         if ($student && $allocation) {
 

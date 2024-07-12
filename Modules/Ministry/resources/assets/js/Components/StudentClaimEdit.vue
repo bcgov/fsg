@@ -79,23 +79,41 @@
                     <Input type="number" step=".01" max="3500" class="form-control" id="inputEstimatedHoldAmount" v-model="editStudentClaimForm.estimated_hold_amount" />
                 </div>
                 <template v-if="claim.claim_status === 'Hold'">
-                    <div class="col-md-3">
+                    <div class="col-md-12">
                         <Label for="inputEstimatedHoldAmount" class="form-label" value="Estimated Hold Amount" />
-                        <Input type="number" step=".01" max="3500" class="form-control" id="inputEstimatedHoldAmount" v-model="editStudentClaimForm.estimated_hold_amount" />
+                        {{ editStudentClaimForm.estimated_hold_amount }}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <Label for="inputRegistrationFee" class="form-label" value="Registration Fee" />
                         <Input type="number" step=".01" class="form-control" id="inputRegistrationFee" v-model="editStudentClaimForm.registration_fee" />
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <Label for="inputMaterialsFee" class="form-label" value="Materials Fee" />
                         <Input type="number" step=".01" class="form-control" id="inputMaterialsFee" v-model="editStudentClaimForm.materials_fee" />
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <Label for="inputProgramFee" class="form-label" value="Program Fee" />
                         <Input type="number" step=".01" class="form-control" id="inputProgramFee" v-model="editStudentClaimForm.program_fee" />
                     </div>
 
+                </template>
+                <template v-if="claim.claim_status === 'Claimed' || claim.claim_status === 'Expired' || claim.claim_status === 'Cancelled'">
+                    <div class="col-md-12">
+                        <Label for="inputEstimatedHoldAmount" class="form-label" value="Estimated Hold Amount" />
+                        {{ editStudentClaimForm.estimated_hold_amount }}
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputRegistrationFee" class="form-label" value="Registration Fee" />
+                        {{ editStudentClaimForm.registration_fee }}
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputMaterialsFee" class="form-label" value="Materials Fee" />
+                        {{ editStudentClaimForm.materials_fee }}
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputProgramFee" class="form-label" value="Program Fee" />
+                        {{ editStudentClaimForm.program_fee }}
+                    </div>
                 </template>
 
                 <div class="col-md-4">
@@ -180,6 +198,21 @@ export default {
     methods: {
 
         submitForm: function () {
+            // Show confirm only if the user is switching the status from Submitted to Hold
+            if(this.claim.claim_status === 'Submitted' && this.editStudentClaimForm.claim_status === 'Hold'){
+                if(!confirm("You are about to switch the status of this claim to Hold. The field Estimated Hold Amount is going to be locked. Proceed?")){
+                    return false;
+                }
+            }
+
+            // Show confirm only if the user is switching the status from Hold to Claimed
+            if(this.claim.claim_status === 'Hold' && this.editStudentClaimForm.claim_status === 'Claimed'){
+                if(!confirm("You are about to switch the status of this claim to Claimed. " +
+                    "The fields Registration, Materials, and Program Fee are going to be locked. Proceed?")){
+                    return false;
+                }
+            }
+
             let vm = this;
             this.editStudentClaimForm.formState = null;
             this.editStudentClaimForm.put('/ministry/claims', {
