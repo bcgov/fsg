@@ -140,6 +140,17 @@ class ProcessSubmittedClaim
                     $claim->total_claim_amount = 0;
                 }
             }
+
+
+            // If the claim is moving to Cancelled/Expired
+            elseif ($status === 'Cancelled' || $status === 'Expired') {
+
+                Log::info("claim is moving to Cancelled/Expired");
+                $claim->total_claim_amount = 0;
+                $claim->program_fee = 0;
+                $claim->materials_fee = 0;
+                $claim->registration_fee = 0;
+            }
         }
 
 
