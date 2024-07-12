@@ -18,7 +18,7 @@
                     <Label for="inputEmail" class="form-label" value="Email" />
                     <Input type="email" class="form-control" id="inputEmail" v-model="editForm.email" />
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputGender" class="form-label" value="Gender"/>
                     <Select class="form-select" id="inputGender" v-model="editForm.gender">
                         <option v-for="status in $attrs.utils['Gender']" :value="status.field_name">{{ status.field_name }}</option>

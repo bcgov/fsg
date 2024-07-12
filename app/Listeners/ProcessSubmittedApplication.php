@@ -44,7 +44,7 @@ class ProcessSubmittedApplication
                     ->where('claim_status', 'Hold')
                     ->select('estimated_hold_amount')
                     ->pluck('estimated_hold_amount')
-                    ->first();
+                    ->sum();
 
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired, Cancelled
                 $totalActiveClaims = $student->claims()
@@ -66,7 +66,7 @@ class ProcessSubmittedApplication
                     ->where('claim_status', 'Hold')
                     ->select('estimated_hold_amount')
                     ->pluck('estimated_hold_amount')
-                    ->first();
+                    ->sum();
 
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired, Cancelled
                 $totalActiveClaims = $student->claims()
@@ -115,7 +115,7 @@ class ProcessSubmittedApplication
                     ->where('claim_status', 'Hold')
                     ->select('estimated_hold_amount')
                     ->pluck('estimated_hold_amount')
-                    ->first();
+                    ->sum();
 
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired
 //                    ->whereNotIn('claim_status', ['Draft', 'Submitted', 'Hold', 'Expired', 'Cancelled'])
