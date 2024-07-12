@@ -48,7 +48,7 @@ class ProcessSubmittedApplication
 
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired, Cancelled
                 $totalActiveClaims = $student->claims()
-                    ->whereNotIn('claim_status', ['Draft', 'Hold', 'Expired', 'Cancelled'])
+                    ->where('claim_status', 'Claimed')
                     ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
 
                 // If the student has reached the grant limit, prevent moving it to Submitted
@@ -61,6 +61,24 @@ class ProcessSubmittedApplication
             // If the claim is Submitted and the inst. is moving to Hold
             elseif ($claim_before_update->claim_status === 'Submitted' && $status === 'Hold') {
 
+                // Calculate the total of claims for the student that are in Hold
+                $totalHoldClaims = $student->claims()
+                    ->where('claim_status', 'Hold')
+                    ->select('estimated_hold_amount')
+                    ->pluck('estimated_hold_amount')
+                    ->first();
+
+                // Calculate the total of claims for the student excluding Draft, Hold, Expired, Cancelled
+                $totalActiveClaims = $student->claims()
+//                    ->whereNotIn('claim_status', ['Draft', 'Hold', 'Expired', 'Cancelled'])
+                    ->where('claim_status', 'Claimed')
+                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
+
+                // If the student has reached the grant limit, prevent moving it to Submitted
+                if (((float)$totalHoldClaims + (float)$totalActiveClaims) > (float)env('TOTAL_GRANT')) {
+                    $claim->process_feedback = "Student has reached the total claim amount";
+                    $claim->claim_status = "Draft";
+                }
 
             }
 
