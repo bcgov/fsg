@@ -25,7 +25,7 @@
 <!--                                <span class="badge rounded-pill text-bg-primary me-1">Remaining PALs: {{ capStat.instCap.total_claims - capStat.issued }}</span>-->
 <!--                            </template>-->
 <!--                            <button type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Claim</button>-->
-                            <a href="/institution/claims/export" target="_blank" class="btn btn-outline-success btn-sm float-end me-1" title="Export Claims"><i class="bi bi-filetype-csv"></i></a>
+<!--                            <a href="/institution/claims/export" target="_blank" class="btn btn-outline-success btn-sm float-end me-1" title="Export Claims"><i class="bi bi-filetype-csv"></i></a>-->
                         </div>
                         <div class="card-body">
                             <div v-if="results != null && results.data.length > 0" class="table-responsive pb-3">
@@ -34,23 +34,29 @@
                                     <ClaimsHeader></ClaimsHeader>
                                     </thead>
                                     <tbody>
-                                    <tr v-for="(row, i) in claimList">
-                                        <td><button type="button" @click="openEditForm(row)" class="btn btn-link p-0 text-start">{{ row.last_name }}</button></td>
-                                        <td>{{ row.first_name }}</td>
-                                        <td>{{ row.sin }}</td>
-                                        <td><span v-if="row.program !== null">{{ row.program.program_name }}</span></td>
-                                        <td>
-                                            <div>
-                                                <span v-if="row.claim_status === 'Submitted'" class="badge rounded-pill text-bg-success">Submitted</span>
-                                                <span v-if="row.claim_status === 'Hold'" class="badge rounded-pill text-bg-warning">Hold</span>
-                                                <span v-if="row.claim_status === 'Claimed'" class="badge rounded-pill text-bg-primary">Claimed</span>
-                                                <span v-if="row.claim_status === 'Report Completed'" class="badge rounded-pill text-bg-info">Report Completed</span>
-                                            </div>
-                                        </td>
-                                        <td>${{ row.estimated_hold_amount }}</td>
-                                        <td>${{ row.total_claim_amount }}</td>
-                                    </tr>
+                                    <template v-for="(row, i) in results.data">
+                                        <tr v-if="row !== null">
+                                            <td><a href="#" @click="openEditForm(row)">{{ row.sin ?? 0 }}</a></td>
+                                            <td>{{ row.first_name }}</td>
+                                            <td><Link :href="'/institution/students/' + row.student.id">{{ row.last_name }}</Link></td>
+                                            <td>{{ row.program.program_name }}</td>
+                                            <td>${{ row.estimated_hold_amount }}</td>
+                                            <td>${{ row.total_claim_amount }}</td>
+                                            <td>${{ row.student.total_grant }}</td>
+                                            <td>
+                                                <span v-if="row.claim_status === 'Draft'" class="badge rounded-pill text-bg-info">Draft</span>
+                                                <span v-else-if="row.claim_status === 'Submitted'" class="badge rounded-pill text-bg-primary">Submitted</span>
+                                                <span v-else-if="row.claim_status === 'Hold'" class="badge rounded-pill text-bg-warning">Hold</span>
+                                                <span v-else-if="row.claim_status === 'Claimed'" class="badge rounded-pill text-bg-success">Claimed</span>
+                                                <span v-else class="badge rounded-pill text-bg-secondary">{{ row.claim_status }}</span>
+                                                <span v-if="row.process_feedback != null" class="badge rounded-pill text-bg-danger ms-1">!</span>
+
+                                            </td>
+                                            <td>{{ formatDate(row.created_at) }}</td>
+                                        </tr>
+                                    </template>
                                     </tbody>
+
                                 </table>
                                 <Pagination :links="results.links" :active-page="results.current_page" />
                             </div>
@@ -61,21 +67,17 @@
             </div>
         </div>
 
-        <div v-if="showEditModal" class="modal modal-lg" id="editAtteModal" tabindex="0" aria-labelledby="editAtteModalLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div v-if="editClaim != ''" class="modal modal-lg" id="editClaimModal" tabindex="0" aria-labelledby="editClaimModalLabel" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title me-2" id="editAtteModalLabel">Edit Claim</h5>
-                        <strong>Issued by: {{editRow.issued_by_name}}</strong>
+                        <h5 class="modal-title me-2" id="editClaimModalLabel">Edit Claim</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <ClaimEdit :instCap="instCap" :error="error" v-bind="$attrs" :countries="countries" :institution="institution" :programs="programs" :claim="editRow" />
-                    <div v-if="editRow.status === 'Issued'" class="modal-footer justify-content-between">
-<!--                        <a :href="'/institution/claims/download/' + editRow.id" target="_blank" class="btn btn-success">-->
-<!--                            Download <i class="bi bi-box-arrow-down"></i>-->
-<!--                        </a>-->
-<!--                        <button @click="duplicate" type="button" class="btn btn-secondary">Replicate &amp; Issue</button>-->
-                    </div>
+                    <ClaimEdit v-bind="$attrs" @close="closeEditForm"
+                                      :claim="editClaim"
+                                      :page="'claims'"
+                                      :results="results" />
                 </div>
             </div>
         </div>
@@ -106,37 +108,13 @@ export default {
     data() {
         return {
             claimList: '',
-            editRow: '',
+            editClaim: '',
             showEditModal: false,
-            capStat: ''
         }
     },
 
     methods: {
-        duplicate: function (){
-            let check = confirm('Are you sure you want to replicate and issue this claim? This will result in ' +
-                'changing the status of the existing one to DECLINED and to use your available CAP to issue the new one if possible.');
-            if(check){
-                let duplicateForm = useForm({
-                    formState: null,
-                    formSuccessMsg: 'Form was submitted successfully.',
-                    formFailMsg: 'There was an error submitting this form.',
-                    old_guid: this.editRow.guid,
-                })
-                duplicateForm.formState = null;
-                duplicateForm.post('/institution/duplicate_claims', {
-                    onSuccess: (response) => {
-                        $("#editAtteModal").modal('hide');
 
-                        this.$inertia.visit('/institution/claims');
-                    },
-                    onError: () => {
-                        duplicateForm.formState = false;
-                    },
-                    preserveState: true
-                });
-            }
-        },
         formatDate: function (value) {
             if(value !== undefined && value !== ''){
                 let date = value.split("T");
@@ -146,36 +124,25 @@ export default {
             }
             return value;
         },
-        openEditForm: function (row){
+        openEditForm: function (claim) {
             let vm = this;
-            this.editRow = row;
-            this.showEditModal = true;
-            setTimeout(function(){
-                $("#editAtteModal").modal('show')
+            this.editClaim = claim;
+            setTimeout(function () {
+                $("#editClaimModal").modal('show')
                     .on('hidden.bs.modal', function () {
-                        vm.showEditModal = false;
-                        vm.editRow = '';
+                        vm.editClaim = '';
                     });
             }, 10);
         },
-        fetchCapStats: function () {
-            let vm = this;
-            let data = {
-                institution_guid: this.institution.guid,
-            }
-            axios.post('/institution/api/fetch/capStats', data)
-                .then(function (response) {
-                    vm.capStat = response.data.body;
-                })
-                .catch(function (error) {
-                    // handle error
-                    console.log(error);
-                });
-        }
+        closeEditForm: function () {
+            $("#editClaimModal").modal('hide');
+            this.editClaim = '';
+            this.$inertia.visit('/institution/claims');
+
+        },
     },
     mounted() {
         this.claimList = this.results.data;
-        this.fetchCapStats();
     },
 }
 </script>

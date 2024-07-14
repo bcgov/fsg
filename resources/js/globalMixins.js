@@ -26,6 +26,16 @@ export const globalMixins = {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 2
             }).format(value);
-        }
+        },
+
+        $formatDate: function (value) {
+            if(value !== undefined && value !== ''){
+                let date = value.split("T");
+                let time = date[1].split(".");
+
+                return date[0];
+            }
+            return value;
+        },
     }
 };

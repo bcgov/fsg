@@ -18,36 +18,28 @@
             </div>
 
             <div class="row">
-                <div class="col-md-3 mb-3">
+                <div class="col-md-4 mb-3">
                     <div class="card text-center">
                         <div class="card-header">
-                            Submitted Claims
+                            Allocation
                         </div>
-                        <div class="card-body display-5 m-4">{{ submittedApps }}</div>
+                        <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(activeAllocation.total_amount) }}</div>
                     </div>
                 </div>
-                <div class="col-md-3 mb-3">
+                <div class="col-md-4 mb-3">
                     <div class="card text-center">
                         <div class="card-header">
                             Hold Claims
                         </div>
-                        <div class="card-body display-5 m-4">{{ holdApps }}</div>
+                        <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(holdApps) }}</div>
                     </div>
                 </div>
-                <div class="col-md-3 mb-3">
+                <div class="col-md-4 mb-3">
                     <div class="card text-center">
                         <div class="card-header">
                             Claimed
                         </div>
-                        <div class="card-body display-5 m-4">{{ claimedApps }}</div>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card text-center">
-                        <div class="card-header">
-                            Reporting Completed
-                        </div>
-                        <div class="card-body display-5 m-4">{{ reportingCompleteApps }}</div>
+                        <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(claimedApps) }}</div>
                     </div>
                 </div>
 
@@ -74,10 +66,8 @@ export default {
         results: Object,
         activeAllocation: Object,
         programYear: Object,
-        submittedApps: Number,
         holdApps: Number,
         claimedApps: Number,
-        reportingCompleteApps: Number,
     }
 }
 </script>
