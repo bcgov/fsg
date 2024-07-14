@@ -1,173 +1,171 @@
 <template>
-    <form v-if="editAtteForm != null" class="card-body">
+    <form v-if="editStudentClaimForm != null && programs.length > 0" class="card-body">
         <div class="modal-body">
-            <div v-if="attestation.status !== 'Draft'" class="row g-3">
+            <div class="row g-3">
 
-                <div class="col-md-4 text-break">
-                    <Label for="inputProgram" class="fw-bold" value="Institution Program"/>
-                    {{ $getProgramNameFromGuid(programs, editAtteForm.program_guid) }}
-                </div>
-                <div class="col-md-4 text-break">
-                    <Label for="inputStudentNumber" class="fw-bold" value="Student Number"/>
-                    {{ editAtteForm.student_number }}
-                </div>
-                <div class="col-md-4 text-break">
-                    <Label for="inputStudentId" class="fw-bold" value="Passport/Travel Doc. ID"/>
-                    {{ editAtteForm.id_number }}
-                </div>
-
-                <div class="col-md-6 text-break">
-                    <Label for="inputFirstName" class="fw-bold" value="First Name"/>
-                    {{ editAtteForm.first_name }}
-                </div>
-                <div class="col-md-6 text-break">
-                    <Label for="inputLastName" class="fw-bold" value="Last Name"/>
-                    {{ editAtteForm.last_name }}
-                </div>
-
-                <div class="col-md-12 text-break">
-                    <Label for="inputAddress1" class="fw-bold" value="Address 1"/>
-                    {{ editAtteForm.address1 }}
-                </div>
-                <div class="col-md-12 text-break">
-                    <Label for="inputAddress2" class="fw-bold" value="Address 2"/>
-                    {{ editAtteForm.address2 }}
-                </div>
-
-                <div class="col-md-3 text-break">
-                    <Label for="inputCity" class="fw-bold" value="City"/>
-                    {{ editAtteForm.city }}
-                </div>
-
-                <div class="col-md-3 text-break">
-                    <Label for="inputZipCode" class="fw-bold" value="Postal Code"/>
-                    {{ editAtteForm.zip_code }}
-                </div>
-                <div class="col-md-3 text-break">
-                    <Label for="inputProvince" class="fw-bold" value="Province / State"/>
-                    {{ editAtteForm.province }}
-                </div>
-                <div class="col-md-3 text-break">
-                    <Label for="inputCountry" class="fw-bold" value="Country"/>
-                    {{ editAtteForm.country }}
-                </div>
-
-                <div class="col-md-3 text-break">
-                    <Label for="inputInPerson" class="fw-bold" value="> 50% in-person?"/>
-                    {{ $getYesNo(editAtteForm.gt_fifty_pct_in_person) }}
-                </div>
-                <div class="col-md-3 text-break">
-                    <Label for="inputDob" class="fw-bold" value="Date of Birth"/>
-                    {{ editAtteForm.dob }}
-                </div>
-                <div class="col-md-3 text-break">
-                    <Label for="inputEmail" class="fw-bold" value="Email"/>
-                    {{ editAtteForm.email }}
-                </div>
-                <div class="col-md-3 text-break">
-                    <Label for="inputExpiryDate" class="fw-bold" value="Expiry Date"/>
-                    {{ editAtteForm.expiry_date }}
-                </div>
-
-            </div>
-            <div v-else class="row g-3">
-
-                <div class="col-md-4">
-                    <Label class="form-label" value="Institution Program" required="true"/>
-                    <Select class="form-select" v-model="editAtteForm.program_guid">
+                <div class="col-md-6">
+                    <Label for="inputSd" class="form-label" value="Program Name"/>
+                    <Select class="form-select" id="inputSd" v-model="editStudentClaimForm.program_guid">
                         <option></option>
-                        <option v-for="c in programs" :value="c.guid">{{ c.program_name}}</option>
+                        <template  v-for="p in programs">
+                            <option v-if="p.active_status === true" :value="p.guid">{{ p.program_name }}</option>
+                        </template>
                     </Select>
                 </div>
+                <div class="col-md-3">
+                    <Label for="inputAgreeConfirmed" class="form-label" value="Consent Confirmed?" />
+                    <span v-if="editStudentClaimForm.agreement_confirmed == true" class="badge rounded-pill text-bg-success">True</span>
+                    <span v-else class="badge rounded-pill text-bg-danger">False</span>
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputRegisterConfirmed" class="form-label" value="Registration Confirmed?" />
+                    <span v-if="editStudentClaimForm.registration_confirmed == true" class="badge rounded-pill text-bg-success">True</span>
+                    <span v-else class="badge rounded-pill text-bg-danger">False</span>
+                </div>
+
                 <div class="col-md-4">
-                    <Label class="form-label" value="Student Number"/>
-                    <Input type="text" class="form-control" v-model="editAtteForm.student_number"
-                           :disabled="editAtteForm.program_guid === ''"/>
+                    <Label for="inputFirstName" class="form-label" value="First Name" />
+                    <Input type="text" class="form-control" id="inputFirstName" :value="editStudentClaimForm.student.first_name" readonly="readonly" disabled/>
                 </div>
                 <div class="col-md-4">
-                    <Label class="form-label" value="Passport/Travel Doc. ID"/>
-                    <Input type="text" class="form-control" v-model="editAtteForm.id_number"
-                           :disabled="editAtteForm.program_guid === ''"/>
+                    <Label for="inputLastName" class="form-label" value="Last Name" />
+                    <Input type="text" class="form-control" id="inputLastName" :value="editStudentClaimForm.student.last_name" readonly="readonly" disabled/>
                 </div>
-
-                <div class="col-md-6">
-                    <Label class="form-label" value="First Name" required="true"/>
-                    <Input type="text" class="form-control" v-model="editAtteForm.first_name"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-6">
-                    <Label class="form-label" value="Last Name" required="true"/>
-                    <Input type="text" class="form-control" v-model="editAtteForm.last_name"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-
-                <div class="col-md-12">
-                    <Label class="form-label" value="Address 1" required="true"/>
-                    <Input type="text" class="form-control" v-model="editAtteForm.address1"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-12">
-                    <Label class="form-label" value="Address 2"/>
-                    <Input type="text" class="form-control" v-model="editAtteForm.address2"
-                           :disabled="editAtteForm.program_guid === ''"/>
+                <div class="col-md-4">
+                    <Label for="inputEmail" class="form-label" value="Email" />
+                    <Input type="email" class="form-control" id="inputEmail" :value="editStudentClaimForm.student.email" readonly="readonly" disabled/>
                 </div>
 
                 <div class="col-md-3">
-                    <Label class="form-label" value="City" required="true"/>
-                    <Input type="text" class="form-control" v-model="editAtteForm.city"
-                           :disabled="editAtteForm.program_guid === ''"/>
+                    <Label for="inputSin" class="form-label" value="SIN" />
+                    <Input type="number" min="100000000" max="999999999" class="form-control" id="inputSin" :value="editStudentClaimForm.student.sin" readonly="readonly" disabled/>
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputDob" class="form-label" value="Birth Date" />
+                    <Input type="text" class="form-control" id="inputDob" :value="editStudentClaimForm.student.dob" readonly="readonly" disabled/>
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputCity" class="form-label" value="City" />
+                    <Input type="text" class="form-control" id="inputCity" :value="editStudentClaimForm.student.city" readonly="readonly" disabled/>
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputPostalCode" class="form-label" value="Postal Code" />
+                    <Input type="text" class="form-control" id="inputPostalCode" :value="editStudentClaimForm.student.zip_code" readonly="readonly" disabled/>
                 </div>
 
-                <div class="col-md-3">
-                    <Label class="form-label" value="Postal Code"/>
-                    <Input type="text" class="form-control" v-model="editAtteForm.zip_code"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-3">
-                    <Label class="form-label" value="Province / State"/>
-                    <Input type="text" class="form-control" v-model="editAtteForm.province"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-3">
-                    <Label class="form-label" value="Country" required="true"/>
-                    <input type="text" class="form-control" list="datalistOptionsInputCountry"
-                           placeholder="Type to search..."  v-model="editAtteForm.country"  :disabled="editAtteForm.program_guid === ''" />
-                    <datalist id="datalistOptionsInputCountry">
-                        <option v-for="cntry in countries" :value="cntry.name">{{ cntry.name }}</option>
-                    </datalist>
-                </div>
+                <hr/>
 
-                <div class="col-md-3">
-                    <Label class="form-label" value="> 50% in-person?" required="true"/>
-                    <Select class="form-select" v-model="editAtteForm.gt_fifty_pct_in_person" :disabled="institution === ''">
+                <div class="col-md-4">
+                    <Label for="input52Week" class="form-label" value="52 Week Affirm."/>
+                    <Select class="form-select" id="input52Week" v-model="editStudentClaimForm.fifty_two_week_affirmation">
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
                 </div>
-                <div class="col-md-3">
-                    <Label class="form-label" value="Date of Birth" required="true"/>
-                    <Input type="date" min="1930-01-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
-                           class="form-control" v-model="editAtteForm.dob"
-                           :disabled="editAtteForm.program_guid === ''"/>
+                <div class="col-md-4">
+                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date" />
+                    <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpiryDate" v-model="editStudentClaimForm.expiry_date" />
                 </div>
-                <div class="col-md-3">
-                    <Label class="form-label" value="Email" required="true"/>
-                    <Input type="email" class="form-control" v-model="editAtteForm.email"
-                           :disabled="editAtteForm.program_guid === ''"/>
-                </div>
-                <div class="col-md-3">
-                    <Label class="form-label" value="Expiry Date"/>
-                    <Input type="text"
-                           class="form-control" v-model="instCap.end_date"
-                           disabled readonly/>
-
+                <div class="col-md-4">
+                    <Label for="inputStableDate" class="form-label" value="Actual Stable Enrol. Date" />
+                    <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputStableDate" v-model="editStudentClaimForm.stable_enrolment_date" />
                 </div>
 
-                <div v-if="editAtteForm.errors != undefined" class="row">
+
+                <template v-if="claim.claim_status === 'Submitted'">
+                    <div class="col-md-4">
+                        <Label for="inputEstimatedHoldAmount" class="form-label" value="Est. Hold Amount (Max.)" />
+                        <Input type="number" step=".01" max="3500" class="form-control" id="inputEstimatedHoldAmount" v-model="editStudentClaimForm.estimated_hold_amount" />
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputExpStableEnrolDate" class="form-label" value="Expected Stable Enrol. Date" />
+                        <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpStableEnrolDate" v-model="editStudentClaimForm.expected_stable_enrolment_date" />
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputExpCompletionDate" class="form-label" value="Expected Completion Date" />
+                        <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpCompletionDate" v-model="editStudentClaimForm.expected_completion_date" />
+                    </div>
+
+                </template>
+                <template v-if="claim.claim_status === 'Hold'">
+                    <div class="col-md-4">
+                        <Label for="inputEstimatedHoldAmount" class="form-label" value="Estimated Hold Amount" />
+                        {{ editStudentClaimForm.estimated_hold_amount }}
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputExpStableEnrolDate" class="form-label" value="Expected Stable Enrol. Date" />
+                        <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpStableEnrolDate" v-model="editStudentClaimForm.expected_stable_enrolment_date" />
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputExpCompletionDate" class="form-label" value="Expected Completion Date" />
+                        <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpCompletionDate" v-model="editStudentClaimForm.expected_completion_date" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <Label for="inputProgramFee" class="form-label" value="Program/Tuition Fee" />
+                        <Input type="number" step=".01" class="form-control" id="inputProgramFee" v-model="editStudentClaimForm.program_fee" />
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputRegistrationFee" class="form-label" value="Registration Fee" />
+                        <Input type="number" step=".01" class="form-control" id="inputRegistrationFee" v-model="editStudentClaimForm.registration_fee" />
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputMaterialsFee" class="form-label" value="Materials Fee" />
+                        <Input type="number" step=".01" class="form-control" id="inputMaterialsFee" v-model="editStudentClaimForm.materials_fee" />
+                    </div>
+
+                </template>
+                <template v-if="claim.claim_status === 'Claimed' || claim.claim_status === 'Expired' || claim.claim_status === 'Cancelled'">
+                    <div class="col-md-4">
+                        <Label for="inputEstimatedHoldAmount" class="form-label" value="Estimated Hold Amount" />
+                        {{ editStudentClaimForm.estimated_hold_amount }}
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputExpStableEnrolDate" class="form-label" value="Expected Stable Enrol. Date" />
+                        {{ editStudentClaimForm.expected_stable_enrolment_date }}
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputExpCompletionDate" class="form-label" value="Expected Completion Date" />
+                        {{ editStudentClaimForm.expected_completion_date }}
+                    </div>
+
+                    <div class="col-md-4">
+                        <Label for="inputProgramFee" class="form-label" value="Tuition/Program Fee" />
+                        {{ editStudentClaimForm.program_fee }}
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputRegistrationFee" class="form-label" value="Registration Fee" />
+                        {{ editStudentClaimForm.registration_fee }}
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputMaterialsFee" class="form-label" value="Materials Fee" />
+                        {{ editStudentClaimForm.materials_fee }}
+                    </div>
+                </template>
+
+                <div class="col-md-6">
+                    <Label for="inputPsiDate" class="form-label" value="PSI Claim Request Date" />
+                    {{ editStudentClaimForm.psi_claim_request_date == null ? '-' : editStudentClaimForm.psi_claim_request_date }}
+                </div>
+                <div class="col-md-6">
+                    <Label for="inputCompleteDate" class="form-label" value="Reporting Complete Date" />
+                    {{ editStudentClaimForm.reporting_completed_date == null ? '-' : editStudentClaimForm.reporting_completed_date }}
+                </div>
+
+
+                <div v-if="editStudentClaimForm.process_feedback != null" class="row">
                     <div class="col-12">
-                        <div v-if="editAtteForm.hasErrors == true" class="alert alert-danger mt-3">
+                        <div class="alert alert-warning mt-3 mb-3">
+                            {{ editStudentClaimForm.process_feedback }}
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="editStudentClaimForm.errors != undefined" class="row">
+                    <div class="col-12">
+                        <div v-if="editStudentClaimForm.hasErrors == true" class="alert alert-danger mt-3">
                             <ul>
-                                <li v-for="err in editAtteForm.errors">{{ err }}</li>
+                                <li v-for="err in editStudentClaimForm.errors">{{ err }}</li>
                             </ul>
                         </div>
                     </div>
@@ -175,13 +173,19 @@
 
             </div>
         </div>
-        <div v-if="attestation.status === 'Draft'" class="modal-footer justify-content-between">
-            <button type="button" class="btn btn-danger btn-sm me-auto" @click="submitForm('Cancelled Draft')" :disabled="editAtteForm.processing">Delete Attestation</button>
-            <button type="button" class="btn btn-secondary btn-sm" @click="submitForm('Draft')" :disabled="editAtteForm.processing">Save Draft</button>
-            <button type="button" class="btn btn-success btn-sm" @click="submitForm('Issued')" :disabled="editAtteForm.processing">Issue Attestation</button>
+        <div class="modal-footer">
+            <button @click="submitForm('Cancelled')" v-if="editStudentClaimForm.claim_status === 'Submitted' || editStudentClaimForm.claim_status === 'Hold'" type="button" class="btn btn-sm btn-danger" :disabled="editStudentClaimForm.processing">
+                Cancel Request
+            </button>
+            <button @click="submitForm('Hold')" v-if="editStudentClaimForm.claim_status === 'Submitted'" type="button" class="ms-3 btn btn-sm btn-success" :disabled="editStudentClaimForm.processing">
+                Put on Hold
+            </button>
+            <button @click="submitForm('Claimed')" v-if="editStudentClaimForm.claim_status === 'Hold'" type="button" class="ms-3 btn btn-sm btn-success" :disabled="editStudentClaimForm.processing">
+                Claim Request
+            </button>
         </div>
-        <FormSubmitAlert :form-state="editAtteForm.formState" :success-msg="editAtteForm.formSuccessMsg"
-                         :fail-msg="editAtteForm.formFailMsg"></FormSubmitAlert>
+        <FormSubmitAlert :form-state="editStudentClaimForm.formState" :success-msg="editStudentClaimForm.formSuccessMsg"
+                         :fail-msg="editStudentClaimForm.formFailMsg"></FormSubmitAlert>
     </form>
 
 </template>
@@ -198,78 +202,105 @@ export default {
         Input, Label, Select, Link, useForm, FormSubmitAlert
     },
     props: {
-        attestation: Object,
-        institution: Object,
-        countries: Object,
-        error: String|null,
-        programs: Object,
-        instCap: Object
+        programYears: Object,
+        results: Object,
+        claim: Object,
+        page: String,
+        subPage: String
     },
     data() {
         return {
-            editAtteForm: null,
-            editAtteFormData: {
+            editStudentClaimForm: null,
+            editStudentClaimFormData: {
                 formState: true,
                 formSuccessMsg: 'Form was submitted successfully.',
                 formFailMsg: 'There was an error submitting this form.',
-                id: "",
-                cap_guid: "",
                 institution_guid: "",
-                program_guid: "",
-                first_name: "",
-                last_name: "",
-                id_number: "",
-                student_number: "",
-                dob: "",
-                address1: "",
-                address2: "",
-                email: "",
-                city: "",
-                zip_code: "",
-                province: "",
-                country: "",
+                total_amount: "",
+                program_year_guid: "",
                 status: "",
-                expiry_date: "",
-                gt_fifty_pct_in_person: ""
             },
+            programs: []
         }
     },
     methods: {
 
         submitForm: function (status) {
-            this.editAtteForm.status = status;
-            if(this.editAtteForm.status === 'Issued'){
-                let check = confirm('You are about to Save & Lock this record. Are you sure you want to continue?');
-                if(!check){
+            // Show confirm only if the user is switching the status from Submitted to Hold
+            if(this.claim.claim_status === 'Submitted' && status === 'Hold'){
+                if(!confirm("You are about to switch the status of this claim to Hold. The field Estimated Hold Amount is going to be locked. Proceed?")){
                     return false;
                 }
+                this.editStudentClaimForm.claim_status = 'Hold';
             }
 
-            if(this.editAtteForm.status === 'Cancelled Draft'){
-                let check = confirm('You are about to Cancel this Draft. Are you sure you want to continue?');
-                if(!check){
+            // Show confirm only if the user is switching the status from Hold to Claimed
+            if(this.claim.claim_status === 'Hold' && status === 'Claimed'){
+                if(!confirm("You are about to switch the status of this claim to Claimed. " +
+                    "The fields Registration, Materials, and Program Fee are going to be locked. Proceed?")){
                     return false;
                 }
+                this.editStudentClaimForm.claim_status = 'Claimed';
             }
 
-            this.editAtteForm.formState = null;
-            this.editAtteForm.put('/institution/attestations', {
+            if(status === 'Cancelled'){
+                if(!confirm("You are about to Cancel this claim. This action is permanent. Proceed?")){
+                    return false;
+                }
+                this.editStudentClaimForm.claim_status = 'Cancelled';
+            }
+
+
+            let vm = this;
+            this.editStudentClaimForm.formState = null;
+            this.editStudentClaimForm.put('/institution/claims', {
                 onSuccess: (response) => {
-                    $("#editAtteModal").modal('hide');
-
-                    this.editAtteForm.reset(this.editAtteFormData);
-                    window.location.href = '/institution/attestations';
+                    this.editStudentClaimForm.formState = true;
+                    setTimeout(function () {
+                        $("#editClaimModal").modal('hide')
+                            .on('hidden.bs.modal', function () {
+                                vm.editStudentClaimForm.reset();
+                                vm.$emit('close');
+                            });
+                    }, 2500);
                 },
                 onError: () => {
-                    this.editAtteForm.formState = false;
+                    this.editStudentClaimForm.formState = false;
                 },
                 preserveState: true
             });
-        }
-    },
+        },
+        fetchData: function () {
+            let vm = this;
+            let data = {
+                institution_guid: this.results.guid,
+            }
+            axios.get('/institution/api/fetch/claims/' + this.claim.guid)
+                .then(function (response) {
+                    vm.programs = response.data.programs;
+                    vm.editStudentClaimFormData = response.data.claim;
+                    vm.editStudentClaimFormData.formState = null;
+                    vm.editStudentClaimFormData.page = vm.page;
+                    vm.editStudentClaimFormData.subpage = vm.subPage;
+                    vm.editStudentClaimForm = useForm(vm.editStudentClaimFormData);
 
+
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                });
+        },
+    },
     mounted() {
-        this.editAtteForm = useForm(this.attestation);
-    }
+        this.fetchData();
+    },
+    watch: {
+        claim: function (newVal, oldVal) {
+            if (newVal != null) {
+                this.fetchData();
+            }
+        },
+    },
 }
 </script>

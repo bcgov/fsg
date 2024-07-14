@@ -30,7 +30,7 @@ class InstitutionController extends Controller
 
         // Eager load active allocation
         $institution->load(['allocations' => function ($query) {
-            $query->where('status', 'active');
+            $query->where('status', 'active')->orderByDesc('created_at');
         }]);
 
         $instActiveAllocation = $institution->allocations->first();
@@ -49,15 +49,24 @@ class InstitutionController extends Controller
 
         if(!is_null($instActiveAllocation)){
             // Combine claim counts into a single query
+//            $claimCounts = Claim::where('institution_guid', $institution->guid)
+//                ->where('allocation_guid', $instActiveAllocation->guid)
+//                ->selectRaw("
+//            SUM(CASE WHEN claim_status = 'Submitted' THEN 1 ELSE 0 END) as submitted,
+//            SUM(CASE WHEN claim_status = 'Hold' THEN 1 ELSE 0 END) as hold,
+//            SUM(CASE WHEN claim_status = 'Claimed' AND reporting_completed_date IS NULL THEN 1 ELSE 0 END) as claimed,
+//            SUM(CASE WHEN claim_status = 'Claimed' AND reporting_completed_date IS NOT NULL THEN 1 ELSE 0 END) as reportingcomplete
+//        ")
+//                ->first();
+
             $claimCounts = Claim::where('institution_guid', $institution->guid)
                 ->where('allocation_guid', $instActiveAllocation->guid)
                 ->selectRaw("
-            SUM(CASE WHEN claim_status = 'Submitted' THEN 1 ELSE 0 END) as submitted,
-            SUM(CASE WHEN claim_status = 'Hold' THEN 1 ELSE 0 END) as hold,
-            SUM(CASE WHEN claim_status = 'Claimed' AND reporting_completed_date IS NULL THEN 1 ELSE 0 END) as claimed,
-            SUM(CASE WHEN claim_status = 'Claimed' AND reporting_completed_date IS NOT NULL THEN 1 ELSE 0 END) as reportingcomplete
-        ")
+        SUM(CASE WHEN claim_status = 'Claimed' THEN COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) ELSE 0 END) as claimed,
+        SUM(CASE WHEN claim_status = 'Hold' THEN COALESCE(estimated_hold_amount, 0) ELSE 0 END) as hold
+    ")
                 ->first();
+
         }
 
 
@@ -65,10 +74,8 @@ class InstitutionController extends Controller
             'results' => $institution,
             'activeAllocation' => $instActiveAllocation,
             'programYear' => $programYear,
-            'submittedApps' => $claimCounts->submitted ?? 0,
             'holdApps' => $claimCounts->hold ?? 0,
             'claimedApps' => $claimCounts->claimed ?? 0,
-            'reportingCompleteApps' => $claimCounts->reportingcomplete ?? 0,
         ]);
     }
 
