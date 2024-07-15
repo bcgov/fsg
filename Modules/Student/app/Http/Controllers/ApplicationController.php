@@ -14,6 +14,7 @@ use App\Models\Student;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Response;
@@ -47,14 +48,18 @@ class ApplicationController extends Controller
         return Redirect::route('student.home');
     }
 
-    public function applications($page = 'applications')
+    public function applications(Request $request, $page = 'applications')
     {
+        $providerUser = null;
         $student = Student::with('applications')->where('user_guid', Auth::user()->guid)->first();
         if(is_null($student)) {
             $page = 'profile';
+            $providerUser = json_decode(Cache::get('bcsc_provider_user'));
+
         }
 
-        return Inertia::render('Student::Dashboard', ['status' => true, 'results' => $student, 'page' => $page]);
+        return Inertia::render('Student::Dashboard', ['status' => true, 'results' => $student,
+            'page' => $page, 'providerUser' => $providerUser]);
     }
 
     public function fetchApplications(Request $request)

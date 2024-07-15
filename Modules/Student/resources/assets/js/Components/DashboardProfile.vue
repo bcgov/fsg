@@ -150,6 +150,7 @@ export default {
     },
     props: {
         results: Object,
+        providerUser: Object|null
     },
     data() {
         return {
@@ -258,6 +259,10 @@ export default {
     mounted() {
         if(this.results == null){
             this.editForm = useForm(this.editFormData);
+            this.editForm.first_name = this.providerUser.given_name;
+            this.editForm.last_name = this.providerUser.family_name;
+            this.editForm.gender = this.providerUser.gender === 'male' ? 'Male' : 'Female';
+            this.editForm.dob = this.providerUser.birthdate;
         }else{
             this.editForm = useForm(this.results);
         }

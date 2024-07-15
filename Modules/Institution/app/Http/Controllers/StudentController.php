@@ -9,6 +9,9 @@ use App\Http\Requests\StudentEditRequest;
 use App\Models\Country;
 use App\Models\Student;
 use App\Models\ProgramYear;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -59,7 +62,13 @@ class StudentController extends Controller
 
     private function paginateStudents()
     {
-        $students = Student::with('claims');
+        $user = User::find(Auth::user()->id);
+        $institution = $user->institution;
+
+//        $students = Student::with('claims');
+        $students = Student::with(['claims' => function (Builder $query) use ($institution) {
+            $query->where('institution_guid', $institution->guid);
+        }])->get();
 
         if (request()->filter_last_name !== null) {
             $students = $students->where('last_name', 'ILIKE', '%'.request()->filter_last_name.'%');
