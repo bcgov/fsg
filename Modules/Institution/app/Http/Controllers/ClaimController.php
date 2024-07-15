@@ -2,8 +2,9 @@
 
 namespace Modules\Institution\Http\Controllers;
 
-use App\Events\AttestationDraftUpdated;
-use App\Events\AttestationIssued;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 use App\Events\ClaimSubmitted;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClaimEditRequest;
@@ -19,7 +20,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
-use Modules\Institution\App\Http\Requests\AttestationEditRequest;
 use Response;
 
 class ClaimController extends Controller
@@ -115,8 +115,21 @@ class ClaimController extends Controller
         $user = Auth::user();
 
         if(is_null($allocation)) {
-           return null;
+            // Return empty paginator
+            $emptyData = new Collection();
+            $emptyPaginator = new LengthAwarePaginator(
+                $emptyData, // Items
+                0, // Total items
+                25, // Items per page
+                1, // Current page
+                [
+                    'path' => LengthAwarePaginator::resolveCurrentPath(),
+                    'query' => request()->query(),
+                ]
+            );
+            return $emptyPaginator->onEachSide(1);
         }
+
         $claims = Claim::
             where('institution_guid', $user->institution->guid)
             ->where('allocation_guid', $allocation->guid)
