@@ -23,7 +23,7 @@
                         <div class="card-header">
                             Allocation
                         </div>
-                        <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(activeAllocation.total_amount) }}</div>
+                        <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(activeAllocation ? activeAllocation.total_amount : 0) }}</div>
                     </div>
                 </div>
                 <div class="col-md-4 mb-3">
