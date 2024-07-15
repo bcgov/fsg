@@ -160,8 +160,16 @@ class UserController extends Controller
 
             //if it is a new BCSC, IDIR or BCeID user, register the user first
             if (is_null($user)) {
-                $valid = $this->newUser($provider_user, $type);
-                if ($valid == '200') {
+                list($valid, $user) = $this->newUser($provider_user, $type);
+                if($valid == '200' && $type === Role::Student){
+
+                    Cache::put('bcsc_provider_user', json_encode($provider_user));
+                    Auth::login($user);
+
+                    return Redirect::route('student.home');
+
+                }
+                elseif ($valid == '200' && $type !== Role::Student) {
                     return Inertia::render('Auth/Login', [
                         'loginAttempt' => true,
                         'hasAccess' => false,
@@ -273,6 +281,7 @@ class UserController extends Controller
     private function newUser($provider_user, $type)
     {
         $valid = '200';
+        $user = null;
         if ($type === Role::Ministry_GUEST && isset($provider_user['idir_username']) && $provider_user['idir_username']) {
             $check = User::where('idir_username', Str::upper($provider_user['idir_username']))->first();
             if (! is_null($check)) {
@@ -322,7 +331,7 @@ class UserController extends Controller
             }
         }
 
-        return $valid;
+        return [$valid, $user];
     }
 
     private function checkInstitutionStaff($user, $provider_user)
@@ -378,16 +387,17 @@ class UserController extends Controller
         if (is_null($student)) {
             \Log::info('New Student: ' . $provider_user['email']);
 
-            $st = new Student();
-            $st->guid = Str::orderedUuid()->getHex();
-            $st->user_guid = $user->guid;
-            $st->first_name = Str::title($provider_user['given_name']);
-            $st->last_name = Str::title($provider_user['family_name']);
-            $st->email = $provider_user['email'];
-            $st->dob = $provider_user['birthdate'];
-            $st->gender = $provider_user['gender'];
-
-            $st->save();
+            // Prevent this since some accounts are existing with sin.
+//            $st = new Student();
+//            $st->guid = Str::orderedUuid()->getHex();
+//            $st->user_guid = $user->guid;
+//            $st->first_name = Str::title($provider_user['given_name']);
+//            $st->last_name = Str::title($provider_user['family_name']);
+//            $st->email = $provider_user['email'];
+//            $st->dob = $provider_user['birthdate'];
+//            $st->gender = $provider_user['gender'];
+//
+//            $st->save();
         }else{
             \Log::info('Can not create New Student: ' . $provider_user['email']);
         }

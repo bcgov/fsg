@@ -40,7 +40,18 @@ class StudentController extends Controller
      */
     public function store(StudentStoreRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $student_id = Student::create($request->validated());
+        // Check if a student with the given SIN already exists
+        $existingStudent = Student::where('sin', $request->sin)->first();
+
+        if ($existingStudent) {
+            // Update the existing student record
+            $existingStudent->update([
+                'user_guid' => Auth::user()->guid
+            ]);
+        } else {
+            // Create a new student record
+            $student_id = Student::create($request->validated());
+        }
         $student = Student::find($request->id);
         return Redirect::route('student.home');
     }
