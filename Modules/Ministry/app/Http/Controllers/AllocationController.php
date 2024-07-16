@@ -2,6 +2,7 @@
 
 namespace Modules\Ministry\Http\Controllers;
 
+use App\Events\AllocationUpdated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AllocationEditRequest;
 use App\Http\Requests\AllocationStoreRequest;
@@ -41,6 +42,9 @@ class AllocationController extends Controller
     {
         $allocation_id = Allocation::where('id', $request->id)->update($request->validated());
         $allocation = Allocation::find($request->id);
+
+        event(new AllocationUpdated($allocation, $request->status));
+
         return Redirect::route('ministry.institutions.show', [$allocation->institution->id, 'allocations']);
     }
 }

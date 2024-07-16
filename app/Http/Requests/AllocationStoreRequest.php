@@ -58,6 +58,7 @@ class AllocationStoreRequest extends FormRequest
         $this->merge([
             'guid' => Str::orderedUuid()->getHex(),
             'last_touch_by_user_guid' => $this->user()->guid,
+            'status' => 'inactive',
         ]);
     }
 
