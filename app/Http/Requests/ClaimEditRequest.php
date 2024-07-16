@@ -28,6 +28,17 @@ class ClaimEditRequest extends FormRequest
             return false;
         }
 
+        // Allow switching to Cancelled only if claim is in Hold status and stable enrol. date is yet to come
+        if ($this->claim_status === 'Cancelled' && $claim->claim_status !== 'Hold') {
+            return false;
+        }
+        if ($this->claim_status === 'Cancelled' && $claim->claim_status === 'Hold') {
+            if($claim->stable_enrolment_date < Carbon::now()) {
+                return false;
+            }
+        }
+
+
         // Check if the authenticated user has the necessary permissions to edit the institution.
         // You can access the authenticated user using the Auth facade or $this->user() method.
         return $this->user()->can('update', $claim);
@@ -57,6 +68,8 @@ class ClaimEditRequest extends FormRequest
             'claim_status' => 'required|string',
             'expected_stable_enrolment_date' => 'nullable',
             'expected_completion_date' => 'nullable',
+            'outcome_effective_date' => 'nullable',
+            'outcome_status' => 'nullable',
             ];
 
         // If the status is "Cancelled" or 'Expired', do not validate other fields

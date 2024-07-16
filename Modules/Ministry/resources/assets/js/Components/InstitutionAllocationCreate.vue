@@ -3,22 +3,15 @@
         <div class="modal-body">
             <div class="row g-3">
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <Label for="inputSd" class="form-label" value="Program Year"/>
                     <Select class="form-select" id="inputSd" v-model="newInstitutionAllocationForm.program_year_guid">
                         <option></option>
                         <option v-for="f in programYears" :value="f.guid">{{ f.start_date }} - {{ f.end_date}}</option>
                     </Select>
                 </div>
-                <div class="col-md-4">
-                    <Label for="inputStatus" class="form-label" value="Status"/>
-                    <Select class="form-select" id="inputStatus" v-model="newInstitutionAllocationForm.status">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </Select>
-                </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <Label for="inputTotalAtte" class="form-label" value="Total Allowed"/>
                     <div class="input-group mb-3">
                         <Input type="number" class="form-control" id="inputTotalAllowed" aria-describedby="basic-inputTotalAtte" v-model="newInstitutionAllocationForm.total_amount"/>
@@ -76,7 +69,6 @@ export default {
                 allocation_guid: "",
                 program_year_guid: "",
                 total_amount: "",
-                status: ""
             },
         }
     },
