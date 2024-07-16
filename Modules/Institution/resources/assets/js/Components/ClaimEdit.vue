@@ -63,16 +63,16 @@
                     </Select>
                 </div>
                 <div class="col-md-4">
-                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date" />
-                    <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpiryDate" v-model="editStudentClaimForm.expiry_date" />
-                </div>
-                <div class="col-md-4">
                     <Label for="inputStableDate" class="form-label" value="Actual Stable Enrol. Date" />
                     <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputStableDate" v-model="editStudentClaimForm.stable_enrolment_date" />
                 </div>
 
 
                 <template v-if="claim.claim_status === 'Submitted'">
+                    <div class="col-md-4">
+                        <Label for="inputExpiryDate" class="form-label" value="Hold Amount Expiry Date" />
+                        <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpiryDate" v-model="editStudentClaimForm.expiry_date" />
+                    </div>
                     <div class="col-md-4">
                         <Label for="inputEstimatedHoldAmount" class="form-label" value="Est. Hold Amount (Max.)" />
                         <Input type="number" step=".01" max="3500" class="form-control" id="inputEstimatedHoldAmount" v-model="editStudentClaimForm.estimated_hold_amount" />
@@ -88,6 +88,11 @@
 
                 </template>
                 <template v-if="claim.claim_status === 'Hold'">
+                    <div class="col-md-4">
+                        <Label for="inputExpiryDate" class="form-label" value="Hold Amount Expiry Date" />
+                        {{ editStudentClaimForm.expiry_date }}
+                    </div>
+
                     <div class="col-md-4">
                         <Label for="inputEstimatedHoldAmount" class="form-label" value="Estimated Hold Amount" />
                         {{ editStudentClaimForm.estimated_hold_amount }}
@@ -117,6 +122,10 @@
                 </template>
                 <template v-if="claim.claim_status === 'Claimed' || claim.claim_status === 'Expired' || claim.claim_status === 'Cancelled'">
                     <div class="col-md-4">
+                        <Label for="inputExpiryDate" class="form-label" value="Hold Amount Expiry Date" />
+                        {{ editStudentClaimForm.expiry_date }}
+                    </div>
+                    <div class="col-md-4">
                         <Label for="inputEstimatedHoldAmount" class="form-label" value="Estimated Hold Amount" />
                         {{ editStudentClaimForm.estimated_hold_amount }}
                     </div>
@@ -143,14 +152,36 @@
                     </div>
                 </template>
 
-                <div class="col-md-6">
-                    <Label for="inputPsiDate" class="form-label" value="PSI Claim Request Date" />
-                    {{ editStudentClaimForm.psi_claim_request_date == null ? '-' : editStudentClaimForm.psi_claim_request_date }}
-                </div>
-                <div class="col-md-6">
-                    <Label for="inputCompleteDate" class="form-label" value="Reporting Complete Date" />
-                    {{ editStudentClaimForm.reporting_completed_date == null ? '-' : editStudentClaimForm.reporting_completed_date }}
-                </div>
+                <template v-if="claim.claim_status === 'Claimed'">
+                    <div class="col-md-4">
+                        <Label for="inputOutcomeDate" class="form-label" value="Outcome Effective Date" />
+                        <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputOutcomeDate" v-model="editStudentClaimForm.outcome_effective_date" />
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputOutcomeStatus" class="form-label" value="Outcome Status"/>
+                        <Select class="form-select" id="inputOutcomeStatus" v-model="editStudentClaimForm.outcome_status">
+                            <option v-for="status in $attrs.utils['Outcome Status']" :value="status.field_name">{{ status.field_name }}</option>
+                        </Select>
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="col-md-4">
+                        <Label for="inputOutcomeDate" class="form-label" value="Outcome Effective Date" />
+                        -
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputOutcomeStatus" class="form-label" value="Outcome Status"/>
+                        -
+                    </div>
+                </template>
+<!--                <div class="col-md-6">-->
+<!--                    <Label for="inputPsiDate" class="form-label" value="PSI Claim Request Date" />-->
+<!--                    {{ editStudentClaimForm.psi_claim_request_date == null ? '-' : editStudentClaimForm.psi_claim_request_date }}-->
+<!--                </div>-->
+<!--                <div class="col-md-6">-->
+<!--                    <Label for="inputCompleteDate" class="form-label" value="Reporting Complete Date" />-->
+<!--                    {{ editStudentClaimForm.reporting_completed_date == null ? '-' : editStudentClaimForm.reporting_completed_date }}-->
+<!--                </div>-->
 
 
                 <div v-if="editStudentClaimForm.process_feedback != null" class="row">

@@ -41,6 +41,7 @@ return new class extends Migration
             $table->string('course_name')->nullable()->comment("Historical. no need to be populated. ");
 
             $table->string('claim_status')->nullable();
+            $table->string('outcome_status')->nullable();
 
             $table->float('registration_fee', 2)->default(0)->nullable();
             $table->float('materials_fee', 2)->default(0)->nullable();
@@ -57,6 +58,7 @@ return new class extends Migration
             $table->date('reporting_completed_date')->nullable();
             $table->date('claimed_date')->nullable();
             $table->date('expected_completion_date')->nullable();
+            $table->date('outcome_effective_date')->nullable();
 
             $table->boolean('fifty_two_week_affirmation')->default(true);
             $table->boolean('agreement_confirmed')->default(false);
