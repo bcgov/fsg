@@ -20,9 +20,9 @@
                             <td><a href="#" @click="openEditForm(row)">{{ row.program.program_name }}</a></td>
                             <td><Link :href="'/ministry/institutions/' + row.institution.id">{{ row.institution.name }}</Link></td>
                             <td>${{ row.estimated_hold_amount }}</td>
+                            <td>${{ row.program_fee }}</td>
                             <td>${{ row.registration_fee }}</td>
                             <td>${{ row.materials_fee }}</td>
-                            <td>${{ row.program_fee }}</td>
                             <td>
                                 <span v-if="row.claim_status === 'Draft'" class="badge rounded-pill text-bg-info">Draft</span>
                                 <span v-else-if="row.claim_status === 'Submitted'" class="badge rounded-pill text-bg-primary">Submitted</span>
