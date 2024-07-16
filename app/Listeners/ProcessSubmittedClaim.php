@@ -40,6 +40,11 @@ class ProcessSubmittedClaim
             // If the student is moving the claim from Draft to Submitted
             elseif ($claim_before_update->claim_status === 'Draft' && $status === 'Submitted') {
                 Log::info("claim is moving from Draft to Submitted");
+                $claim->estimated_hold_amount = 0;
+                $claim->total_claim_amount = 0;
+                $claim->program_fee = 0;
+                $claim->materials_fee = 0;
+                $claim->registration_fee = 0;
 
                 // Calculate the total of claims for the student that are in Hold
                 $totalHoldClaims = $student->claims()

@@ -94,7 +94,23 @@ class ClaimEditRequest extends FormRequest
                 'agreement_confirmed' => 'required|boolean',
                 'registration_confirmed' => 'required|boolean',
             ]);
-        } elseif ($this->claim_status === 'Submitted' || $this->claim_status === 'Hold') {
+        } elseif ($this->claim_status === 'Submitted') {
+            $rules = array_merge($rules, [
+                'registration_fee' => 'nullable|numeric',
+                'materials_fee' => 'nullable|numeric',
+                'program_fee' => 'nullable|numeric',
+                'estimated_hold_amount' => 'required|numeric|gt:0',
+                'total_claim_amount' => 'nullable|numeric',
+                'claim_percent' => 'required|numeric',
+                'stable_enrolment_date' => 'nullable|date_format:Y-m-d',
+                'expiry_date' => 'nullable|date_format:Y-m-d',
+
+                'fifty_two_week_affirmation' => 'required|boolean|in:true,1',
+                'agreement_confirmed' => 'required|boolean|in:true,1',
+                'registration_confirmed' => 'required|boolean|in:true,1',
+
+            ]);
+        } elseif ($this->claim_status === 'Hold') {
             $rules = array_merge($rules, [
                 'registration_fee' => 'nullable|numeric',
                 'materials_fee' => 'nullable|numeric',
