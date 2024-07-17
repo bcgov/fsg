@@ -30,8 +30,7 @@ RUN apt-get -y update --fix-missing \
     zip \
     unzip \
     && pecl install zip pcov redis && docker-php-ext-enable zip && docker-php-ext-enable redis \
-    && docker-php-ext-install bcmath \
-    && docker-php-ext-install soap \
+    && docker-php-ext-install bcmath soap pcntl \
     && docker-php-source delete \
 #disable exposing server information \
     && sed -ri -e 's!expose_php = On!expose_php = Off!g' $PHP_INI_DIR/php.ini-production \

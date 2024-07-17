@@ -56,19 +56,19 @@
                 <hr/>
 
                 <div class="col-md-4">
-                    <Label for="input52Week" class="form-label" value="52 Week Affirm."/>
-                    <Select class="form-select" id="input52Week" v-model="editStudentClaimForm.fifty_two_week_affirmation">
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </Select>
-                </div>
-                <div class="col-md-4">
                     <Label for="inputStableDate" class="form-label" value="Actual Stable Enrol. Date" />
                     <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputStableDate" v-model="editStudentClaimForm.stable_enrolment_date" />
                 </div>
 
 
                 <template v-if="claim.claim_status === 'Submitted'">
+                    <div class="col-md-4">
+                        <Label for="input52Week" class="form-label" value="52 Week Affirm."/>
+                        <Select class="form-select" id="input52Week" v-model="editStudentClaimForm.fifty_two_week_affirmation">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </Select>
+                    </div>
                     <div class="col-md-4">
                         <Label for="inputExpiryDate" class="form-label" value="Hold Amount Expiry Date" />
                         <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpiryDate" v-model="editStudentClaimForm.expiry_date" />
@@ -77,11 +77,11 @@
                         <Label for="inputEstimatedHoldAmount" class="form-label" value="Est. Hold Amount (Max.)" />
                         <Input type="number" step=".01" max="3500" class="form-control" id="inputEstimatedHoldAmount" v-model="editStudentClaimForm.estimated_hold_amount" />
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <Label for="inputExpStableEnrolDate" class="form-label" value="Expected Stable Enrol. Date" />
                         <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpStableEnrolDate" v-model="editStudentClaimForm.expected_stable_enrolment_date" />
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <Label for="inputExpCompletionDate" class="form-label" value="Expected Completion Date" />
                         <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpCompletionDate" v-model="editStudentClaimForm.expected_completion_date" />
                     </div>

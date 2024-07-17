@@ -110,6 +110,7 @@ objects:
                 timeoutSeconds: 5
                 successThreshold: 1
                 failureThreshold: 3
+              command: [ "php", "/var/www/html/artisan", "horizon" ]
               env:
               - name: "ENV_ARG"
                 value: "hi there"
