@@ -29,8 +29,8 @@ RUN apt-get -y update --fix-missing \
     libxml2-dev \
     zip \
     unzip \
-    && pecl install zip pcov pcntl redis \
-    && docker-php-ext-enable zip && docker-php-ext-enable pcov && docker-php-ext-enable pcntl && docker-php-ext-enable redis \
+    && pecl install zip pcov pcntl redis
+RUN docker-php-ext-enable zip && docker-php-ext-enable pcov && docker-php-ext-enable pcntl && docker-php-ext-enable redis \
     && docker-php-ext-install bcmath soap \
     && docker-php-source delete \
 #disable exposing server information \
