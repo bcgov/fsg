@@ -167,4 +167,3 @@ RUN composer install && npm install --prefix /var/www/html/ && npm run --prefix 
 ENTRYPOINT ["/sbin/entrypoint.sh"]
 # Start!
 CMD ["apache2-foreground"]
-CMD["php /var/www/html/artisan horizon"]

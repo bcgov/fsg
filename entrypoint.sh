@@ -32,6 +32,8 @@ echo "Starting apache:"
 echo "Restarting apache:"
 /usr/sbin/apache2ctl restart
 
+echo "Starting Horizon:"
+php /var/www/html/artisan horizon
 
 echo "End entrypoint"
 while :; do
