@@ -68,8 +68,7 @@ RUN mkdir -p /var/log/php && \
     mkdir -p /etc/apache2/sites-enabled && \
     mkdir -p /var/lock/apache2 /var/run/apache2 && \
     chgrp -R 0 /etc/apache2/mods-* /etc/apache2/sites-* /run /var/lib/apache2 /var/run/apache2 /var/lock/apache2 /var/log/apache2 && \
-    chmod -R g=u /etc/passwd /etc/apache2/mods-* /etc/apache2/sites-* /run /var/lib/apache2 /var/run/apache2 /var/lock/apache2 /var/log/apache2 && \
-    a2query -v && a2query -M && a2query -m && chmod a+rx /docker-bin/*.sh && /docker-bin/docker-build.sh && export COMPOSER_HOME="$HOME/.config/composer"
+    chmod -R g=u /etc/passwd /etc/apache2/mods-* /etc/apache2/sites-* /run /var/lib/apache2 /var/run/apache2 /var/lock/apache2 /var/log/apache2
 
 # Copy necessary files
 COPY openshift/apache-oc/image-files/ /
