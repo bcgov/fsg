@@ -138,12 +138,10 @@ class ClaimController extends Controller
 
         if (request()->filter_term !== null && request()->filter_type !== null) {
             $claims = match (request()->filter_type) {
-                'snumber' => $claims->where('student_number', 'ILIKE', '%'.request()->filter_term.'%'),
                 'fname' => $claims->where('first_name', 'ILIKE', '%'.request()->filter_term.'%'),
                 'lname' => $claims->where('last_name', 'ILIKE', '%'.request()->filter_term.'%'),
                 'sin' => $claims->where('sin', 'ILIKE', '%'.request()->filter_term.'%'),
-                'city' => $claims->where('city', 'ILIKE', '%'.request()->filter_term.'%'),
-                'country' => $claims->where('country', 'ILIKE', '%'.request()->filter_term.'%'),
+                'email' => $claims->where('email', 'ILIKE', '%'.request()->filter_term.'%'),
             };
         }
 
