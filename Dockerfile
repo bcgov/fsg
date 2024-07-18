@@ -156,7 +156,7 @@ RUN mkdir -p storage && mkdir -p bootstrap/cache && chmod -R ug+rwx storage boot
 # Clean up \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-#openshift will complaine about permission \
+#openshift will complain about permission \
     && chmod +x /sbin/entrypoint.sh
 USER ${USER_ID}
 
