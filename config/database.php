@@ -153,8 +153,8 @@ return [
                     'host' => env('REDIS_HOST', '127.0.0.1'),
                     'username' => env('REDIS_USERNAME', 'root'),
                     'password' => env('REDIS_PASSWORD', ''),
-                    'port' => (int)env('REDIS_PORT', 6379),
-                    'database' => (int)env('REDIS_PORT', 0),
+                    'port' => 6379,
+                    'database' => 0,
                 ],
                 // Add other cluster nodes if necessary
             ],
