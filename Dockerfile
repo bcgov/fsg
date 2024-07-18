@@ -21,7 +21,7 @@ ENV APACHE_SERVER_NAME=__default__
 WORKDIR /
 
 
-RUN apt-get -y update --fix-missing \
+RUN apt-get -yq update --fix-missing \
     && apt-get update && apt-get install -y --no-install-recommends apt-utils \
 #php setup, install extensions, setup configs \
     && apt-get install --no-install-recommends -y \
@@ -39,6 +39,8 @@ RUN apt-get -y update --fix-missing \
         libpng-dev \
         libaio-dev \
     libonig-dev \
+    nodejs \
+    npm \
     ca-certificates gnupg \
     && pecl install zip pcov redis && docker-php-ext-enable zip && docker-php-ext-enable redis \
     && docker-php-ext-install bcmath soap pcntl \
@@ -85,8 +87,8 @@ RUN apt-get -y update --fix-missing \
   && a2enmod rewrite headers \
     && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
     NODE_MAJOR=20 \
-    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
-    apt-get update && apt-get install nodejs -y && apt-get install -y npm
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+
 
 RUN apt-get autoclean && apt-get autoremove && apt-get clean && rm -rf /var/lib/apt/lists/* \
 #fix Action '-D FOREGROUND' failed.
@@ -157,4 +159,4 @@ RUN composer install && npm install --prefix /var/www/html/ && npm run --prefix 
 
 ENTRYPOINT ["/sbin/entrypoint.sh"]
 # Start!
-#CMD ["apache2-foreground"]
+CMD ["apache2-foreground"]
