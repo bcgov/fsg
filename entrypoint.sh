@@ -33,9 +33,10 @@ echo "Restarting apache:"
 /usr/sbin/apache2ctl restart
 
 echo "Start Horizon"
-supervisorctl start horizon
+php artisan horizon &
 
 echo "End entrypoint"
-while :; do
-sleep 300
-done
+exec apache2-foreground
+#while :; do
+#sleep 300
+#done
