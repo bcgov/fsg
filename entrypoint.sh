@@ -33,6 +33,7 @@ echo "Restarting apache:"
 /usr/sbin/apache2ctl restart
 
 echo "Start Horizon"
+php artisan cache:clear
 php artisan horizon &
 
 echo "End entrypoint"
