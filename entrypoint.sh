@@ -1,4 +1,23 @@
 #!/bin/bash
+set -e
+
+# Function to start Horizon with retries
+start_horizon() {
+    local retries=5
+    local count=0
+    local delay=5
+
+    until php artisan horizon; do
+        count=$((count + 1))
+        if [ $count -ge $retries ]; then
+            echo "Horizon failed to start after $retries attempts."
+            exit 1
+        fi
+        echo "Horizon failed to start. Retrying in $delay seconds... ($count/$retries)"
+        sleep $delay
+    done
+    echo "Horizon started successfully."
+}
 
 echo "Start entrypoint file"
 
@@ -34,7 +53,8 @@ echo "Restarting apache:"
 
 echo "Start Horizon"
 php artisan cache:clear
-php artisan horizon &
+# Start Horizon in the background with retries
+start_horizon &
 
 echo "End entrypoint"
 #exec apache2-foreground
