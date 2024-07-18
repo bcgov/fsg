@@ -32,6 +32,8 @@ echo "Starting apache:"
 echo "Restarting apache:"
 /usr/sbin/apache2ctl restart
 
+echo "Start Horizon"
+supervisorctl start horizon
 
 echo "End entrypoint"
 while :; do

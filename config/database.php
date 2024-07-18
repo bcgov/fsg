@@ -163,8 +163,8 @@ return [
             'host' => env('REDIS_HOST', '127.0.0.1'),
             'username' => env('REDIS_USERNAME', 'root'),
             'password' => env('REDIS_PASSWORD', ''),
-            'port' => (int)env('REDIS_PORT', 6379),
-            'database' => (int)env('REDIS_PORT', 0),
+            'port' => env('REDIS_PORT', 6379),
+            'database' => 0,
         ],
 
         'cache' => [

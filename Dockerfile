@@ -29,7 +29,7 @@ RUN apt-get -y update --fix-missing \
     libxml2-dev \
     zip \
     unzip \
-    redis-tools \
+    supervisor \
     && pecl install zip pcov redis && docker-php-ext-enable zip && docker-php-ext-enable redis \
     && docker-php-ext-install bcmath soap pcntl \
     && docker-php-source delete \
@@ -138,9 +138,12 @@ RUN sed -i -e 's/80/8080/g' -e 's/443/8443/g' -e 's/25/2525/g' /etc/apache2/port
     && chmod a+rx /docker-bin/*.sh \
     && /docker-bin/docker-build.sh && export COMPOSER_HOME="$HOME/.config/composer";
 
+RUN mkdir -p /etc/supervisor/conf.d
+COPY horizon.conf /etc/supervisor/conf.d/horizon.conf
 COPY entrypoint.sh /sbin/entrypoint.sh
 COPY / /var/www/html/
 
+RUN supervisorctl reread && supervisorctl update
 WORKDIR /var/www/html/
 
 RUN mkdir -p storage && mkdir -p bootstrap/cache && chmod -R ug+rwx storage bootstrap/cache \
