@@ -36,7 +36,7 @@ echo "Start Horizon"
 php artisan horizon &
 
 echo "End entrypoint"
-exec apache2-foreground
+#exec apache2-foreground
 #while :; do
 #sleep 300
 #done
