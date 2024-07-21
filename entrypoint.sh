@@ -38,26 +38,21 @@ fi
 echo "ENV_ARG: ${ENV_ARG}"
 
 echo "Install composer"
-composer dump-auto
+composer dump-autoload
 
 chmod 766 /var/www/html/probe-check.sh
 
 echo "Permissions setup for NPM:"
 chmod -R a+w node_modules
 
-echo "Starting apache:"
+echo "Starting apache in the background:"
 /usr/sbin/apache2ctl start
-
-echo "Restarting apache:"
-/usr/sbin/apache2ctl restart
 
 echo "Start Horizon"
 php artisan cache:clear
-# Start Horizon in the background with retries
+
+# Start Horizon with retries in the background
 start_horizon &
 
-echo "End entrypoint"
-#exec apache2-foreground
-while :; do
-sleep 300
-done
+# Keep the script running to prevent the container from exiting
+tail -f /dev/null
