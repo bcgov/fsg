@@ -38,7 +38,7 @@ fi
 echo "ENV_ARG: ${ENV_ARG}"
 
 # Add cron job for Laravel schedule:run
-echo "* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1" | crontab -
+#echo "* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1" | crontab -
 
 echo "Install composer"
 composer dump-autoload
