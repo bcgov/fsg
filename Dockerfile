@@ -20,7 +20,7 @@ ENV APACHE_SERVER_NAME=__default__
 
 WORKDIR /
 
-
+RUN useradd -u 1000 -ms /bin/bash ${USER_ID}
 RUN apt-get -yq update --fix-missing \
     && apt-get update && apt-get install -y --no-install-recommends apt-utils \
 #php setup, install extensions, setup configs \
@@ -29,7 +29,7 @@ RUN apt-get -yq update --fix-missing \
     libxml2-dev \
     zip \
     unzip \
-#    cron \
+    cron \
     zlib1g-dev g++ libicu-dev libpq-dev git nano netcat-traditional curl apache2 dialog locate libcurl4 libcurl3-dev psmisc \
     	libfreetype6-dev \
         libjpeg62-turbo-dev \
