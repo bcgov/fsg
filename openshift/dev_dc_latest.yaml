@@ -112,16 +112,16 @@ objects:
               env:
               - name: "ENV_ARG"
                 value: "hi there"
-  - kind: 'CronJob'
-    apiVersion: 'batch/v1beta1'
+  - kind: CronJob
+    apiVersion: batch/v1
     metadata:
-      name: '${JOB_NAME}'
+      name: ${JOB_NAME}
       namespace: ${NAMESPACE}
       labels:
         template: 'fsg-daily-cronjob'
-        cronjob: '${JOB_NAME}'
+        cronjob: ${JOB_NAME}
     spec:
-      schedule: '${SCHEDULE}'
+      schedule: ${SCHEDULE}
       concurrencyPolicy: 'Forbid'
       successfulJobsHistoryLimit: ${{SUCCESS_JOBS_HISTORY_LIMIT}}
       failedJobsHistoryLimit: ${{FAILED_JOBS_HISTORY_LIMIT}}
@@ -129,13 +129,13 @@ objects:
         metadata:
           labels:
             template: 'fsg-daily-cronjob'
-            cronjob: '${JOB_NAME}'
+            cronjob: ${JOB_NAME}
         spec:
           backoffLimit: ${{JOB_BACKOFF_LIMIT}}
           template:
             spec:
               containers:
-                - name: '${JOB_NAME}'
+                - name: ${JOB_NAME}
                   image: image-registry.openshift-image-registry.svc:5000/${BUILD_NAMESPACE}/${NAME}
                   command: ["/bin/sh", "-c", "cd /var/www/html && php artisan schedule:run"]
                   env:
