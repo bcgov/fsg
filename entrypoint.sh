@@ -3,7 +3,7 @@ set -e
 
 # Function to start Horizon with retries
 start_horizon() {
-    local retries=5
+    local retries=10
     local count=0
     local delay=5
 
