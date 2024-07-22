@@ -14,14 +14,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
-
-//            \Modules\Student\Http\Middleware\IsActive::class,
-//            \Modules\Student\Http\Middleware\IsAdmin::class,
-//            \Modules\Ministry\Http\Middleware\IsActive::class,
-//            \Modules\Ministry\Http\Middleware\IsAdmin::class,
-//            \Modules\Institution\Http\Middleware\IsActive::class,
-//            \Modules\Institution\Http\Middleware\IsAdmin::class,
-
         ]);
         $middleware->alias([
             'ministry_active' => \Modules\Ministry\Http\Middleware\IsActive::class,
@@ -37,4 +29,5 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->create();
