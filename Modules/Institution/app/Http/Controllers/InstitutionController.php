@@ -74,8 +74,8 @@ class InstitutionController extends Controller
             'results' => $institution,
             'activeAllocation' => $instActiveAllocation,
             'programYear' => $programYear,
-            'holdApps' => $claimCounts->hold ?? 0,
-            'claimedApps' => $claimCounts->claimed ?? 0,
+            'holdApps' => $claimCounts->hold ? (float)$claimCounts->hold + ((float)$claimCounts->hold / (float)$programYear->claim_percent): 0,
+            'claimedApps' => $claimCounts->claimed ? (float)$claimCounts->claimed + ((float)$claimCounts->claimed / (float)$programYear->claim_percent) : 0,
         ]);
     }
 

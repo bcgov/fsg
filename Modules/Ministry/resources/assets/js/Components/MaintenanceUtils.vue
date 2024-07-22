@@ -102,8 +102,7 @@
 
                                 <div class="col-md-12">
                                     <BreezeLabel for="editUtilTitle" class="form-label" value="Title" />
-                                    <BreezeInput type="text" class="form-control" id="editUtilTitle" v-model="editUtilForm.field_name" />
-                                    <textarea class="form-control" id="editUtilTitle"
+                                    <textarea class="form-control" id="editUtilTitle" rows="5"
                                               v-model="editUtilForm.field_name"></textarea>
 
                                 </div>

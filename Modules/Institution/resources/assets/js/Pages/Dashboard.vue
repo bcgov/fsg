@@ -21,7 +21,7 @@
                 <div class="col-md-4 mb-3">
                     <div class="card text-center">
                         <div class="card-header">
-                            Allocation
+                            Allocation (includes Admin)
                         </div>
                         <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(activeAllocation ? activeAllocation.total_amount : 0) }}</div>
                     </div>
@@ -29,7 +29,7 @@
                 <div class="col-md-4 mb-3">
                     <div class="card text-center">
                         <div class="card-header">
-                            Hold Claims
+                            Hold Amount (includes Admin)
                         </div>
                         <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(holdApps) }}</div>
                     </div>
@@ -37,7 +37,7 @@
                 <div class="col-md-4 mb-3">
                     <div class="card text-center">
                         <div class="card-header">
-                            Claimed
+                            Claimed Amount (includes Admin)
                         </div>
                         <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(claimedApps) }}</div>
                     </div>
