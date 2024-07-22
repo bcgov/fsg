@@ -2,7 +2,7 @@
 <p align="center">
 Ministry of Post-Secondary Education and Future Skills<br/> 
 Student Services Division<br/><br/>
-FSG - Future Skills Grant
+StrongerBC Future Skills Grant
 <br/>
 <br/>
 

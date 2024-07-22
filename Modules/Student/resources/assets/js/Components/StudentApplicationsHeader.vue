@@ -8,10 +8,13 @@
                 <span>Institution Name</span>
         </th>
         <th scope="col" class="text-nowrap">
-                <span>Grant Total</span>
+            <span>Estimated Hold</span>
         </th>
         <th scope="col" class="text-nowrap">
-            <span>Student Claims</span>
+            <span>Grant Total</span>
+        </th>
+        <th scope="col" class="text-nowrap">
+            <span>Claims</span>
         </th>
         <th scope="col" class="text-nowrap">
             <a href="#" @click="switchSort('active_status')">

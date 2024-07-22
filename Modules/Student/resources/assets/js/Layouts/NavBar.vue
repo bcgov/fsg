@@ -17,7 +17,7 @@ nav.navbar .form-select {
         <div class="container-fluid">
             <Link class="navbar-brand" href="/applications">
                 <ApplicationLogo width="126" height="34" class="d-inline-block align-text-top me-3" />
-                <span class="d-none d-xl-inline fw-light">FSG - Future Skills Grant</span>
+                <span class="d-none d-xl-inline fw-light">StrongerBC Future Skills Grant</span>
             </Link>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
                     aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
