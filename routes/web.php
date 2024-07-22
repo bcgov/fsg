@@ -16,11 +16,11 @@ Route::get('/bcsc-login', [UserController::class, 'bcscLogin'])->name('bcsc-logi
 Route::middleware(['auth'])->get('/home', [UserController::class, 'home'])->name('home');
 
 
-Route::get('/test-redis', function () {
-    try {
-        $name = Redis::get('name');
-        return "Redis connection successful. Name: " . $name;
-    } catch (Exception $e) {
-        return "Redis connection failed: " . $e->getMessage();
-    }
-});
+//Route::get('/test-redis', function () {
+//    try {
+//        $name = Redis::get('name');
+//        return "Redis connection successful. Name: " . $name;
+//    } catch (Exception $e) {
+//        return "Redis connection failed: " . $e->getMessage();
+//    }
+//});
