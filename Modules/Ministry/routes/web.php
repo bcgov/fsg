@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Ministry\Http\Controllers\AllocationController;
 use Modules\Ministry\Http\Controllers\ClaimController;
 use Modules\Ministry\Http\Controllers\InstitutionController;
+use Modules\Ministry\Http\Controllers\InstitutionStaffController;
 use Modules\Ministry\Http\Controllers\MaintenanceController;
 use Modules\Ministry\Http\Controllers\ProgramController;
 use Modules\Ministry\Http\Controllers\StudentController;
@@ -74,18 +75,20 @@ Route::prefix('ministry')->group(function () {
                 Route::put('/program_years/{programYear}', [MaintenanceController::class, 'pyUpdate'])->name('program_years.update');
                 Route::post('/program_years', [MaintenanceController::class, 'pyStore'])->name('program_years.store');
 
-                Route::get('/faqs', [MaintenanceController::class, 'faqList'])->name('faqs.list');
-                Route::put('/faqs/{faq}', [MaintenanceController::class, 'faqUpdate'])->name('faqs.update');
-                Route::post('/faqs', [MaintenanceController::class, 'faqStore'])->name('faqs.store');
             });
 
-            Route::get('/reports/summary', [MaintenanceController::class, 'reportsSummary'])->name('reports.summary');
-            Route::post('/reports/summary', [MaintenanceController::class, 'reportsSummaryFetch'])->name('reports.summary.fetch');
-            Route::get('/reports/detail', [MaintenanceController::class, 'reportsDetail'])->name('reports.detail');
-            Route::post('/reports/detail', [MaintenanceController::class, 'reportsDetailFetch'])->name('reports.detail.fetch');
 
-            Route::get('/reports/sources', [MaintenanceController::class, 'reportSources'])->name('reports.sources');
-            Route::get('/reports/sources-download/{from}/{to}/{type}', [MaintenanceController::class, 'reportSourcesFetch'])->name('reports.sources.fetch');
+            Route::put('/institution_staff', [InstitutionStaffController::class, 'update'])->name('institution_staff.update');
+            Route::put('/institution_roles', [InstitutionStaffController::class, 'updateRole'])->name('institution_roles.updateRole');
+            Route::get('/institution_login/{guid}', [InstitutionStaffController::class, 'ministryLogin'])->name('institution_login.login');
+
+//            Route::get('/reports/summary', [MaintenanceController::class, 'reportsSummary'])->name('reports.summary');
+//            Route::post('/reports/summary', [MaintenanceController::class, 'reportsSummaryFetch'])->name('reports.summary.fetch');
+//            Route::get('/reports/detail', [MaintenanceController::class, 'reportsDetail'])->name('reports.detail');
+//            Route::post('/reports/detail', [MaintenanceController::class, 'reportsDetailFetch'])->name('reports.detail.fetch');
+//
+//            Route::get('/reports/sources', [MaintenanceController::class, 'reportSources'])->name('reports.sources');
+//            Route::get('/reports/sources-download/{from}/{to}/{type}', [MaintenanceController::class, 'reportSourcesFetch'])->name('reports.sources.fetch');
 
         });
     });
