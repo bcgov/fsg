@@ -21,8 +21,6 @@ ENV APACHE_SERVER_NAME=__default__
 WORKDIR /
 
 #RUN useradd -u 1000 -ms /bin/bash ${USER_ID}
-USER ${USER_ID}
-
 RUN apt-get -yq update --fix-missing \
     && apt-get update && apt-get install -y --no-install-recommends apt-utils \
 #php setup, install extensions, setup configs \
@@ -150,12 +148,12 @@ RUN mkdir -p storage && mkdir -p bootstrap/cache && chmod -R ug+rwx storage boot
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
 #openshift will complain about permission \
     && chmod +x /sbin/entrypoint.sh
+USER ${USER_ID}
 
 #rm -rf vendor
 #rm -f composer.lock
 #composer install
 RUN composer install && npm install --prefix /var/www/html/ && npm run --prefix /var/www/html/ ${DEVENV}
-
 
 ENTRYPOINT ["/sbin/entrypoint.sh"]
 # Start!
