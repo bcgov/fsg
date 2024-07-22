@@ -10,4 +10,4 @@ Artisan::command('inspire', function () {
     \Log::info("Inspire Finished");
 })->purpose('Display an inspiring quote')->everyMinute();
 
-Schedule::job(new MidnightJob)->daily();
+Schedule::job(new MidnightJob)->timezone('America/Vancouver')->daily();

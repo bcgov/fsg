@@ -62,5 +62,5 @@ start_horizon &
 # Keep the script running to prevent the container from exiting
 while :; do
 php artisan schedule:run
-sleep 10
+sleep 60
 done
