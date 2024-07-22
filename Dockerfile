@@ -148,12 +148,13 @@ RUN mkdir -p storage && mkdir -p bootstrap/cache && chmod -R ug+rwx storage boot
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
 #openshift will complain about permission \
     && chmod +x /sbin/entrypoint.sh
-USER ${USER_ID}
 
 #rm -rf vendor
 #rm -f composer.lock
 #composer install
-RUN chown -R ${USER_ID}:0 "/.npm" && composer install && npm install --prefix /var/www/html/ && npm run --prefix /var/www/html/ ${DEVENV}
+RUN composer install && npm install --prefix /var/www/html/ && npm run --prefix /var/www/html/ ${DEVENV}
+
+USER ${USER_ID}
 
 ENTRYPOINT ["/sbin/entrypoint.sh"]
 # Start!
