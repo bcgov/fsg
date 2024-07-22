@@ -35,7 +35,7 @@ RUN apt-get -yq update --fix-missing \
     libxml2-dev \
     zip \
     unzip \
-    cron \
+#    cron \
     zlib1g-dev g++ libicu-dev libpq-dev git nano netcat-traditional curl apache2 dialog locate libcurl4 libcurl3-dev psmisc \
     	libfreetype6-dev \
         libjpeg62-turbo-dev \

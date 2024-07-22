@@ -56,7 +56,7 @@ echo "Start Horizon"
 php artisan cache:clear
 
 # Start Horizon with retries in the background
-start_horizon &
+#start_horizon &
 
 
 # Keep the script running to prevent the container from exiting
