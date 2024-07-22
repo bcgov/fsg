@@ -137,7 +137,7 @@ objects:
             spec:
               containers:
                 - name: ${JOB_NAME}
-                  image: image-registry.openshift-image-registry.svc:5000/${BUILD_NAMESPACE}/${NAME}
+                  image: image-registry.openshift-image-registry.svc:5000/${BUILD_NAMESPACE}/${NAME}:${IMAGE_TAG}
                   command: ["/bin/sh", "-c", "cd /var/www/html && php artisan schedule:run"]
                   volumeMounts:
                     - name: site-data-volume
