@@ -20,7 +20,9 @@ ENV APACHE_SERVER_NAME=__default__
 
 WORKDIR /
 
-RUN useradd -u 1000 -ms /bin/bash ${USER_ID}
+#RUN useradd -u 1000 -ms /bin/bash ${USER_ID}
+USER ${USER_ID}
+
 RUN apt-get -yq update --fix-missing \
     && apt-get update && apt-get install -y --no-install-recommends apt-utils \
 #php setup, install extensions, setup configs \
@@ -154,7 +156,6 @@ RUN mkdir -p storage && mkdir -p bootstrap/cache && chmod -R ug+rwx storage boot
 #composer install
 RUN composer install && npm install --prefix /var/www/html/ && npm run --prefix /var/www/html/ ${DEVENV}
 
-USER ${USER_ID}
 
 ENTRYPOINT ["/sbin/entrypoint.sh"]
 # Start!
