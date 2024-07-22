@@ -234,3 +234,29 @@ parameters:
     required: false
   - name: NPM_ENV
     required: false
+  - name: 'JOB_NAME'
+    displayName: 'Job Name'
+    description: 'Name of the Scheduled Job to Create.'
+    value: 'fsg-daily-cronjob'
+    required: true
+  - name: 'SCHEDULE'
+    displayName: 'Cron Schedule'
+    description: 'Cron Schedule to Execute the Job (in UTC)'
+    # value: '0 9 * * *' # at 9 utc (01:00 pst)
+    value: '*/5 * * * *' #every 5 minutes
+    required: true
+  - name: 'SUCCESS_JOBS_HISTORY_LIMIT'
+    displayName: 'Successful Job History Limit'
+    description: 'The number of successful jobs that will be retained'
+    value: '3'
+    required: true
+  - name: 'FAILED_JOBS_HISTORY_LIMIT'
+    displayName: 'Failed Job History Limit'
+    description: 'The number of failed jobs that will be retained'
+    value: '3'
+    required: true
+  - name: 'JOB_BACKOFF_LIMIT'
+    displayName: 'Job Backoff Limit'
+    description: 'The number of attempts to try for a successful job outcome (default: 6)'
+    value: '0'
+    required: false
