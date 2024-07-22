@@ -123,6 +123,10 @@ objects:
         cronjob: ${JOB_NAME}
     spec:
       serviceAccountName: ${LICENSE_PLATE}-vault
+      volumes:
+          - name: site-data-volume
+            configMap:
+              name: subpath-env
       schedule: ${SCHEDULE}
       concurrencyPolicy: 'Forbid'
       successfulJobsHistoryLimit: ${{SUCCESS_JOBS_HISTORY_LIMIT}}
