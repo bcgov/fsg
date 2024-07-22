@@ -58,7 +58,9 @@ php artisan cache:clear
 # Start Horizon with retries in the background
 start_horizon &
 
-php artisan schedule:run >> /dev/null 2>&1
 
 # Keep the script running to prevent the container from exiting
-tail -f /dev/null
+while :; do
+php artisan schedule:run
+sleep 10
+done

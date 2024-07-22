@@ -19,6 +19,12 @@ ENV TZ=${TZ}
 ENV APACHE_SERVER_NAME=__default__
 
 WORKDIR /
+COPY openshift/apache-oc/image-files/ /
+COPY openshift/apache-oc/image-files/etc/apache2/sites-available/000-default.conf /etc/apache2/sites-enabled/000-default.conf
+COPY entrypoint.sh /sbin/entrypoint.sh
+COPY / /var/www/html/
+
+EXPOSE 8080 8443 2525
 
 #RUN useradd -u 1000 -ms /bin/bash ${USER_ID}
 RUN apt-get -yq update --fix-missing \
@@ -94,15 +100,8 @@ RUN apt-get -yq update --fix-missing \
     && mkdir -p /var/log/php  \
     && printf 'error_log=/var/log/php/error.log\nlog_errors=1\nerror_reporting=E_ALL\nmemory_limit=450M\n' > /usr/local/etc/php/conf.d/custom.ini \
     && mkdir -p /etc/apache2/sites-enabled \
-    && curl -sS https://getcomposer.org/installer -o composer-setup.php && php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-
-WORKDIR /
-COPY openshift/apache-oc/image-files/ /
-COPY openshift/apache-oc/image-files/etc/apache2/sites-available/000-default.conf /etc/apache2/sites-enabled/000-default.conf
-
-
-EXPOSE 8080 8443 2525
-RUN sed -i -e 's/80/8080/g' -e 's/443/8443/g' -e 's/25/2525/g' /etc/apache2/ports.conf \
+    && curl -sS https://getcomposer.org/installer -o composer-setup.php && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+    && sed -i -e 's/80/8080/g' -e 's/443/8443/g' -e 's/25/2525/g' /etc/apache2/ports.conf \
     # Apache- Prepare to be run as non root user
     && mkdir -p /var/lock/apache2 /var/run/apache2 \
     && chgrp -R 0 /etc/apache2/mods-* \
@@ -125,10 +124,7 @@ RUN sed -i -e 's/80/8080/g' -e 's/443/8443/g' -e 's/25/2525/g' /etc/apache2/port
     && a2query -m \
     && chmod a+rx /docker-bin/*.sh \
     && /docker-bin/docker-build.sh && export COMPOSER_HOME="$HOME/.config/composer";
-#    && mkdir -p /etc/supervisor/conf.d
-#COPY horizon.conf /etc/supervisor/conf.d/horizon.conf
-COPY entrypoint.sh /sbin/entrypoint.sh
-COPY / /var/www/html/
+
 
 #RUN supervisorctl reread && supervisorctl update
 WORKDIR /var/www/html/
