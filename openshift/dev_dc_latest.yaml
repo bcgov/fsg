@@ -121,6 +121,7 @@ objects:
         template: 'fsg-daily-cronjob'
         cronjob: ${JOB_NAME}
     spec:
+      serviceAccountName: ${LICENSE_PLATE}-vault
       schedule: ${SCHEDULE}
       concurrencyPolicy: 'Forbid'
       successfulJobsHistoryLimit: ${{SUCCESS_JOBS_HISTORY_LIMIT}}
@@ -138,6 +139,10 @@ objects:
                 - name: ${JOB_NAME}
                   image: image-registry.openshift-image-registry.svc:5000/${BUILD_NAMESPACE}/${NAME}
                   command: ["/bin/sh", "-c", "cd /var/www/html && php artisan schedule:run"]
+                  volumeMounts:
+                    - name: site-data-volume
+                      mountPath: /var/site_data
+                  imagePullPolicy: Always
                   env:
                     - name: REDIS_HOST
                       value: "redis"
