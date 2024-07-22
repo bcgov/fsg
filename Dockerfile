@@ -153,7 +153,7 @@ USER ${USER_ID}
 #rm -rf vendor
 #rm -f composer.lock
 #composer install
-RUN composer install && npm install --prefix /var/www/html/ && npm run --prefix /var/www/html/ ${DEVENV}
+RUN chown -R ${USER_ID}:0 "/.npm" && composer install && npm install --prefix /var/www/html/ && npm run --prefix /var/www/html/ ${DEVENV}
 
 ENTRYPOINT ["/sbin/entrypoint.sh"]
 # Start!
