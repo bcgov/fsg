@@ -113,40 +113,6 @@ objects:
               env:
               - name: "ENV_ARG"
                 value: "hi there"
-  - kind: CronJob
-    apiVersion: batch/v1
-    metadata:
-      name: ${JOB_NAME}
-      namespace: ${NAMESPACE}
-      labels:
-        template: 'fsg-daily-cronjob'
-        cronjob: ${JOB_NAME}
-    spec:
-      schedule: ${SCHEDULE}
-      concurrencyPolicy: 'Forbid'
-      successfulJobsHistoryLimit: ${{SUCCESS_JOBS_HISTORY_LIMIT}}
-      failedJobsHistoryLimit: ${{FAILED_JOBS_HISTORY_LIMIT}}
-      jobTemplate:
-        metadata:
-          labels:
-            template: 'fsg-daily-cronjob'
-            cronjob: ${JOB_NAME}
-        spec:
-          backoffLimit: ${{JOB_BACKOFF_LIMIT}}
-          template:
-            spec:
-              containers:
-                - name: ${JOB_NAME}
-                  image: image-registry.openshift-image-registry.svc:5000/${BUILD_NAMESPACE}/${NAME}
-                  command: ["/bin/sh", "-c", "cd /var/www/html && php artisan schedule:run"]
-                  env:
-                    - name: REDIS_HOST
-                      value: "redis"
-
-              restartPolicy: 'Never'
-              terminationGracePeriodSeconds: 30
-              activeDeadlineSeconds: 220
-              dnsPolicy: 'ClusterFirst'
   - apiVersion: route.openshift.io/v1
     kind: Route
     spec:
