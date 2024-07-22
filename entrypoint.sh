@@ -38,8 +38,8 @@ fi
 echo "ENV_ARG: ${ENV_ARG}"
 
 # Add cron job for Laravel schedule:run
-echo "Install Cron"
-echo "* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1" | crontab -
+#echo "Install Cron"
+#echo "* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1" | crontab -
 
 echo "Install composer"
 composer dump-autoload
@@ -57,6 +57,8 @@ php artisan cache:clear
 
 # Start Horizon with retries in the background
 start_horizon &
+
+php artisan schedule:run >> /dev/null 2>&1
 
 # Keep the script running to prevent the container from exiting
 tail -f /dev/null
