@@ -32,7 +32,7 @@ nav.navbar{
         <div class="container-fluid">
             <Link class="navbar-brand" href="/">
                 <BreezeApplicationLogo width="126" height="34" class="d-inline-block align-text-top me-3" />
-                <span class="d-none d-lg-inline fw-light">Future Skills Grant</span>
+                <span class="d-none d-lg-inline fw-light">StrongerBC Future Skills Grant</span>
             </Link>
         </div>
     </nav>

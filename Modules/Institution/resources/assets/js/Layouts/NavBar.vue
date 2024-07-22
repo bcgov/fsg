@@ -17,7 +17,7 @@ nav.navbar .form-select {
         <div class="container-fluid">
             <Link class="navbar-brand" href="/institution/dashboard">
                 <ApplicationLogo width="126" height="34" class="d-inline-block align-text-top me-3" />
-                <span class="d-none d-xl-inline fw-light">FSG - Future Skills Grant</span>
+                <span class="d-none d-xl-inline fw-light">StrongerBC Future Skills Grant</span>
             </Link>
             <template v-if="programYearsList.length > 1">
                 <select @change="updateProgramYear" class="form-select form-select-sm" aria-label="Default federal cap">
