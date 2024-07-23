@@ -89,7 +89,7 @@ export default {
                     $("#newInstAllocationModal").modal('hide');
                     this.newInstitutionAllocationForm.reset(this.newInstitutionAllocationFormData);
 
-                    this.$inertia.visit('/ministry/institutions/' + this.newInstitutionAllocationForm.institution_id + '/allocations');
+                    this.$inertia.visit('/ministry/institutions/' + this.results.id + '/allocations');
                     // console.log(response.props.institution)
                 },
                 onError: () => {
