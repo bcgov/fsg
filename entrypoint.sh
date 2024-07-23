@@ -62,5 +62,5 @@ php artisan cache:clear
 # Keep the script running to prevent the container from exiting
 while :; do
 php artisan schedule:run
-sleep 60
+sleep 600
 done
