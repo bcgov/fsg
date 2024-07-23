@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Allocation;
 use App\Models\Claim;
 use App\Models\Student;
+use App\Rules\InstitutionAllocationReached;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use App\Rules\ValidSin;
@@ -44,6 +45,8 @@ class ApplicationEditRequest extends FormRequest
      */
     public function rules()
     {
+        $allocation = Allocation::where('guid', $this->input('allocation_guid'))->with('institution')->first();
+
         $rules = [
             'id' => 'required',
             'guid' => 'required',
@@ -70,6 +73,7 @@ class ApplicationEditRequest extends FormRequest
 
         }elseif ($this->claim_status === 'Submitted') {
             $rules = array_merge($rules, [
+                'allocation_limit_reached' => new InstitutionAllocationReached($allocation),
 
                 'agreement_confirmed' => 'required|boolean',
                 'registration_confirmed' => 'required|boolean',
@@ -108,7 +112,8 @@ class ApplicationEditRequest extends FormRequest
         if ($student && $allocation) {
 
             $this->merge([
-                'guid' => Str::orderedUuid()->getHex(),
+                'allocation_limit_reached' => null,
+//                'guid' => Str::orderedUuid()->getHex(),
                 'last_touch_by_user_guid' => $this->user()->guid,
 
                 'allocation_guid' => $allocation->guid,

@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Allocation;
 use App\Models\Claim;
 use App\Models\Student;
+use App\Rules\InstitutionAllocationReached;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use App\Rules\ValidSin;
@@ -44,6 +45,8 @@ class ApplicationStoreRequest extends FormRequest
      */
     public function rules()
     {
+        $allocation = Allocation::where('guid', $this->input('allocation_guid'))->with('institution')->first();
+
         $rules = [
             'guid' => 'required',
             'claim_status' => 'required|string',
@@ -70,6 +73,7 @@ class ApplicationStoreRequest extends FormRequest
         }elseif ($this->claim_status === 'Submitted') {
             $rules = array_merge($rules, [
 
+                'allocation_limit_reached' => new InstitutionAllocationReached($allocation),
                 'agreement_confirmed' => 'required|boolean',
                 'registration_confirmed' => 'required|boolean',
 
@@ -98,9 +102,6 @@ class ApplicationStoreRequest extends FormRequest
             return;
         }
 
-
-
-
         $student = Student::where('user_guid', $this->user()->guid)->first();
         $allocation = Allocation::where('institution_guid', $this->institution_guid)
             ->where('status', 'active')
@@ -113,17 +114,18 @@ class ApplicationStoreRequest extends FormRequest
             // Only allow the student to submit an application if the allocation limit has not been reached.
 
             // We need the sum of claims that are in Hold, Submitted or Claimed
-            $sum_claims = Claim::whereIn('claim_status', ['Submitted', 'Claimed'])
-                ->where('institution_guid', $this->institution_guid)
-                ->where('allocation_guid', $allocation->guid)
-                ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
-            $sum_hold_claims = Claim::where('claim_status', 'Hold')
-                ->where('institution_guid', $this->institution_guid)
-                ->where('allocation_guid', $allocation->guid)
-                ->sum('estimated_hold_amount');
-
-            if((float)$sum_claims + (float)$sum_hold_claims < (float)$allocation->total_amount) {
+//            $sum_claims = Claim::whereIn('claim_status', ['Submitted', 'Claimed'])
+//                ->where('institution_guid', $this->institution_guid)
+//                ->where('allocation_guid', $allocation->guid)
+//                ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
+//            $sum_hold_claims = Claim::where('claim_status', 'Hold')
+//                ->where('institution_guid', $this->institution_guid)
+//                ->where('allocation_guid', $allocation->guid)
+//                ->sum('estimated_hold_amount');
+//
+//            if((float)$sum_claims + (float)$sum_hold_claims < (float)$allocation->total_amount) {
                 $this->merge([
+                    'allocation_limit_reached' => null,
                     'guid' => Str::orderedUuid()->getHex(),
                     'last_touch_by_user_guid' => $this->user()->guid,
 
@@ -150,12 +152,12 @@ class ApplicationStoreRequest extends FormRequest
                     'total_claim_amount' => 0,
                     'claim_percent' => 0,
                 ]);
-            } else {
-                // Handle cases where $student or $allocation is null
-                // This could involve throwing an exception or logging an error
-                // For example:
-                throw new \Exception('The institution allocation limit has been reached.');
-            }
+//            } else {
+//                // Handle cases where $student or $allocation is null
+//                // This could involve throwing an exception or logging an error
+//                // For example:
+//                throw new \Exception('The institution allocation limit has been reached.');
+//            }
 
 
         } else {

@@ -26,7 +26,7 @@ class Institution extends Model
      *
      * @var array<int, string>
      */
-    protected $hidden = ['last_touch_by_user_guid', 'api_key', 'api_id'];
+    protected $hidden = ['last_touch_by_user_guid',];
 
     public function claims()
     {

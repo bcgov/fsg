@@ -17,7 +17,8 @@
                     <tbody>
                     <template v-for="(row, i) in results.allocations">
                         <tr v-if="row.py !== null">
-                            <td><a href="#" @click="openEditForm(row)">{{ row.py.start_date }}</a></td>
+                            <td v-if="row.status === 'active'"><a href="#" @click="openEditForm(row)">{{ row.py.start_date }}</a></td>
+                            <td v-else>{{ row.py.start_date }}</td>
                             <td>{{ row.py.end_date }}</td>
                             <td>${{ $formatNumberWithCommas(row.total_amount_formatted) }}</td>
                             <td>${{ $formatNumberWithCommas(row.claimed) }}</td>
