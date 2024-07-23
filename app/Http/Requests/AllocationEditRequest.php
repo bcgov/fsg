@@ -17,6 +17,11 @@ class AllocationEditRequest extends FormRequest
     {
         $allocation = Allocation::find($this->id);
 
+        // Only allow editing active allocations
+        if($allocation->status !== 'active'){
+            return false;
+        }
+
         // Check if the authenticated user has the necessary permissions to edit the institution.
         // You can access the authenticated user using the Auth facade or $this->user() method.
         return $this->user()->can('update', $allocation);
