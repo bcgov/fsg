@@ -33,9 +33,10 @@ class ClaimEditRequest extends FormRequest
             return false;
         }
         if ($this->claim_status === 'Cancelled' && $claim->claim_status === 'Hold') {
-            if($claim->stable_enrolment_date < Carbon::now()) {
-                return false;
-            }
+            // Robyn said remove this.
+//            if($claim->stable_enrolment_date < Carbon::now()) {
+//                return false;
+//            }
         }
 
 
@@ -99,7 +100,7 @@ class ClaimEditRequest extends FormRequest
                 'registration_fee' => 'nullable|numeric',
                 'materials_fee' => 'nullable|numeric',
                 'program_fee' => 'nullable|numeric',
-                'estimated_hold_amount' => 'required|numeric|gt:0',
+                'estimated_hold_amount' => 'required|numeric|gte:0',
                 'total_claim_amount' => 'nullable|numeric',
                 'claim_percent' => 'required|numeric',
                 'stable_enrolment_date' => 'nullable|date_format:Y-m-d',

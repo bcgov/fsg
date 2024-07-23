@@ -137,10 +137,28 @@ objects:
               containers:
                 - name: ${JOB_NAME}
                   image: image-registry.openshift-image-registry.svc:5000/${BUILD_NAMESPACE}/${NAME}
-                  command: ["/bin/sh", "-c", "cd /var/www/html && php artisan schedule:run"]
+                  command: ["/bin/sh", "-c"]
                   env:
-                    - name: REDIS_HOST
-                      value: "redis"
+                    - name: LOGIN_TOKEN
+                      valueFrom:
+                        secretKeyRef:
+                          name: ${LOGIN_TOKEN_SECRET}
+                          key: token
+                  args:
+                    - >
+                      date
+
+                      oc login --token=$(LOGIN_TOKEN) --server=https://api.silver.devops.gov.bc.ca:6443
+
+                      oc version
+
+                      echo ""
+
+                      echo "==========> Starting schedule run"
+
+                      oc -n ${BUILD_NAMESPACE} get pods -l deploymentconfig=${NAME} -o name | xargs -I {} oc exec -it {} -- php artisan schedule:run
+
+                      echo "==========> Finished schedule run"
 
               restartPolicy: 'Never'
               terminationGracePeriodSeconds: 30
@@ -277,7 +295,7 @@ parameters:
   - name: 'SCHEDULE'
     displayName: 'Cron Schedule'
     description: 'Cron Schedule to Execute the Job (in UTC)'
-    # value: '0 9 * * *' # at 9 utc (01:00 pst)
+    # value: '0 8 * * *' # at 8 UTC (00:00 midnight PST)
     value: '*/5 * * * *' #every 5 minutes
     required: true
   - name: 'SUCCESS_JOBS_HISTORY_LIMIT'
@@ -295,3 +313,6 @@ parameters:
     description: 'The number of attempts to try for a successful job outcome (default: 6)'
     value: '0'
     required: false
+  - name: LOGIN_TOKEN_SECRET
+    description: The secret having the login token
+    required: true

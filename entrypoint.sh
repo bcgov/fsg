@@ -1,24 +1,6 @@
 #!/bin/bash
 set -e
 
-# Function to start Horizon with retries
-start_horizon() {
-    local retries=10
-    local count=0
-    local delay=5
-
-    until php artisan horizon; do
-        count=$((count + 1))
-        if [ $count -ge $retries ]; then
-            echo "Horizon failed to start after $retries attempts."
-            exit 1
-        fi
-        echo "Horizon failed to start. Retrying in $delay seconds... ($count/$retries)"
-        sleep $delay
-    done
-    echo "Horizon started successfully."
-}
-
 echo "Start entrypoint file"
 
 echo "APACHE_REMOTE_IP_HEADER: ${APACHE_REMOTE_IP_HEADER}"
@@ -37,10 +19,6 @@ if [ -f /vault/secrets/test-secrets.env ]; then
 fi
 echo "ENV_ARG: ${ENV_ARG}"
 
-# Add cron job for Laravel schedule:run
-#echo "Install Cron"
-#echo "* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1" | crontab -
-
 echo "Install composer"
 composer dump-autoload
 
@@ -52,15 +30,11 @@ chmod -R a+w node_modules
 echo "Starting apache in the background:"
 /usr/sbin/apache2ctl start
 
-echo "Start Horizon"
+echo "Clear cache"
 php artisan cache:clear
-
-# Start Horizon with retries in the background
-#start_horizon &
 
 
 # Keep the script running to prevent the container from exiting
 while :; do
-php artisan schedule:run
-sleep 600
+sleep 300
 done
