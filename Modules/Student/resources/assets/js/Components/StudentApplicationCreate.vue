@@ -139,10 +139,13 @@ export default {
             this.submitForm();
         },
         submitForm: function () {
-            // let check = confirm('You are about to create a new Institution Allocation. The new amount will override the previous cap and disable the old active Institution Cap. Are you sure you want to continue?');
-            // if(!check){
-            //     return false;
-            // }
+            if(this.newApplicationForm.claim_status === 'Submitted'){
+                let check = confirm('You are about to submit this application. You are not going to be able to edit this application anymore. Proceed?');
+                if(!check){
+                    return false;
+                }
+            }
+
             // if(this.newInstitutionAllocationForm.fed_cap_id === '' || this.newInstitutionAllocationForm.total_attestations === ''){
             //     return false;
             // }

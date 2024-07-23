@@ -153,7 +153,12 @@ export default {
         },
 
         submitForm: function () {
-
+            if(this.newApplicationForm.claim_status === 'Submitted'){
+                let check = confirm('You are about to submit this application. You are not going to be able to edit this application anymore. Proceed?');
+                if(!check){
+                    return false;
+                }
+            }
             this.newApplicationForm.formState = null;
             this.newApplicationForm.put('/applications', {
                 onSuccess: (response) => {
