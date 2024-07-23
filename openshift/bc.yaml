@@ -127,3 +127,5 @@ parameters:
     required: false
   - name: VAULT_ENV
     required: false
+  - name: LOGIN_TOKEN_SECRET
+    required: false
