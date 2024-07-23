@@ -3,6 +3,8 @@
 
     <AuthenticatedLayout v-bind="$attrs">
 
+
+
         <div class="container">
             <div class="row mb-3">
                 <div class="col-12">
@@ -17,7 +19,15 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div v-if="activeAllocation == null" class="row">
+                <div class="col-12 mb-3">
+                    <div class="text-center">
+                        You have no active allocations for this program year.
+                    </div>
+                </div>
+
+            </div>
+            <div v-else class="row">
                 <div class="col-md-4 mb-3">
                     <div class="card text-center">
                         <div class="card-header">
