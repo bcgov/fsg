@@ -139,7 +139,7 @@ class ClaimEditRequest extends FormRequest
                 'total_claim_amount' => 'required|numeric',
                 'claim_percent' => 'required|numeric',
                 'expected_stable_enrolment_date' => 'required|date_format:Y-m-d',
-                'expiry_date' => 'nullable|date_format:Y-m-d',
+                'expiry_date' => 'required|date_format:Y-m-d',
 
                 'fifty_two_week_affirmation' => 'required|boolean|in:true,1',
                 'agreement_confirmed' => 'required|boolean|in:true,1',

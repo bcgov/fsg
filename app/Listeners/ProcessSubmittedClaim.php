@@ -96,7 +96,6 @@ class ProcessSubmittedClaim
                     $claim->claim_status = "Submitted";
                     $claim->estimated_hold_amount = 0;
                 }
-
             }
 
             // If the claim is moving from Hold to Claimed

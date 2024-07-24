@@ -77,7 +77,7 @@
                     <template v-if="claim.claim_status === 'Hold'">
                         <div class="col-md-4">
                             <Label for="inputExpiryDate" class="form-label" value="Hold Amount Expiry Date" />
-                            {{ editStudentClaimForm.expiry_date }}
+                            <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpiryDate" v-model="editStudentClaimForm.expiry_date" />
                         </div>
                         <div class="col-md-4">
                             <Label for="inputEstimatedHoldAmount" class="form-label" value="Estimated Hold Amount" />
