@@ -42,9 +42,9 @@
                 <em v-else class="bi bi bi-sort-numeric-down"></em>
             </a>
         </th>
-        <th scope="col" class="text-nowrap">
-            <span>Student Claims</span>
-        </th>
+<!--        <th scope="col" class="text-nowrap">-->
+<!--            <span>Student Claims</span>-->
+<!--        </th>-->
         <th scope="col" class="text-nowrap">
             <a href="#" @click="switchSort('active_status')">
                 <span>Status</span>
