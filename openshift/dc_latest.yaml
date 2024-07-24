@@ -295,8 +295,8 @@ parameters:
   - name: 'SCHEDULE'
     displayName: 'Cron Schedule'
     description: 'Cron Schedule to Execute the Job (in UTC)'
-    # value: '0 8 * * *' # at 8 UTC (00:00 midnight PST)
-    value: '*/5 * * * *' #every 5 minutes
+    value: '0 8 * * *' # at 8 UTC (00:00 midnight PST)
+    # value: '*/5 * * * *' #every 5 minutes
     required: true
   - name: 'SUCCESS_JOBS_HISTORY_LIMIT'
     displayName: 'Successful Job History Limit'
