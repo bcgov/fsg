@@ -136,7 +136,7 @@ objects:
             spec:
               containers:
                 - name: ${JOB_NAME}
-                  image: image-registry.openshift-image-registry.svc:5000/${BUILD_NAMESPACE}/${NAME}-cron
+                  image: image-registry.openshift-image-registry.svc:5000/${BUILD_NAMESPACE}/${NAME}-cron:${IMAGE_TAG}
                   command: ["/bin/sh", "-c"]
                   env:
                     - name: LOGIN_TOKEN
