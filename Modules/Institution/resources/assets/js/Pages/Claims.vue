@@ -40,7 +40,7 @@
                                             <td>{{ row.first_name }}</td>
                                             <td><Link :href="'/institution/students/' + row.student.id">{{ row.last_name }}</Link></td>
                                             <td>{{ row.program.program_name }}</td>
-                                            <td>${{ row.estimated_hold_amount }}</td>
+                                            <td>${{ $amountPlusPyFee(row.estimated_hold_amount, row.py_admin_fee) }}</td>
                                             <td>${{ parseFloat(row.registration_fee) + parseFloat(row.materials_fee) + parseFloat(row.program_fee) }}</td>
                                             <td>${{ row.student.total_grant }}</td>
                                             <td>
@@ -140,9 +140,13 @@ export default {
             this.$inertia.visit('/institution/claims');
 
         },
+
     },
     mounted() {
         this.claimList = this.results.data;
     },
+    computed:{
+
+    }
 }
 </script>

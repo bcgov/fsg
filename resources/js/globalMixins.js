@@ -37,5 +37,8 @@ export const globalMixins = {
             }
             return value;
         },
+        $amountPlusPyFee: function(amount, pyFee){
+            return parseFloat(amount) + (parseFloat(amount) / parseFloat(pyFee));
+        }
     }
 };

@@ -19,7 +19,7 @@
                         <tr v-if="row !== null">
                             <td><a href="#" @click="openEditForm(row)">{{ row.program.program_name }}</a></td>
                             <td>{{ row.institution.name }}</td>
-                            <td>${{ row.estimated_hold_amount }}</td>
+                            <td>${{ $amountPlusPyFee(row.estimated_hold_amount, row.py_admin_fee) }}</td>
                             <td>${{ parseFloat(row.registration_fee) + parseFloat(row.materials_fee) + parseFloat(row.program_fee) }}</td>
                             <td>${{ row.student.total_grant }}</td>
                             <td>
