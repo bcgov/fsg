@@ -10,4 +10,4 @@ use Illuminate\Support\Facades\Schedule;
 //    \Log::info("Inspire Finished");
 //})->purpose('Display an inspiring quote')->everyMinute();
 
-Schedule::job(new MidnightJob)->timezone('America/Vancouver')->daily();
+//Schedule::job(new MidnightJob)->timezone('America/Vancouver')->daily();

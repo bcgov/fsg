@@ -29,5 +29,9 @@ class MidnightJob implements ShouldQueue
         sleep(10);
         \Log::info('Midnight Job Finished');
 
+
+        MidnightJob::dispatch()->onQueue('midnight');
+
+
     }
 }
