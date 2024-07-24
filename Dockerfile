@@ -48,8 +48,8 @@ RUN apt-get -yq update --fix-missing \
     nodejs \
     npm \
     ca-certificates gnupg \
-    && pecl install zip pcov redis && docker-php-ext-enable zip && docker-php-ext-enable redis \
-    && docker-php-ext-install bcmath soap pcntl \
+    && pecl install zip pcov && docker-php-ext-enable zip \
+    && docker-php-ext-install bcmath soap \
     && docker-php-source delete \
     && sed -ri -e 's!expose_php = On!expose_php = Off!g' $PHP_INI_DIR/php.ini-production \
     && sed -ri -e 's!ServerTokens OS!ServerTokens Prod!g' /etc/apache2/conf-available/security.conf \
@@ -146,8 +146,6 @@ RUN mkdir -p storage && mkdir -p bootstrap/cache && chmod -R ug+rwx storage boot
     && chmod +x /sbin/entrypoint.sh
 USER ${USER_ID}
 
-#rm -rf vendor
-#rm -f composer.lock
 #composer install
 RUN composer install && npm install --prefix /var/www/html/ && npm run --prefix /var/www/html/ ${DEVENV}
 
