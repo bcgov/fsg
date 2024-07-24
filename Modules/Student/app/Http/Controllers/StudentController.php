@@ -17,11 +17,11 @@ use Response;
 
 class StudentController extends Controller
 {
-    public function index($page = 'profile')
+    public function index($page = 'profile', $error = null)
     {
         $student = Student::where('user_guid', Auth::user()->guid)->first();
 
-        return Inertia::render('Student::Dashboard', ['status' => true, 'results' => $student, 'page' => $page]);
+        return Inertia::render('Student::Dashboard', ['status' => true, 'results' => $student, 'page' => $page, 'error' => $error]);
     }
 
     /**
@@ -38,16 +38,20 @@ class StudentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function store(StudentStoreRequest $request): \Illuminate\Http\RedirectResponse
+    public function store(StudentStoreRequest $request): \Illuminate\Http\RedirectResponse | \Inertia\Response
     {
         // Check if a student with the given SIN already exists
         $existingStudent = Student::where('sin', $request->sin)->first();
 
         if ($existingStudent) {
-            // Update the existing student record
-            $existingStudent->update([
-                'user_guid' => Auth::user()->guid
-            ]);
+            // If dob matches as well, update the existing student record
+            if($request->dob === $existingStudent->dob){
+                $existingStudent->update([
+                    'user_guid' => Auth::user()->guid
+                ]);
+            }else{
+                return $this->index('profile', 'Failed to connect account');
+            }
         } else {
             // Create a new student record
             $student_id = Student::create($request->validated());
