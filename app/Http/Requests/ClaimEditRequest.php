@@ -24,7 +24,7 @@ class ClaimEditRequest extends FormRequest
         }
 
         // Prevent updates if the current claim_status is "Claimed"
-        if ($claim->claim_status === 'Claimed' && $claim->outcome_effective_date != null) {
+        if ($claim->claim_status === 'Claimed' && $claim->outcome_effective_date != null && $claim->outcome_status != null) {
             return false;
         }
 
