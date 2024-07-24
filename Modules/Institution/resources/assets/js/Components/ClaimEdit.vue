@@ -11,7 +11,12 @@
 
                     <div class="col-md-6">
                         <Label for="inputSd" class="form-label" value="Program Name"/>
-                        <p v-if="editStudentClaimForm.program !== null">{{ editStudentClaimForm.program.program_name }}</p>
+                        <Select v-if="editStudentClaimForm.program !== null"
+                                class="form-select" id="inputSd" v-model="editStudentClaimForm.program_guid">
+                            <template  v-for="p in programs">
+                                <option v-if="p.active_status === true" :value="p.guid">{{ p.program_name }}</option>
+                            </template>
+                        </Select>
                         <p v-else> - </p>
                     </div>
                     <div class="col-md-3">
