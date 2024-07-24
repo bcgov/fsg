@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="text-center m-5">
-            <div v-if="editStudentClaimForm == null" class="spinner-border" role="status">
+        <div v-if="editStudentClaimForm == null" class="text-center m-5">
+            <div class="spinner-border" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
@@ -13,12 +13,6 @@
                         <Label for="inputSd" class="form-label" value="Program Name"/>
                         <p v-if="editStudentClaimForm.program !== null">{{ editStudentClaimForm.program.program_name }}</p>
                         <p v-else> - </p>
-                        <!--                    <Select class="form-select" id="inputSd" v-model="editStudentClaimForm.program_guid">-->
-                        <!--                        <option></option>-->
-                        <!--                        <template  v-for="p in programs">-->
-                        <!--                            <option v-if="p.active_status === true" :value="p.guid">{{ p.program_name }}</option>-->
-                        <!--                        </template>-->
-                        <!--                    </Select>-->
                     </div>
                     <div class="col-md-3">
                         <Label for="inputAgreeConfirmed" class="form-label" value="Consent Confirmed?" />

@@ -135,7 +135,7 @@
                     </div>
                     <div class="col-md-4">
                         <Label for="inputStableDate" class="form-label" value="Actual Stable Enrol. Date" />
-                        <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputStableDate" v-model="editStudentClaimForm.stable_enrolment_date" />
+                        <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputStableDate" v-model="editStudentClaimForm.expected_stable_enrolment_date" />
                     </div>
 
                 </template>
@@ -183,7 +183,7 @@
                     </div>
                     <div class="col-md-4">
                         <Label for="inputStableDate" class="form-label" value="Actual Stable Enrol. Date" />
-                        {{ editStudentClaimForm.stable_enrolment_date }}
+                        {{ editStudentClaimForm.expected_stable_enrolment_date }}
                     </div>
 
                 </template>

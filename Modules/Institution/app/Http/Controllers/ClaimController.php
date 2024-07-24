@@ -83,7 +83,7 @@ class ClaimController extends Controller
         $claim = Claim::find($request->id);
         $id = $request->page === 'students' ? $claim->student->id : $claim->institution->id;
 
-        return Redirect::route('institution.claims');
+        return Redirect::route('institution.claims.index');
     }
 
     public function fetchStudentsClaims(Request $request, ?Claim $claim = null)
