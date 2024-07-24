@@ -29,14 +29,17 @@ class ClaimEditRequest extends FormRequest
         }
 
         // Allow switching to Cancelled only if claim is in Hold status and stable enrol. date is yet to come
-        if ($this->claim_status === 'Cancelled' && $claim->claim_status !== 'Hold') {
-            return false;
-        }
-        if ($this->claim_status === 'Cancelled' && $claim->claim_status === 'Hold') {
+//        if ($this->claim_status === 'Cancelled' && $claim->claim_status !== 'Hold') {
+//            return false;
+//        }
+//        if ($this->claim_status === 'Cancelled' && $claim->claim_status === 'Hold') {
             // Robyn said remove this.
 //            if($claim->stable_enrolment_date < Carbon::now()) {
 //                return false;
 //            }
+//        }
+        if ($this->claim_status === 'Cancelled' && ($claim->claim_status == 'Draft' || $claim->claim_status == 'Expired')) {
+            return false;
         }
 
 

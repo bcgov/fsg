@@ -27,7 +27,9 @@ class ApplicationController extends Controller
      */
     public function update(ApplicationEditRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $application_id = Claim::where('id', $request->id)->update($request->validated());
+        $validated = collect($request->validated())->except(['allocation_limit_reached'])->toArray();
+
+        $application_id = Claim::where('id', $request->id)->update($validated);
         $application = Claim::find($request->id);
         event(new ApplicationSubmitted($application, $request->claim_status));
         return Redirect::route('student.home');
@@ -39,7 +41,7 @@ class ApplicationController extends Controller
      */
     public function store(ApplicationStoreRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $validated = $request->validated();
+        $validated = collect($request->validated())->except(['allocation_limit_reached'])->toArray();
 
         $application = Claim::create($validated);
         event(new ApplicationSubmitted($application, $request->claim_status));
