@@ -157,7 +157,7 @@ objects:
 
                       echo "==========> Starting schedule run"
 
-                      oc -n ${NAMESPACE} get pods -l deploymentconfig=${NAME} -o name | xargs -I {} oc exec -it {} -- php artisan queue:work --queue=midnight
+                      oc -n ${NAMESPACE} get pods -l deploymentconfig=${NAME} -o name | xargs -I {} oc exec -it {} -- php artisan job:dispatch-midnight && php artisan queue:work --queue=midnight
 
                       echo "==========> Finished schedule run"
 

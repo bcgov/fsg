@@ -36,9 +36,6 @@ php artisan cache:clear
 echo "Clear our midnight queue"
 php artisan queue:clear --queue=midnight
 
-echo "Setup a new midnight job"
-php artisan job:dispatch-midnight
-
 
 # Keep the script running to prevent the container from exiting
 while :; do
