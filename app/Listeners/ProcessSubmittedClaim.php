@@ -94,6 +94,7 @@ class ProcessSubmittedClaim
                     $claim->process_feedback = "Student total claims of Hold and Claimed, including this,
                     is $" . (float)$totalHoldClaims + (float)$totalActiveClaims . " > $" . (float)env('TOTAL_GRANT');
                     $claim->claim_status = "Submitted";
+                    $claim->estimated_hold_amount = 0;
                 }
 
             }
