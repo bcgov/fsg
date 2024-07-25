@@ -297,7 +297,6 @@ export default {
                                 vm.editStudentClaimForm.reset();
                                 vm.$emit('close');
                                 vm.$inertia.visit('/institution/claims');
-
                             });
                     }, 2500);
                 },
