@@ -24,18 +24,22 @@ class ClaimEditRequest extends FormRequest
         }
 
         // Prevent updates if the current claim_status is "Claimed"
-        if ($claim->claim_status === 'Claimed' && $claim->outcome_effective_date != null) {
+        if ($claim->claim_status === 'Claimed' && $claim->outcome_effective_date != null && $claim->outcome_status != null) {
             return false;
         }
 
         // Allow switching to Cancelled only if claim is in Hold status and stable enrol. date is yet to come
-        if ($this->claim_status === 'Cancelled' && $claim->claim_status !== 'Hold') {
+//        if ($this->claim_status === 'Cancelled' && $claim->claim_status !== 'Hold') {
+//            return false;
+//        }
+//        if ($this->claim_status === 'Cancelled' && $claim->claim_status === 'Hold') {
+            // Robyn said remove this.
+//            if($claim->stable_enrolment_date < Carbon::now()) {
+//                return false;
+//            }
+//        }
+        if ($this->claim_status === 'Cancelled' && ($claim->claim_status == 'Draft' || $claim->claim_status == 'Expired')) {
             return false;
-        }
-        if ($this->claim_status === 'Cancelled' && $claim->claim_status === 'Hold') {
-            if($claim->stable_enrolment_date < Carbon::now()) {
-                return false;
-            }
         }
 
 
@@ -99,10 +103,10 @@ class ClaimEditRequest extends FormRequest
                 'registration_fee' => 'nullable|numeric',
                 'materials_fee' => 'nullable|numeric',
                 'program_fee' => 'nullable|numeric',
-                'estimated_hold_amount' => 'required|numeric|gt:0',
+                'estimated_hold_amount' => 'required|numeric|gte:0',
                 'total_claim_amount' => 'nullable|numeric',
                 'claim_percent' => 'required|numeric',
-                'stable_enrolment_date' => 'nullable|date_format:Y-m-d',
+                'expected_stable_enrolment_date' => 'nullable|date_format:Y-m-d',
                 'expiry_date' => 'nullable|date_format:Y-m-d',
 
                 'fifty_two_week_affirmation' => 'required|boolean|in:true,1',
@@ -115,10 +119,10 @@ class ClaimEditRequest extends FormRequest
                 'registration_fee' => 'nullable|numeric',
                 'materials_fee' => 'nullable|numeric',
                 'program_fee' => 'nullable|numeric',
-                'estimated_hold_amount' => 'required|numeric|gt:0',
+                'estimated_hold_amount' => 'required|numeric|gte:0',
                 'total_claim_amount' => 'nullable|numeric',
                 'claim_percent' => 'required|numeric',
-                'stable_enrolment_date' => 'nullable|date_format:Y-m-d',
+                'expected_stable_enrolment_date' => 'nullable|date_format:Y-m-d',
                 'expiry_date' => 'required|date_format:Y-m-d',
 
                 'fifty_two_week_affirmation' => 'required|boolean|in:true,1',
@@ -134,8 +138,8 @@ class ClaimEditRequest extends FormRequest
                 'estimated_hold_amount' => 'required|numeric',
                 'total_claim_amount' => 'required|numeric',
                 'claim_percent' => 'required|numeric',
-                'stable_enrolment_date' => 'required|date_format:Y-m-d',
-                'expiry_date' => 'nullable|date_format:Y-m-d',
+                'expected_stable_enrolment_date' => 'required|date_format:Y-m-d',
+                'expiry_date' => 'required|date_format:Y-m-d',
 
                 'fifty_two_week_affirmation' => 'required|boolean|in:true,1',
                 'agreement_confirmed' => 'required|boolean|in:true,1',

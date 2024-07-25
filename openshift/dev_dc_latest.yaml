@@ -120,6 +120,7 @@ objects:
       labels:
         template: 'fsg-daily-cronjob'
         cronjob: ${JOB_NAME}
+        app.kubernetes.io/part-of: ${LABEL_NAME}
     spec:
       schedule: ${SCHEDULE}
       concurrencyPolicy: 'Forbid'
@@ -136,11 +137,29 @@ objects:
             spec:
               containers:
                 - name: ${JOB_NAME}
-                  image: image-registry.openshift-image-registry.svc:5000/${BUILD_NAMESPACE}/${NAME}
-                  command: ["/bin/sh", "-c", "cd /var/www/html && php artisan schedule:run"]
+                  image: image-registry.openshift-image-registry.svc:5000/${BUILD_NAMESPACE}/${NAME}-cron:${IMAGE_TAG}
+                  command: ["/bin/sh", "-c"]
                   env:
-                    - name: REDIS_HOST
-                      value: "redis"
+                    - name: LOGIN_TOKEN
+                      valueFrom:
+                        secretKeyRef:
+                          name: ${LOGIN_TOKEN_SECRET}
+                          key: token
+                  args:
+                    - >
+                      date
+
+                      oc login --token=$(LOGIN_TOKEN) --server=https://api.silver.devops.gov.bc.ca:6443
+
+                      oc version
+
+                      echo ""
+
+                      echo "==========> Starting schedule run"
+
+                      oc -n ${NAMESPACE} get pods -l deploymentconfig=${NAME} -o name | xargs -I {} sh -c 'oc exec -it {} -- php artisan job:dispatch-midnight && oc exec -it {} -- php artisan queue:work --once --queue=midnight'
+
+                      echo "==========> Finished schedule run"
 
               restartPolicy: 'Never'
               terminationGracePeriodSeconds: 30
@@ -277,8 +296,9 @@ parameters:
   - name: 'SCHEDULE'
     displayName: 'Cron Schedule'
     description: 'Cron Schedule to Execute the Job (in UTC)'
-    # value: '0 9 * * *' # at 9 utc (01:00 pst)
-    value: '*/5 * * * *' #every 5 minutes
+    value: '0 7 * * *' # at 8 UTC (00:00 midnight PST)
+    # value: '*/5 * * * *' #every 5 minutes
+    # value: '0 * * * *' #at the top of the hour
     required: true
   - name: 'SUCCESS_JOBS_HISTORY_LIMIT'
     displayName: 'Successful Job History Limit'
@@ -295,3 +315,6 @@ parameters:
     description: 'The number of attempts to try for a successful job outcome (default: 6)'
     value: '0'
     required: false
+  - name: LOGIN_TOKEN_SECRET
+    description: The secret having the login token
+    required: true

@@ -17,7 +17,7 @@ class CreateUtilsTable extends Migration
             $table->id();
 
             $table->text('field_name');
-            $table->string('field_type');
+            $table->string('field_type')->index();
             $table->text('field_description')->nullable();
             $table->boolean('active_flag')->default(true);
 

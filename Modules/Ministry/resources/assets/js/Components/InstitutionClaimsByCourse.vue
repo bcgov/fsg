@@ -21,7 +21,7 @@
                             <td>{{ row.first_name }}</td>
                             <td><Link :href="'/ministry/students/' + row.student.id">{{ row.last_name }}</Link></td>
                             <td>{{ row.program.program_name }}</td>
-                            <td>${{ row.estimated_hold_amount }}</td>
+                            <td>${{ $amountPlusPyFee(row.estimated_hold_amount, row.py_admin_fee) }}</td>
                             <td>${{ row.total_claim_amount }}</td>
                             <td>${{ row.student.total_grant }}</td>
                             <td>

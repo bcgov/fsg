@@ -3,12 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\AllocationUpdated;
-use App\Events\ClaimSubmitted;
 use App\Models\Allocation;
-use App\Models\Claim;
-use App\Models\Program;
-use App\Models\Student;
-use Illuminate\Support\Facades\Log;
 
 class ProcessUpdatedAllocation
 {

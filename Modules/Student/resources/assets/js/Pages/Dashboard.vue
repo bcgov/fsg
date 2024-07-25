@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div class="col-md-9">
-                    <DashboardProfile v-bind="$attrs" v-if="page === 'profile'" :results="results" :provider-user="providerUser"></DashboardProfile>
+                    <DashboardProfile v-bind="$attrs" v-if="page === 'profile'" :error="error" :results="results" :provider-user="providerUser"></DashboardProfile>
                     <DashboardApplications v-bind="$attrs" v-if="page === 'applications' && results != null" :results="results"></DashboardApplications>
                 </div>
             </div>
@@ -41,7 +41,8 @@ export default {
     props: {
         results: Object,
         providerUser: Object|null,
-        page: String|null
+        page: String|null,
+        error: String|null
     }
 }
 </script>

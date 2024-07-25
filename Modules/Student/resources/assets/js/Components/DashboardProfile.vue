@@ -5,6 +5,9 @@
         </div>
         <form class="card-body" @submit.prevent="submitForm">
             <div class="row g-3">
+                <div v-if="error != null" class="col-12 mb-3">
+                    {{ error }}
+                </div>
 
                 <div class="col-md-3">
                     <Label for="inputFirstName" class="form-label" value="Legal Name (First Name)" />
@@ -150,7 +153,8 @@ export default {
     },
     props: {
         results: Object,
-        providerUser: Object|null
+        providerUser: Object|null,
+        error: String|null
     },
     data() {
         return {

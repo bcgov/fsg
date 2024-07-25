@@ -3,6 +3,9 @@
         <div class="modal-body">
             <div class="row g-3">
 
+                <div class="col-12 mb-3">
+                    <div class="alert alert-info">Creating a new allocation will deactivate all active allocations permanently. This new allocation will be the only active allocation.</div>
+                </div>
                 <div class="col-md-6">
                     <Label for="inputSd" class="form-label" value="Program Year"/>
                     <Select class="form-select" id="inputSd" v-model="newInstitutionAllocationForm.program_year_guid">

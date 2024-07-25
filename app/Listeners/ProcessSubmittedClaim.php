@@ -94,8 +94,8 @@ class ProcessSubmittedClaim
                     $claim->process_feedback = "Student total claims of Hold and Claimed, including this,
                     is $" . (float)$totalHoldClaims + (float)$totalActiveClaims . " > $" . (float)env('TOTAL_GRANT');
                     $claim->claim_status = "Submitted";
+                    $claim->estimated_hold_amount = 0;
                 }
-
             }
 
             // If the claim is moving from Hold to Claimed
@@ -151,6 +151,7 @@ class ProcessSubmittedClaim
             elseif ($status === 'Cancelled' || $status === 'Expired') {
 
                 Log::info("claim is moving to Cancelled/Expired");
+                $claim->estimated_hold_amount = 0;
                 $claim->total_claim_amount = 0;
                 $claim->program_fee = 0;
                 $claim->materials_fee = 0;
