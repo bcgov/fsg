@@ -11,7 +11,7 @@
                             Claims Search
                         </div>
                         <div class="card-body">
-                            <ClaimSearchBox />
+                            <ClaimSearchBox v-bind="$attrs" />
                         </div>
                     </div>
                 </div>
@@ -19,13 +19,6 @@
                     <div class="card mb-3">
                         <div class="card-header">
                             Student Claims
-<!--                            <template v-if="capStat != '' && capStat.instCap != null">-->
-<!--                                <span class="badge rounded-pill text-bg-primary me-1">Active Cap Total: {{ capStat.instCap.total_claims}}</span>-->
-<!--                                <span class="badge rounded-pill text-bg-primary me-1">Issued PALs: {{ capStat.issued }}</span>-->
-<!--                                <span class="badge rounded-pill text-bg-primary me-1">Remaining PALs: {{ capStat.instCap.total_claims - capStat.issued }}</span>-->
-<!--                            </template>-->
-<!--                            <button type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Claim</button>-->
-<!--                            <a href="/institution/claims/export" target="_blank" class="btn btn-outline-success btn-sm float-end me-1" title="Export Claims"><i class="bi bi-filetype-csv"></i></a>-->
                         </div>
                         <div class="card-body">
                             <div v-if="results != null && results.data.length > 0" class="table-responsive pb-3">

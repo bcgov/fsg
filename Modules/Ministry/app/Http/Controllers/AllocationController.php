@@ -2,6 +2,7 @@
 
 namespace Modules\Ministry\Http\Controllers;
 
+use App\Events\AllocationCreated;
 use App\Events\AllocationUpdated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AllocationEditRequest;
@@ -31,7 +32,7 @@ class AllocationController extends Controller
     {
         $allocation = Allocation::create($request->validated());
 
-        $allocation = Allocation::find($allocation->id);
+        event(new AllocationCreated($allocation));
         return Redirect::route('ministry.institutions.show', [$allocation->institution->id, 'allocations']);
     }
 
