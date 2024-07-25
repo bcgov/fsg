@@ -34,7 +34,7 @@ echo "Clear cache"
 php artisan cache:clear
 
 echo "Clear our midnight queue"
-php artisan queue:clear --queue=midnight
+#php artisan queue:clear --queue=midnight
 
 
 # Keep the script running to prevent the container from exiting
