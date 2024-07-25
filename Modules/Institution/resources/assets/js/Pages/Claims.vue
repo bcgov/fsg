@@ -19,9 +19,10 @@
                     <div class="card mb-3">
                         <div class="card-header">
                             Student Claims
+                            <small v-if="claimList != ''" class="text-danger float-end">* Includes {{ claimList[0].py_admin_fee }}% Administration Fee</small>
                         </div>
                         <div class="card-body">
-                            <div v-if="claimList != null && results.data.length > 0" class="table-responsive pb-3">
+                            <div v-if="claimList != '' && results.data.length > 0" class="table-responsive pb-3">
                                 <table class="table table-striped">
                                     <thead>
                                     <ClaimsHeader :page="results.current_page" @update="refreshList"></ClaimsHeader>
