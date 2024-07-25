@@ -22,11 +22,7 @@
             </a>
         </th>
         <th scope="col" class="text-nowrap">
-            <a href="#" @click="switchSort('course_name')">
                 <span>Program Name</span>
-                <em v-if="sortClmn === 'course_name' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
-                <em v-else class="bi bi-sort-alpha-down"></em>
-            </a>
         </th>
         <th scope="col" class="text-nowrap">
             <a href="#" @click="switchSort('estimated_hold_amount')">
@@ -122,10 +118,10 @@ export default {
             });
 
             let vm = this;
-            axios.get('/institution/api/fetch/institutions/claims?in=' + this.guid + '&page=' + this.page + '&direction=' + this.sortType + '&sort=' + this.sortClmn)
+            axios.get('/institution/api/fetch/claims?page=' + this.page + '&direction=' + this.sortType + '&sort=' + this.sortClmn)
                 .then(function (response) {
                     // vm.claims = response.data.body;
-                    vm.$emit('update', response.data.body);
+                    vm.$emit('update', response.data.body.data);
                 })
                 .catch(function (error) {
                     // handle error

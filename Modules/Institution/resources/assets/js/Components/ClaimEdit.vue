@@ -135,17 +135,22 @@
                         </div>
                     </template>
 
-                    <div class="col-md-4">
-                        <Label for="inputExpCompletionDate" class="form-label" value="Expected Completion Date" />
-                        <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpCompletionDate" v-model="editStudentClaimForm.expected_completion_date" />
-                    </div>
+
 
                     <template v-if="claim.claim_status === 'Claimed'">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <Label for="inputStableEnrolDate" class="form-label" value="Actual Stable Enrol. Date" />
+                            {{ editStudentClaimForm.stable_enrolment_date }}
+                        </div>
+                        <div class="col-md-3">
+                            <Label for="inputExpCompletionDate" class="form-label" value="Expected Completion Date" />
+                            {{ editStudentClaimForm.expected_completion_date }}
+                        </div>
+                        <div class="col-md-3">
                             <Label for="inputOutcomeDate" class="form-label" value="Outcome Effective Date" />
                             <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputOutcomeDate" v-model="editStudentClaimForm.outcome_effective_date" />
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <Label for="inputOutcomeStatus" class="form-label" value="Outcome Status"/>
                             <Select class="form-select" id="inputOutcomeStatus" v-model="editStudentClaimForm.outcome_status">
                                 <option v-for="status in $attrs.utils['Outcome Status']" :value="status.field_name">{{ status.field_name }}</option>
@@ -153,11 +158,19 @@
                         </div>
                     </template>
                     <template v-else>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <Label for="inputStableEnrolDate" class="form-label" value="Actual Stable Enrol. Date" />
+                            <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputStableEnrolDate" v-model="editStudentClaimForm.stable_enrolment_date" />
+                        </div>
+                        <div class="col-md-3">
+                            <Label for="inputExpCompletionDate" class="form-label" value="Expected Completion Date" />
+                            <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpCompletionDate" v-model="editStudentClaimForm.expected_completion_date" />
+                        </div>
+                        <div class="col-md-3">
                             <Label for="inputOutcomeDate" class="form-label" value="Outcome Effective Date" />
                             -
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <Label for="inputOutcomeStatus" class="form-label" value="Outcome Status"/>
                             -
                         </div>

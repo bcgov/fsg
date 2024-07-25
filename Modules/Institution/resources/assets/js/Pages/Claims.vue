@@ -21,13 +21,13 @@
                             Student Claims
                         </div>
                         <div class="card-body">
-                            <div v-if="results != null && results.data.length > 0" class="table-responsive pb-3">
+                            <div v-if="claimList != null && results.data.length > 0" class="table-responsive pb-3">
                                 <table class="table table-striped">
                                     <thead>
-                                    <ClaimsHeader></ClaimsHeader>
+                                    <ClaimsHeader :page="results.current_page" @update="refreshList"></ClaimsHeader>
                                     </thead>
                                     <tbody>
-                                    <template v-for="(row, i) in results.data">
+                                    <template v-for="(row, i) in claimList">
                                         <tr v-if="row !== null">
                                             <td><a href="#" @click="openEditForm(row)">{{ row.sin ?? 0 }}</a></td>
                                             <td>{{ row.first_name }}</td>
@@ -43,7 +43,6 @@
                                                 <span v-else-if="row.claim_status === 'Claimed'" class="badge rounded-pill text-bg-success">Claimed</span>
                                                 <span v-else class="badge rounded-pill text-bg-secondary">{{ row.claim_status }}</span>
                                                 <span v-if="row.process_feedback != null" class="badge rounded-pill text-bg-danger ms-1">!</span>
-
                                             </td>
                                             <td>{{ formatDate(row.created_at) }}</td>
                                         </tr>
@@ -139,6 +138,10 @@ export default {
             this.$inertia.visit('/institution/claims');
 
         },
+        refreshList: function (e) {
+            this.claimList = e;
+            console.log(e);
+        }
 
     },
     mounted() {

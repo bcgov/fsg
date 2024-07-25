@@ -65,7 +65,9 @@ class ClaimController extends Controller
             return Response::json(['status' => true, 'programs' => $programs, 'claim' => $claim]);
         }
 
-        $body = $this->paginateClaims();
+        $user = User::find(Auth::user()->id);
+        $allocation = $this->allocations->where('institution_guid', $user->institution->guid)->first();
+        $body = $this->paginateClaims($allocation);
 
         return Response::json(['status' => true, 'body' => $body]);
     }
@@ -130,8 +132,7 @@ class ClaimController extends Controller
             return $emptyPaginator->onEachSide(1);
         }
 
-        $claims = Claim::
-            where('institution_guid', $user->institution->guid)
+        $claims = Claim::where('institution_guid', $user->institution->guid)
             ->where('allocation_guid', $allocation->guid)
             ->whereNotIn('claim_status', ['Draft'])
             ->with('student', 'program');
