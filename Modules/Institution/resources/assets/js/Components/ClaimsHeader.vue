@@ -33,7 +33,7 @@
         </th>
         <th scope="col" class="text-nowrap">
             <a href="#" @click="switchSort('total_claim_amount')">
-                <span>* Total Claim</span>
+                <span>* Claim Total</span>
                 <em v-if="sortClmn === 'total_claim_amount' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
                 <em v-else class="bi bi bi-sort-numeric-down"></em>
             </a>

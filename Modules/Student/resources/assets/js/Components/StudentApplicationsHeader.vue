@@ -11,11 +11,11 @@
             <span>Estimated Hold</span>
         </th>
         <th scope="col" class="text-nowrap">
-            <span>Grant Total</span>
+            <span>Claim Total</span>
         </th>
-        <th scope="col" class="text-nowrap">
-            <span>Claims</span>
-        </th>
+<!--        <th scope="col" class="text-nowrap">-->
+<!--            <span>Claims</span>-->
+<!--        </th>-->
         <th scope="col" class="text-nowrap">
             <a href="#" @click="switchSort('active_status')">
                 <span>Status</span>
