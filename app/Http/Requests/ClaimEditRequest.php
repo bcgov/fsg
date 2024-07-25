@@ -69,6 +69,7 @@ class ClaimEditRequest extends FormRequest
         $rules = [
             'id' => 'required',
             'guid' => 'required',
+            'program_guid' => 'required|exists:programs,guid',
             'claim_status' => 'required|string',
             'stable_enrolment_date' => 'nullable',
             'expected_stable_enrolment_date' => 'nullable',
