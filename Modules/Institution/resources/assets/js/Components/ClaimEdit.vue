@@ -296,6 +296,7 @@ export default {
                             .on('hidden.bs.modal', function () {
                                 vm.editStudentClaimForm.reset();
                                 vm.$emit('close');
+                                vm.$inertia.visit('/institution/claims');
                             });
                     }, 2500);
                 },
