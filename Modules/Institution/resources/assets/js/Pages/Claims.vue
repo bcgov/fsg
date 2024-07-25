@@ -64,7 +64,13 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title me-2" id="editClaimModalLabel">Edit Claim</h5>
+                        <h5 class="modal-title me-2" id="editClaimModalLabel">Edit Claim
+                            <span v-if="editClaim.claim_status === 'Draft'" class="badge rounded-pill text-bg-info">Draft</span>
+                            <span v-else-if="editClaim.claim_status === 'Submitted'" class="badge rounded-pill text-bg-primary">Submitted</span>
+                            <span v-else-if="editClaim.claim_status === 'Hold'" class="badge rounded-pill text-bg-warning">Hold</span>
+                            <span v-else-if="editClaim.claim_status === 'Claimed'" class="badge rounded-pill text-bg-success">Claimed</span>
+                            <span v-else class="badge rounded-pill text-bg-secondary">{{ editClaim.claim_status }}</span>
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <ClaimEdit v-bind="$attrs" @close="closeEditForm"
