@@ -55,14 +55,14 @@
 
                 <hr/>
 
-                <div class="col-md-6">
-                    <Label for="input52Week" class="form-label" value="52 Week Affirm."/>
-                    <Select class="form-select" id="input52Week" v-model="editStudentClaimForm.fifty_two_week_affirmation">
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </Select>
-                </div>
-                <div class="col-md-6">
+<!--                <div class="col-md-6">-->
+<!--                    <Label for="input52Week" class="form-label" value="52 Week Affirm."/>-->
+<!--                    <Select class="form-select" id="input52Week" v-model="editStudentClaimForm.fifty_two_week_affirmation">-->
+<!--                        <option value="true">Yes</option>-->
+<!--                        <option value="false">No</option>-->
+<!--                    </Select>-->
+<!--                </div>-->
+                <div class="col-md-12">
                     <Label for="inputStatus" class="form-label" value="Claim Status"/>
                     <Select class="form-select" id="inputStatus" v-model="editStudentClaimForm.claim_status">
                         <option v-for="status in $attrs.utils['Claim Status']" :value="status.field_name">{{ status.field_name }}</option>
@@ -125,16 +125,20 @@
                         <Input type="number" step=".01" class="form-control" id="inputMaterialsFee" v-model="editStudentClaimForm.materials_fee" />
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <Label for="inputStableDate" class="form-label" value="Admin Fee" />
                         {{ editStudentClaimForm.allocation.py_admin_fee }}%
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <Label for="inputStableDate" class="form-label" value="Total + Admin" />
                         ${{ totalPlusAdmin }}
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <Label for="inputStableDate" class="form-label" value="Actual Stable Enrol. Date" />
+                        <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputStableDate" v-model="editStudentClaimForm.stable_enrolment_date" />
+                    </div>
+                    <div class="col-md-3">
+                        <Label for="inputStableDate" class="form-label" value="Expected Stable Enrol. Date" />
                         <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputStableDate" v-model="editStudentClaimForm.expected_stable_enrolment_date" />
                     </div>
 

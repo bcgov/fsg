@@ -135,17 +135,22 @@
                         </div>
                     </template>
 
-                    <div class="col-md-4">
-                        <Label for="inputExpCompletionDate" class="form-label" value="Expected Completion Date" />
-                        <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpCompletionDate" v-model="editStudentClaimForm.expected_completion_date" />
-                    </div>
+
 
                     <template v-if="claim.claim_status === 'Claimed'">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <Label for="inputStableEnrolDate" class="form-label" value="Actual Stable Enrol. Date" />
+                            {{ editStudentClaimForm.stable_enrolment_date }}
+                        </div>
+                        <div class="col-md-3">
+                            <Label for="inputExpCompletionDate" class="form-label" value="Expected Completion Date" />
+                            {{ editStudentClaimForm.expected_completion_date }}
+                        </div>
+                        <div class="col-md-3">
                             <Label for="inputOutcomeDate" class="form-label" value="Outcome Effective Date" />
                             <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputOutcomeDate" v-model="editStudentClaimForm.outcome_effective_date" />
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <Label for="inputOutcomeStatus" class="form-label" value="Outcome Status"/>
                             <Select class="form-select" id="inputOutcomeStatus" v-model="editStudentClaimForm.outcome_status">
                                 <option v-for="status in $attrs.utils['Outcome Status']" :value="status.field_name">{{ status.field_name }}</option>
@@ -153,11 +158,19 @@
                         </div>
                     </template>
                     <template v-else>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <Label for="inputStableEnrolDate" class="form-label" value="Actual Stable Enrol. Date" />
+                            <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputStableEnrolDate" v-model="editStudentClaimForm.stable_enrolment_date" />
+                        </div>
+                        <div class="col-md-3">
+                            <Label for="inputExpCompletionDate" class="form-label" value="Expected Completion Date" />
+                            <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpCompletionDate" v-model="editStudentClaimForm.expected_completion_date" />
+                        </div>
+                        <div class="col-md-3">
                             <Label for="inputOutcomeDate" class="form-label" value="Outcome Effective Date" />
                             -
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <Label for="inputOutcomeStatus" class="form-label" value="Outcome Status"/>
                             -
                         </div>
@@ -183,19 +196,22 @@
 
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer d-flex justify-content-between">
                 <button @click="submitForm('Cancelled')" v-if="claim.claim_status === 'Submitted' || claim.claim_status === 'Hold'" type="button" class="btn btn-sm btn-danger" :disabled="editStudentClaimForm.processing">
                     Cancel Request
                 </button>
-                <button @click="submitForm('Hold')" v-if="claim.claim_status === 'Submitted'" type="button" class="ms-3 btn btn-sm btn-success" :disabled="editStudentClaimForm.processing">
-                    Put on Hold
-                </button>
-                <button @click="submitForm('Claimed')" v-if="claim.claim_status === 'Hold'" type="button" class="ms-3 btn btn-sm btn-success" :disabled="editStudentClaimForm.processing">
-                    Claim Request
-                </button>
-                <button @click="submitForm('Claimed')" v-if="claim.claim_status === 'Claimed'" type="button" class="ms-3 btn btn-sm btn-success" :disabled="editStudentClaimForm.processing">
-                    Update Request
-                </button>
+                <div class="float-end">
+                    <button @click="submitForm('Update')" v-if="claim.claim_status === 'Hold' || claim.claim_status === 'Claimed'" type="button" class="me-3 btn btn-sm btn-primary" :disabled="editStudentClaimForm.processing">
+                        Update Request
+                    </button>
+                    <button @click="submitForm('Hold')" v-if="claim.claim_status === 'Submitted'" type="button" class="btn btn-sm btn-success" :disabled="editStudentClaimForm.processing">
+                        Put on Hold
+                    </button>
+                    <button @click="submitForm('Claimed')" v-if="claim.claim_status === 'Hold'" type="button" class="btn btn-sm btn-success" :disabled="editStudentClaimForm.processing">
+                        Claim Request
+                    </button>
+                </div>
+
             </div>
             <FormSubmitAlert :form-state="editStudentClaimForm.formState" :success-msg="editStudentClaimForm.formSuccessMsg"
                              :fail-msg="editStudentClaimForm.formFailMsg"></FormSubmitAlert>
@@ -241,6 +257,10 @@ export default {
     methods: {
 
         submitForm: function (status) {
+            if(status === 'Update'){
+                status = this.claim.claim_status;
+            }
+
             // Show confirm only if the user is switching the status from Submitted to Hold
             if(this.claim.claim_status === 'Submitted' && status === 'Hold'){
                 if(!confirm("You are about to switch the status of this claim to Hold. The field Estimated Hold Amount is going to be locked. Proceed?")){

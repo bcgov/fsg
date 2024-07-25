@@ -98,6 +98,40 @@ class ProcessSubmittedClaim
                 }
             }
 
+            // If the claim is in Hold and the inst. is just updating it to Hold
+            elseif ($claim_before_update->claim_status === 'Hold' && $status === 'Hold') {
+                Log::info("claim is staying as Hold");
+
+                // Calculate the total of claims for the student that are in Hold
+                $totalHoldClaims = $student->claims()
+                    ->where('claim_status', 'Hold')
+                    ->select('estimated_hold_amount')
+                    ->pluck('estimated_hold_amount')
+                    ->sum();
+
+                // Calculate the total of claims for the student excluding Draft, Hold, Expired, Cancelled
+                $totalActiveClaims = $student->claims()
+//                    ->whereNotIn('claim_status', ['Draft', 'Hold', 'Expired', 'Cancelled'])
+                    ->where('claim_status', 'Claimed')
+                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
+
+                Log::info("totalHoldClaims = " . number_format($totalHoldClaims, 0));
+                Log::info("totalActiveClaims = " . number_format($totalActiveClaims, 0));
+
+                // If the student has reached the grant limit, prevent moving it to Submitted
+                if (((float)$totalHoldClaims + (float)$totalActiveClaims) > (float)env('TOTAL_GRANT')) {
+                    $claim->process_feedback = "Student total claims of Hold and Claimed, including this,
+                    is $" . (float)$totalHoldClaims + (float)$totalActiveClaims . " > $" . (float)env('TOTAL_GRANT');
+                    $claim->claim_status = "Submitted";
+                    $claim->estimated_hold_amount = 0;
+                }else{
+                    $claim->total_claim_amount = 0;
+                    $claim->program_fee = 0;
+                    $claim->materials_fee = 0;
+                    $claim->registration_fee = 0;
+                }
+            }
+
             // If the claim is moving from Hold to Claimed
             elseif ($claim_before_update->claim_status === 'Hold' && $status === 'Claimed') {
 

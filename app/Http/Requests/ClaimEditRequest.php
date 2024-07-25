@@ -70,6 +70,7 @@ class ClaimEditRequest extends FormRequest
             'id' => 'required',
             'guid' => 'required',
             'claim_status' => 'required|string',
+            'stable_enrolment_date' => 'nullable',
             'expected_stable_enrolment_date' => 'nullable',
             'expected_completion_date' => 'nullable',
             'outcome_effective_date' => 'nullable',
@@ -106,6 +107,7 @@ class ClaimEditRequest extends FormRequest
                 'estimated_hold_amount' => 'required|numeric|gte:0',
                 'total_claim_amount' => 'nullable|numeric',
                 'claim_percent' => 'required|numeric',
+                'stable_enrolment_date' => 'nullable|date_format:Y-m-d',
                 'expected_stable_enrolment_date' => 'nullable|date_format:Y-m-d',
                 'expiry_date' => 'nullable|date_format:Y-m-d',
 
@@ -122,6 +124,7 @@ class ClaimEditRequest extends FormRequest
                 'estimated_hold_amount' => 'required|numeric|gte:0',
                 'total_claim_amount' => 'nullable|numeric',
                 'claim_percent' => 'required|numeric',
+                'stable_enrolment_date' => 'nullable|date_format:Y-m-d',
                 'expected_stable_enrolment_date' => 'nullable|date_format:Y-m-d',
                 'expiry_date' => 'required|date_format:Y-m-d',
 
@@ -138,6 +141,7 @@ class ClaimEditRequest extends FormRequest
                 'estimated_hold_amount' => 'required|numeric',
                 'total_claim_amount' => 'required|numeric',
                 'claim_percent' => 'required|numeric',
+                'stable_enrolment_date' => 'required|date_format:Y-m-d',
                 'expected_stable_enrolment_date' => 'required|date_format:Y-m-d',
                 'expiry_date' => 'required|date_format:Y-m-d',
 
