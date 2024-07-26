@@ -2,6 +2,7 @@
 
 namespace Modules\Institution\Http\Controllers;
 
+use App\Models\ProgramYear;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -30,7 +31,12 @@ class ClaimController extends Controller
 
     public function __construct()
     {
-        $this->allocations = Allocation::where('status', 'active')->with('py')->orderByDesc('created_at')->get();
+        $cacheProgramYear = Cache::get('global_program_years');
+        $programYear = ProgramYear::where('guid', $cacheProgramYear['default'])->first();
+
+        $this->allocations = Allocation::where('status', 'active')
+            ->where('program_year_guid', $programYear->guid)
+            ->with('py')->orderByDesc('created_at')->get();
         $this->countries = Country::select('name')->where('active', true)->get();
     }
 
