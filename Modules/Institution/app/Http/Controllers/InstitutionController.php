@@ -30,7 +30,7 @@ class InstitutionController extends Controller
 
 
 
-        $cacheProgramYear = Cache::get('global_program_years', function () {
+        $cacheProgramYear = Cache::remember('global_program_years', now()->addHours(1), function () {
             $programYears = ProgramYear::orderBy('id')->get();
             $programYear = ProgramYear::where('status', 'active')->first();
             return [
@@ -42,23 +42,14 @@ class InstitutionController extends Controller
         $programYear = ProgramYear::where('guid', $cacheProgramYear['default'])->first();
 
         // Eager load active allocation
-        $institution->load(['allocations' => function ($query) {
+        $institution->load(['allocations' => function ($query) use ($programYear){
+            $query->where('program_year_guid', $programYear->guid);
 //            $query->where('status', 'active')->orderByDesc('created_at');
             $query->orderByDesc('created_at');
         }]);
 
         $instAllocation = $institution->allocations->first();
         if(!is_null($instAllocation)){
-            // Combine claim counts into a single query
-//            $claimCounts = Claim::where('institution_guid', $institution->guid)
-//                ->where('allocation_guid', $instActiveAllocation->guid)
-//                ->selectRaw("
-//            SUM(CASE WHEN claim_status = 'Submitted' THEN 1 ELSE 0 END) as submitted,
-//            SUM(CASE WHEN claim_status = 'Hold' THEN 1 ELSE 0 END) as hold,
-//            SUM(CASE WHEN claim_status = 'Claimed' AND reporting_completed_date IS NULL THEN 1 ELSE 0 END) as claimed,
-//            SUM(CASE WHEN claim_status = 'Claimed' AND reporting_completed_date IS NOT NULL THEN 1 ELSE 0 END) as reportingcomplete
-//        ")
-//                ->first();
 
             $claimCounts = Claim::where('institution_guid', $institution->guid)
                 ->where('allocation_guid', $instAllocation->guid)
@@ -67,6 +58,17 @@ class InstitutionController extends Controller
         SUM(CASE WHEN claim_status = 'Hold' THEN COALESCE(estimated_hold_amount, 0) ELSE 0 END) as hold
     ")
                 ->first();
+            if($programYear->claim_percent == 0){
+                return Inertia::render('Institution::Dashboard', [
+                    'results' => $institution,
+                    'activeAllocation' => $instAllocation,
+                    'programYear' => $programYear,
+                    'holdApps' => $claimCounts->hold,
+                    'claimedApps' => $claimCounts->claimed,
+                ]);
+
+            }
+
             return Inertia::render('Institution::Dashboard', [
                 'results' => $institution,
                 'activeAllocation' => $instAllocation,
