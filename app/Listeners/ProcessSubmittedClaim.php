@@ -165,6 +165,9 @@ class ProcessSubmittedClaim
                     $claim->process_feedback = "Institution has reached the total claim amount";
                     $claim->claim_status = "Hold";
                     $claim->total_claim_amount = 0;
+                    $claim->program_fee = 0;
+                    $claim->materials_fee = 0;
+                    $claim->registration_fee = 0;
                 }
 
                 //check student
