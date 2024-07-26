@@ -291,14 +291,14 @@ export default {
             this.editStudentClaimForm.put('/institution/claims', {
                 onSuccess: (response) => {
                     this.editStudentClaimForm.formState = true;
+                    // vm.$inertia.visit('/institution/claims');
                     setTimeout(function () {
                         $("#editClaimModal").modal('hide')
                             .on('hidden.bs.modal', function () {
                                 vm.editStudentClaimForm.reset();
                                 vm.$emit('close');
-                                vm.$inertia.visit('/institution/claims');
                             });
-                    }, 2500);
+                    }, 1500);
                 },
                 onError: () => {
                     this.editStudentClaimForm.formState = false;

@@ -89,7 +89,7 @@ class ProcessSubmittedClaim
                 Log::info("totalHoldClaims = " . number_format($totalHoldClaims, 0));
                 Log::info("totalActiveClaims = " . number_format($totalActiveClaims, 0));
 
-                // If the student has reached the grant limit, prevent moving it to Submitted
+                // If the student has reached the grant limit, prevent moving it to Hold
                 if (((float)$totalHoldClaims + (float)$totalActiveClaims) > (float)env('TOTAL_GRANT')) {
                     $claim->process_feedback = "Student total claims of Hold and Claimed, including this,
                     is $" . (float)$totalHoldClaims + (float)$totalActiveClaims . " > $" . (float)env('TOTAL_GRANT');
@@ -118,18 +118,19 @@ class ProcessSubmittedClaim
                 Log::info("totalHoldClaims = " . number_format($totalHoldClaims, 0));
                 Log::info("totalActiveClaims = " . number_format($totalActiveClaims, 0));
 
-                // If the student has reached the grant limit, prevent moving it to Submitted
+                // If the student has reached the grant limit, prevent moving it to Hold
                 if (((float)$totalHoldClaims + (float)$totalActiveClaims) > (float)env('TOTAL_GRANT')) {
                     $claim->process_feedback = "Student total claims of Hold and Claimed, including this,
                     is $" . (float)$totalHoldClaims + (float)$totalActiveClaims . " > $" . (float)env('TOTAL_GRANT');
                     $claim->claim_status = "Submitted";
                     $claim->estimated_hold_amount = 0;
-                }else{
-                    $claim->total_claim_amount = 0;
-                    $claim->program_fee = 0;
-                    $claim->materials_fee = 0;
-                    $claim->registration_fee = 0;
                 }
+//                else{
+//                    $claim->total_claim_amount = 0;
+//                    $claim->program_fee = 0;
+//                    $claim->materials_fee = 0;
+//                    $claim->registration_fee = 0;
+//                }
             }
 
             // If the claim is moving from Hold to Claimed
@@ -140,24 +141,31 @@ class ProcessSubmittedClaim
                 // Calculate sum claims of the institution that are not Draft, Cancelled or Expired
                 $sum_claims = Claim::
 
-                    // We need the sum of claims that are in Hold, Submitted or Claimed
-                    whereNotIn('claim_status', ['Draft', 'Expired', 'Cancelled'])
+                    // We need the sum of claims that are Claimed
+                    where('claim_status', 'Claimed')
                     ->where('institution_guid', $claim->institution_guid)
                     ->where('allocation_guid', $claim->allocation_guid)
-//                    ->sum('total_claim_amount');
                     ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
 
-                Log::info("sum_claims = " . number_format($sum_claims, 0));
-                Log::info("total_amount = " . number_format($claim->allocation->total_amount, 0));
+                // Plus this new claim
+                $current_claim_sum = $claim->program_fee + $claim->materials_fee + $claim->registration_fee;
+
+
+                Log::info("current_claim_sum = " . number_format($current_claim_sum, 0));
+                Log::info("claims sum_claims = " . number_format($sum_claims, 0));
+                Log::info("allocation total_amount = " . number_format($claim->allocation->total_amount, 0));
+
+                $total = (float)$sum_claims + (float)$current_claim_sum +
+                    ( ((float)$sum_claims + (float)$current_claim_sum) / (float)$claim->py_admin_fee);
+                Log::info("total + admin fee = " . number_format($total, 0));
 
                 // Prevent inst. from switching to Claimed if the total of their claims is gte the allocation total
-                if ((float)$sum_claims > (float)$claim->allocation->total_amount) {
+                // Make sure all calculation to include admin fee. Allocation total is inclusive of the admin fee
+                if ($total > (float)$claim->allocation->total_amount) {
                     $claim->process_feedback = "Institution has reached the total claim amount";
                     $claim->claim_status = "Hold";
                     $claim->total_claim_amount = 0;
                 }
-
-
 
                 //check student
                 // Calculate the total of claims for the student that are in Hold

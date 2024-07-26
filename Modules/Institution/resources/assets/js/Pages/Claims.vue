@@ -136,6 +136,8 @@ export default {
         closeEditForm: function () {
             $("#editClaimModal").modal('hide');
             this.editClaim = '';
+            this.$inertia.visit('/institution/claims');
+            window.location.reload();
 
         },
         refreshList: function (e) {
