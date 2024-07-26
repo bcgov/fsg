@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('first_name')->index();
             $table->string('last_name')->index();
             $table->string('dob');
+            $table->string('gender', 50)->nullable();
             $table->string('email')->nullable();
             $table->string('city')->nullable();
             $table->string('zip_code')->nullable();

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 echo "Start entrypoint file"
 
@@ -19,21 +20,24 @@ fi
 echo "ENV_ARG: ${ENV_ARG}"
 
 echo "Install composer"
-composer dump-auto
+composer dump-autoload
 
 chmod 766 /var/www/html/probe-check.sh
 
 echo "Permissions setup for NPM:"
 chmod -R a+w node_modules
 
-echo "Starting apache:"
+echo "Starting apache in the background:"
 /usr/sbin/apache2ctl start
 
-echo "Restarting apache:"
-/usr/sbin/apache2ctl restart
+echo "Clear cache"
+php artisan cache:clear
+
+echo "Clear our midnight queue"
+php artisan queue:clear --queue=midnight --force
 
 
-echo "End entrypoint"
+# Keep the script running to prevent the container from exiting
 while :; do
 sleep 300
 done

@@ -2,15 +2,15 @@
 
 namespace App\Listeners;
 
-use App\Events\StaffRoleChanged1;
+use App\Events\StaffRoleChanged;
 use App\Models\Role;
 
-class SendActiveRoleNotification1
+class SendActiveRoleNotification
 {
     /**
      * Handle the event.
      */
-    public function handle(StaffRoleChanged1 $event): void
+    public function handle(StaffRoleChanged $event): void
     {
         // Get the user and new role from the event
         $user = $event->user;

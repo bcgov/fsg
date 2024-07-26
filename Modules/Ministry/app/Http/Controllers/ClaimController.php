@@ -61,7 +61,6 @@ class ClaimController extends Controller
 
         $claim = Claim::find($claim->id);
         return Redirect::route('ministry.institutions.show', [$claim->institution->id, 'claims-by-course']);
-
     }
 
     /**
@@ -83,10 +82,7 @@ class ClaimController extends Controller
     private function paginateClaims($institutionGuid)
     {
         $claims = Claim::where('institution_guid', $institutionGuid)->with('student', 'program', 'allocation');
-//
-//        if (request()->filter_name !== null) {
-//            $institutions = $institutions->where('name', 'ILIKE', '%'.request()->filter_name.'%');
-//        }
+
 
         if (request()->sort !== null) {
             $claims = $claims->orderBy(request()->sort, request()->direction);
@@ -117,10 +113,6 @@ class ClaimController extends Controller
     {
         $claims = Claim::where('institution_guid', $institutionGuid)->with('student')->pluck('student_guid');
         $students = Student::whereIn('guid', $claims)->with('claims');
-//
-//        if (request()->filter_name !== null) {
-//            $institutions = $institutions->where('name', 'ILIKE', '%'.request()->filter_name.'%');
-//        }
 
         if (request()->sort !== null) {
             $students = $students->orderBy(request()->sort, request()->direction);

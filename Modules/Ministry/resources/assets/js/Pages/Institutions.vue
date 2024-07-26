@@ -41,12 +41,12 @@
                                             </td>
                                             <td>{{ row.size }}</td>
                                             <template v-if="row.active_allocation != null">
-                                                <td>{{row.active_allocation.total_amount_formatted }}</td>
+                                                <td>${{row.active_allocation.total_amount_formatted }}</td>
 <!--                                                <td>{{row.active_allocation.on_hold_amount}}</td>-->
 <!--                                                <td>{{row.active_allocation.total_amount - row.active_allocation.claimed_amount}}</td>-->
                                             </template>
                                             <template v-else>
-                                                <td></td>
+                                                <td>$0</td>
 <!--                                                <td></td>-->
 <!--                                                <td></td>-->
                                             </template>

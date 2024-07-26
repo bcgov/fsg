@@ -85,6 +85,12 @@ export default {
     methods: {
 
         submitForm: function () {
+            if(this.editInstitutionAllocationForm.status === 'active'){
+                if(!confirm("By switching this allocation to Active all others are going to be switched to Inactive. Proceed?")){
+                    return false;
+                }
+            }
+
             let vm = this;
             this.editInstitutionAllocationForm.formState = null;
             this.editInstitutionAllocationForm.put('/ministry/allocations', {

@@ -10,7 +10,7 @@ class Allocation extends Model
     use SoftDeletes;
 
     // Append the computed attribute
-    protected $appends = ['total_amount_formatted', 'claimed'];
+    protected $appends = ['total_amount_formatted', 'claimed', 'py_admin_fee'];
 
     /**
      * The attributes that are mass assignable.
@@ -53,6 +53,12 @@ class Allocation extends Model
 
         //$claimedAmount needs to be a formatted number to avoid = "1.159671e+06" since it is going to too large
         return number_format($claimedAmount, 0, '.', '');
+    }
+
+    // Define the accessor for the computed attribute
+    public function getPyAdminFeeAttribute()
+    {
+        return $this->py->claim_percent;
     }
 
     // Add accessor for total_grant

@@ -2,12 +2,16 @@
 
 namespace Modules\Ministry\Http\Controllers;
 
-use App\Events\StaffRoleChanged1;
+use App\Events\ProgramYearUpdated;
+use App\Events\StaffRoleChanged;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProgramYearEditRequest;
+use App\Http\Requests\ProgramYearStoreRequest;
 use App\Http\Requests\UtilEditRequest;
 use App\Http\Requests\UtilStoreRequest;
 use App\Models\Institution;
 use App\Models\InstitutionStaff;
+use App\Models\ProgramYear;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Util;
@@ -16,6 +20,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Response;
+use Illuminate\Support\Facades\Gate;
 
 class MaintenanceController extends Controller
 {
@@ -51,8 +56,9 @@ class MaintenanceController extends Controller
      */
     public function updateStatus(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
-        $this->authorize('update', $user);
-
+        if (Gate::denies('update', $user)) {
+            abort(403);
+        }
         $user->disabled = $request->input('disabled');
         $user->save();
 
@@ -66,8 +72,9 @@ class MaintenanceController extends Controller
      */
     public function updateRole(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
-        $this->authorize('update', $user);
-
+        if (Gate::denies('update', $user)) {
+            abort(403);
+        }
         $newRole = Role::where('name', Role::Ministry_GUEST)->first();
         if ($request->input('role') === 'Admin') {
             $newRole = Role::where('name', Role::Ministry_ADMIN)->first();
@@ -145,12 +152,12 @@ class MaintenanceController extends Controller
      *
      * @return \Inertia\Response::render
      */
-    public function faqList(Request $request): \Inertia\Response
+    public function pyList(Request $request): \Inertia\Response
     {
-        $faqs = Faq::orderBy('order', 'asc')->get();
+        $programYears = ProgramYear::orderBy('start_date', 'asc')->get();
 
-        return Inertia::render('Ministry::Maintenance', ['status' => true, 'results' => $faqs,
-            'page' => 'faqs']);
+        return Inertia::render('Ministry::Maintenance', ['status' => true, 'results' => $programYears,
+            'page' => 'program_years']);
     }
 
     /**
@@ -158,11 +165,13 @@ class MaintenanceController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse::render
      */
-    public function faqUpdate(FaqEditRequest $request, Faq $faq): \Illuminate\Http\RedirectResponse
+    public function pyUpdate(ProgramYearEditRequest $request, ProgramYear $programYear): \Illuminate\Http\RedirectResponse
     {
-        $faq->update($request->validated());
+        $programYear->update($request->validated());
+        Cache::forget('global_program_years');
 
-        return Redirect::route('ministry.maintenance.faqs.list');
+        event(new ProgramYearUpdated($programYear, $request->status));
+        return Redirect::route('ministry.maintenance.program_years.list');
     }
 
     /**
@@ -170,12 +179,14 @@ class MaintenanceController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse::render
      */
-    public function faqStore(FaqStoreRequest $request): \Illuminate\Http\RedirectResponse
+    public function pyStore(ProgramYearStoreRequest $request): \Illuminate\Http\RedirectResponse
     {
-        Faq::create($request->validated());
+        ProgramYear::create($request->validated());
+        Cache::forget('global_program_years');
 
-        return Redirect::route('ministry.maintenance.faqs.list');
+        return Redirect::route('ministry.maintenance.program_years.list');
     }
+
 
 
     /**

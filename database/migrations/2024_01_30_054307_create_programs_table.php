@@ -27,6 +27,8 @@ return new class extends Migration
                 ->comment('Synchronous|Asynchronous');
             $table->string('credential_type')->nullable()
                 ->comment('Micro-Credential|Short-Certificate|Other');
+            $table->string('micro_credential_type')->nullable()
+                ->comment('No Applicable|Provincially Approved|Not Provincially Approved');
             $table->string('high_priority_industry')->nullable();
 
             $table->float('total_duration_hrs')->default(0)->nullable();

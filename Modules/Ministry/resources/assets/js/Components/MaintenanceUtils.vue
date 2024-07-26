@@ -100,11 +100,13 @@
                         <div class="card-body">
                             <div class="row g-3">
 
-                                <div class="col-md-9">
+                                <div class="col-md-12">
                                     <BreezeLabel for="editUtilTitle" class="form-label" value="Title" />
-                                    <BreezeInput type="text" class="form-control" id="editUtilTitle" v-model="editUtilForm.field_name" />
+                                    <textarea class="form-control" id="editUtilTitle" rows="5"
+                                              v-model="editUtilForm.field_name"></textarea>
+
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-12">
                                     <BreezeLabel for="editUtilActiveFlag" class="form-label" value="Active" />
                                     <BreezeSelect class="form-select" id="editUtilActiveFlag" v-model="editUtilForm.active_flag">
                                         <option value="false">False</option>

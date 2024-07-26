@@ -6,6 +6,7 @@ use App\Models\Claim;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use App\Rules\ValidSin;
 
 class ClaimEditRequest extends FormRequest
 {
@@ -23,9 +24,24 @@ class ClaimEditRequest extends FormRequest
         }
 
         // Prevent updates if the current claim_status is "Claimed"
-        if ($claim->claim_status === 'Claimed') {
+        if ($claim->claim_status === 'Claimed' && $claim->outcome_effective_date != null && $claim->outcome_status != null) {
             return false;
         }
+
+        // Allow switching to Cancelled only if claim is in Hold status and stable enrol. date is yet to come
+//        if ($this->claim_status === 'Cancelled' && $claim->claim_status !== 'Hold') {
+//            return false;
+//        }
+//        if ($this->claim_status === 'Cancelled' && $claim->claim_status === 'Hold') {
+            // Robyn said remove this.
+//            if($claim->stable_enrolment_date < Carbon::now()) {
+//                return false;
+//            }
+//        }
+        if ($this->claim_status === 'Cancelled' && ($claim->claim_status == 'Draft' || $claim->claim_status == 'Expired')) {
+            return false;
+        }
+
 
         // Check if the authenticated user has the necessary permissions to edit the institution.
         // You can access the authenticated user using the Auth facade or $this->user() method.
@@ -53,7 +69,13 @@ class ClaimEditRequest extends FormRequest
         $rules = [
             'id' => 'required',
             'guid' => 'required',
+            'program_guid' => 'required|exists:programs,guid',
             'claim_status' => 'required|string',
+            'stable_enrolment_date' => 'nullable',
+            'expected_stable_enrolment_date' => 'nullable',
+            'expected_completion_date' => 'nullable',
+            'outcome_effective_date' => 'nullable',
+            'outcome_status' => 'nullable',
             ];
 
         // If the status is "Cancelled" or 'Expired', do not validate other fields
@@ -68,25 +90,43 @@ class ClaimEditRequest extends FormRequest
                 'program_guid' => 'required|exists:programs,guid',
                 'student_guid' => 'required|exists:students,guid',
 
-                'sin' => 'required|numeric',
+                'sin' => ['required', new ValidSin],
                 'first_name' => 'required|string',
                 'last_name' => 'required|string',
                 'dob' => 'required|date_format:Y-m-d',
                 'email' => 'required|email',
                 'city' => 'required|string',
-                'zip_code' => 'required|string',
+                'zip_code' => 'required|string|regex:/^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/',
                 'agreement_confirmed' => 'required|boolean',
                 'registration_confirmed' => 'required|boolean',
             ]);
-        } elseif ($this->claim_status === 'Submitted' || $this->claim_status === 'Hold') {
+        } elseif ($this->claim_status === 'Submitted') {
             $rules = array_merge($rules, [
                 'registration_fee' => 'nullable|numeric',
                 'materials_fee' => 'nullable|numeric',
                 'program_fee' => 'nullable|numeric',
-                'estimated_hold_amount' => 'required|numeric|gt:0',
+                'estimated_hold_amount' => 'required|numeric|gte:0',
                 'total_claim_amount' => 'nullable|numeric',
                 'claim_percent' => 'required|numeric',
                 'stable_enrolment_date' => 'nullable|date_format:Y-m-d',
+                'expected_stable_enrolment_date' => 'nullable|date_format:Y-m-d',
+                'expiry_date' => 'nullable|date_format:Y-m-d',
+
+                'fifty_two_week_affirmation' => 'required|boolean|in:true,1',
+                'agreement_confirmed' => 'required|boolean|in:true,1',
+                'registration_confirmed' => 'required|boolean|in:true,1',
+
+            ]);
+        } elseif ($this->claim_status === 'Hold') {
+            $rules = array_merge($rules, [
+                'registration_fee' => 'nullable|numeric',
+                'materials_fee' => 'nullable|numeric',
+                'program_fee' => 'nullable|numeric',
+                'estimated_hold_amount' => 'required|numeric|gte:0',
+                'total_claim_amount' => 'nullable|numeric',
+                'claim_percent' => 'required|numeric',
+                'stable_enrolment_date' => 'nullable|date_format:Y-m-d',
+                'expected_stable_enrolment_date' => 'nullable|date_format:Y-m-d',
                 'expiry_date' => 'required|date_format:Y-m-d',
 
                 'fifty_two_week_affirmation' => 'required|boolean|in:true,1',
@@ -103,7 +143,8 @@ class ClaimEditRequest extends FormRequest
                 'total_claim_amount' => 'required|numeric',
                 'claim_percent' => 'required|numeric',
                 'stable_enrolment_date' => 'required|date_format:Y-m-d',
-                'expiry_date' => 'nullable|date_format:Y-m-d',
+                'expected_stable_enrolment_date' => 'required|date_format:Y-m-d',
+                'expiry_date' => 'required|date_format:Y-m-d',
 
                 'fifty_two_week_affirmation' => 'required|boolean|in:true,1',
                 'agreement_confirmed' => 'required|boolean|in:true,1',
@@ -144,7 +185,7 @@ class ClaimEditRequest extends FormRequest
                 'zip_code' => Str::upper(str_replace(' ', '', $this->zip_code)),
                 'city' => Str::title(str_replace(' ', '', $this->city)),
 
-                'agreement_confirmation' => $this->toBoolean($this->agreement_confirmation),
+                'agreement_confirmed' => $this->toBoolean($this->agreement_confirmed),
             ]);
         } elseif ($this->claim_status === 'Submitted' || $this->claim_status === 'Hold') {
             $this->merge([

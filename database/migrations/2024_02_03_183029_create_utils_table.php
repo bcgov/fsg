@@ -16,8 +16,8 @@ class CreateUtilsTable extends Migration
         Schema::create('utils', function (Blueprint $table) {
             $table->id();
 
-            $table->string('field_name');
-            $table->string('field_type');
+            $table->text('field_name');
+            $table->string('field_type')->index();
             $table->text('field_description')->nullable();
             $table->boolean('active_flag')->default(true);
 

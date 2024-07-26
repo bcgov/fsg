@@ -21,7 +21,7 @@
                             <td>{{ row.first_name }}</td>
                             <td><Link :href="'/ministry/students/' + row.student.id">{{ row.last_name }}</Link></td>
                             <td>{{ row.program.program_name }}</td>
-                            <td>${{ row.estimated_hold_amount }}</td>
+                            <td>${{ $amountPlusPyFee(row.estimated_hold_amount, row.py_admin_fee) }}</td>
                             <td>${{ row.total_claim_amount }}</td>
                             <td>${{ row.student.total_grant }}</td>
                             <td>
@@ -30,6 +30,8 @@
                                 <span v-else-if="row.claim_status === 'Hold'" class="badge rounded-pill text-bg-warning">Hold</span>
                                 <span v-else-if="row.claim_status === 'Claimed'" class="badge rounded-pill text-bg-success">Claimed</span>
                                 <span v-else class="badge rounded-pill text-bg-secondary">{{ row.claim_status }}</span>
+                                <span v-if="row.process_feedback != null" class="badge rounded-pill text-bg-danger ms-1">!</span>
+
                             </td>
                             <td>{{ formatDate(row.created_at) }}</td>
                         </tr>

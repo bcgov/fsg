@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Institution;
 use App\Models\InstitutionStaff;
 use App\Models\Role;
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,28 +43,17 @@ class UserController extends Controller
 
     public function bcscLogin(Request $request)
     {
-//        $provider = new Keycloak([
-//            'authServerUrl' => env('KEYCLOAK_BCSC_SERVER_URL'),
-//            'realm' => env('KEYCLOAK_REALM'),
-//            'clientId' => env('KEYCLOAK_BCSC_CLIENT_ID'),
-//            'clientSecret' => env('KEYCLOAK_BCSC_CLIENT_SECRET'),
-//            'redirectUri' => env('KEYCLOAK_BCSC_REDIRECT_URI'),
-//        ]);
-//
-//        if (! $request->has('code')) {
-//            $state = $provider->getState();
-//            $request->session()->put('oauth2state', $state);
-//
-//            return Redirect::to(env('KEYCLOAK_BCSC_SERVER_URL') . '?response_type=code&scope=openid%20address%20profile%20email&client_id=' . env('KEYCLOAK_BCSC_CLIENT_ID') . '&redirect_uri=' . env('KEYCLOAK_BCSC_REDIRECT_URI') . '&state=' . $state);
-//        }
-
         $provider = new Keycloak([
-            'authServerUrl' => 'https://dev.loginproxy.gov.bc.ca/auth',
-            'realm' => 'aestsims',
+            'authServerUrl' => env('KEYCLOAK_BCSC_SERVER_URL'),
+            'realm' => env('KEYCLOAK_BCSC_REALM'),
             'clientId' => env('KEYCLOAK_BCSC_CLIENT_ID'),
             'clientSecret' => env('KEYCLOAK_BCSC_CLIENT_SECRET'),
             'redirectUri' => env('KEYCLOAK_BCSC_REDIRECT_URI'),
+            'scopes' => 'openid profile email',  // Scopes as a space-separated string
         ]);
+
+        // This is needed to have the provider logout url formatted correctly
+        $provider->setVersion('18.0.0');
 
         return $this->loginUser($request, $provider, Role::Student);
     }
@@ -85,19 +75,22 @@ class UserController extends Controller
     {
 
         if (! $request->has('code')) {
+            \Log::info('No code');
             // If we don't have an authorization code then get one
-            $authUrl = $provider->getAuthorizationUrl();
+            $authUrl = $provider->getAuthorizationUrl([
+                'scope' => 'openid profile email', // Ensure scopes include 'openid'
+            ]);
+
             $request->session()->put('oauth2state', $provider->getState());
             \Log::info('$authUrl: '.$authUrl);
             \Log::info('$provider->getState(): '.$provider->getState());
 
-//            return Redirect::to(env('KEYCLOAK_BCSC_SERVER_URL') . '?response_type=code&scope=openid%20address%20profile%20email&client_id=' . env('KEYCLOAK_BCSC_CLIENT_ID') . '&redirect_uri=' . env('KEYCLOAK_BCSC_REDIRECT_URI') . '&state=' . $request->session()->get('oauth2state'));
             return Redirect::to($authUrl . "&kc_idp_hint=fsg");
 
             // Check given state against previously stored one to mitigate CSRF attack
         } elseif (! $request->has('state') || ($request->state !== $request->session()->get('oauth2state'))) {
-            $request->session()->forget('oauth2state');
             \Log::info('messed up state '.$request->state.' !== '.$request->session()->get('oauth2state'));
+            $request->session()->forget('oauth2state');
 
             //Invalid state, make sure HTTP sessions are enabled
             return Inertia::render('Auth/Login', [
@@ -124,6 +117,18 @@ class UserController extends Controller
                 // We got an access token, let's now get the user's details
                 $provider_user = $provider->getResourceOwner($token);
                 $provider_user = $provider_user->toArray();
+
+                //this is needed for BCSC
+                $tokenValues = $token->getValues();
+                if (isset($tokenValues['id_token'])) {
+                    $idToken = $tokenValues['id_token'];
+                    $request->session()->put('bcsc_logout_uri', env('KEYCLOAK_BCSC_LOGOUT_URL') . '?state=' .
+                        $request->state . '&scope=profile%20email&response_type=code&approval_prompt=auto&client_id=fsg&id_token_hint=' .
+                        $idToken . '&post_logout_redirect_uri=' . env('KEYCLOAK_BCSC_REDIRECT_LOGOUT_URI'));
+                }
+                \Log::info('KC Logout : ' . $provider->getLogoutUrl(['access_token' => $token]));
+                \Log::info('idToken: ');
+                \Log::info($token->getValues());
                 \Log::info('We got a token: '.$token);
                 \Log::info('$provider_user: '.json_encode($provider_user));
             } catch (\Exception $e) {
@@ -137,8 +142,12 @@ class UserController extends Controller
             $user = null;
             $failMsg = null;
             if ($type === Role::Student) {
-                $user = User::where('bcsc_user_guid', 'ilike', $provider_user['bcsc_user_guid'])->first();
-                $failMsg = 'Welcome back!.';
+                if(!isset($provider_user['bcsc_user_guid'])){
+                    $failMsg = 'Session conflict. Please use incognito window';
+                }else{
+                    $user = User::where('bcsc_user_guid', 'ilike', $provider_user['bcsc_user_guid'])->first();
+                    $failMsg = 'Welcome back!.';
+                }
             }
             if ($type === Role::Ministry_GUEST) {
                 $user = User::where('idir_user_guid', 'ilike', $provider_user['idir_user_guid'])->first();
@@ -151,8 +160,16 @@ class UserController extends Controller
 
             //if it is a new BCSC, IDIR or BCeID user, register the user first
             if (is_null($user)) {
-                $valid = $this->newUser($provider_user, $type);
-                if ($valid == '200') {
+                list($valid, $user) = $this->newUser($provider_user, $type);
+                if($valid == '200' && $type === Role::Student){
+
+                    Cache::put('bcsc_provider_user', json_encode($provider_user));
+                    Auth::login($user);
+
+                    return Redirect::route('student.home');
+
+                }
+                elseif ($valid == '200' && $type !== Role::Student) {
                     return Inertia::render('Auth/Login', [
                         'loginAttempt' => true,
                         'hasAccess' => false,
@@ -264,21 +281,24 @@ class UserController extends Controller
     private function newUser($provider_user, $type)
     {
         $valid = '200';
-        if (isset($provider_user['idir_username']) && $provider_user['idir_username']) {
+        $user = null;
+        if ($type === Role::Ministry_GUEST && isset($provider_user['idir_username']) && $provider_user['idir_username']) {
             $check = User::where('idir_username', Str::upper($provider_user['idir_username']))->first();
             if (! is_null($check)) {
                 $valid = 'This IDIR is already in use. Please contact the admin.';
             }
-        } elseif (isset($provider_user['bceid_username']) && $provider_user['bceid_username']) {
+        } elseif ($type === Role::Institution_GUEST && isset($provider_user['bceid_username']) && $provider_user['bceid_username']) {
             $check = User::where('bceid_username', Str::upper($provider_user['bceid_username']))->first();
             if (! is_null($check)) {
                 $valid = 'This BCeID is already in use. Please contact the admin.';
             }
-        } elseif (isset($provider_user['bcsc_username']) && $provider_user['bcsc_username']) {
-            $check = User::where('bcsc_username', Str::upper($provider_user['bcsc_username']))->first();
+        } elseif ($type === Role::Student && isset($provider_user['bcsc_user_guid']) && $provider_user['bcsc_user_guid']) {
+            $check = User::where('bcsc_user_guid', Str::upper($provider_user['bcsc_user_guid']))->first();
             if (! is_null($check)) {
                 $valid = 'This BC Services Card is already in use. Please contact the admin.';
             }
+        }else{
+            $valid = 'You are not authorized to access this page.';
         }
 
         if ($valid === '200') {
@@ -301,14 +321,17 @@ class UserController extends Controller
             $this->checkRoles($user, $type);
 
             if(isset($provider_user['bceid_business_guid'])) {
-                \Log::info('isset $provider_user');
+                \Log::info('isset bceid $provider_user');
                 $this->checkInstitutionStaff($user, $provider_user);
+            }elseif(isset($provider_user['bcsc_user_guid'])) {
+                \Log::info('isset bcsc $provider_user');
+                $this->addNewStudent($user, $provider_user);
             }else{
                 \Log::info('net set $provider_user');
             }
         }
 
-        return $valid;
+        return [$valid, $user];
     }
 
     private function checkInstitutionStaff($user, $provider_user)
@@ -354,4 +377,30 @@ class UserController extends Controller
             $user->roles()->attach($role);
         }
     }
+
+
+    private function addNewStudent($user, $provider_user)
+    {
+        $user = User::find($user->id);
+        $student = Student::where('dob', $provider_user['birthdate'])->where('email', $provider_user['email'])->first();
+
+        if (is_null($student)) {
+            \Log::info('New Student: ' . $provider_user['email']);
+
+            // Prevent this since some accounts are existing with sin.
+//            $st = new Student();
+//            $st->guid = Str::orderedUuid()->getHex();
+//            $st->user_guid = $user->guid;
+//            $st->first_name = Str::title($provider_user['given_name']);
+//            $st->last_name = Str::title($provider_user['family_name']);
+//            $st->email = $provider_user['email'];
+//            $st->dob = $provider_user['birthdate'];
+//            $st->gender = $provider_user['gender'];
+//
+//            $st->save();
+        }else{
+            \Log::info('Can not create New Student: ' . $provider_user['email']);
+        }
+    }
+
 }

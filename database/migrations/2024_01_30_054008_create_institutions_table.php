@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('name_code', 10);
             $table->string('size', 10)->nullable();
+            $table->string('category')->nullable();
+            $table->string('economic_region')->nullable();
             $table->string('legal_name')->nullable();
             $table->string('address1')->nullable();
             $table->string('address2')->nullable();

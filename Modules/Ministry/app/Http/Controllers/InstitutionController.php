@@ -51,6 +51,16 @@ class InstitutionController extends Controller
             'countries' => $countries, 'programYears' => $program_years]);
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(InstitutionEditRequest $request): RedirectResponse
+    {
+        Institution::where('id', $request->id)->update($request->validated());
+
+        return Redirect::route('ministry.institutions.show', [$request->id]);
+    }
+
     private function paginateInst()
     {
         $institutions = Institution::with('activeAllocation');

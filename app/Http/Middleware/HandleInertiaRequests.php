@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\ProgramYear;
 use App\Models\User;
 use App\Models\Util;
 use Illuminate\Http\Request;
@@ -49,6 +50,24 @@ class HandleInertiaRequests extends Middleware
         $sortedUtils = Cache::remember('sorted_utils', 3600, function () { //for an hour
             return Util::getSortedUtils();
         });
+
+        $globalProgramYears = Cache::remember('global_program_years', now()->addHours(10), function () {
+            $programYears = ProgramYear::orderBy('id')->get();
+            if($programYears->isEmpty()) {
+                return [
+                    'list' => [],
+                    'default' => null,
+                ];
+            }
+
+            // Find the program year with status 'active'
+            $activeProgramYear = $programYears->firstWhere('status', 'active');
+
+            return [
+                'list' => $programYears,
+                'default' => $activeProgramYear ? $activeProgramYear->guid : $programYears[0]->guid
+            ];
+        });
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $user,
@@ -56,11 +75,16 @@ class HandleInertiaRequests extends Middleware
                 'readOnly' => Session::has('read-only'),
             ],
             'utils' => $sortedUtils,
+            'programYearsData' => [
+                'list' => $globalProgramYears['list'],
+                'default' => $globalProgramYears['default'],
+            ],
+
             'ziggy' => function () {
                 return (new Ziggy)->toArray();
             },
             'logoutUrl' => env('KEYCLOAK_LOGOUT_URL'),
-            'logoutBcscUrl' => env('KEYCLOAK_BCSC_LOGOUT_URL'),
+            'logoutBcscUrl' => Session::get('bcsc_logout_uri'),
         ]);
 
     }

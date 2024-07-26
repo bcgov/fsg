@@ -7,39 +7,16 @@
                     <Label for="inputProgramName" class="form-label" value="Program Name" />
                     <Input type="text" class="form-control" id="inputProgramName" v-model="editForm.program_name" />
                 </div>
-                <div class="col-md-4">
-                    <Label for="inputDeliveryMethod" class="form-label" value="Delivery Method" />
-                    <Select class="form-select" id="inputDeliveryMethod" v-model="editForm.delivery_method">
-                        <option></option>
-                        <option v-for="stat in $attrs.utils['Delivery Method']" :value="stat.field_name">{{ stat.field_name }}</option>
-                    </Select>
-                </div>
-                <div class="col-md-4">
-                    <Label for="inputOnlineDeliveryType" class="form-label" value="Online Delivery Type" />
-                    <Select class="form-select" id="inputOnlineDeliveryType" v-model="editForm.online_delivery_type">
-                        <option></option>
-                        <option v-for="stat in $attrs.utils['Online Delivery Type']" :value="stat.field_name">{{ stat.field_name }}</option>
-                    </Select>
-                </div>
-                <div class="col-md-4">
-                    <Label for="inputCredentialType" class="form-label" value="Credential Type"/>
-                    <Select class="form-select" id="inputCredentialType" v-model="editForm.credential_type">
-                        <option></option>
-                        <option v-for="stat in $attrs.utils['Credential Type']" :value="stat.field_name">{{ stat.field_name }}</option>
-                    </Select>
-                </div>
 
                 <div class="col-md-4">
                     <Label for="inputPriority" class="form-label" value="High Priority Industry"/>
                     <Select class="form-select" id="inputPriority" v-model="editForm.high_priority_industry">
-                        <option></option>
                         <option v-for="stat in $attrs.utils['High Priority Industry']" :value="stat.field_name">{{ stat.field_name }}</option>
                     </Select>
                 </div>
                 <div class="col-md-4">
                     <Label for="inputIndiLearning" class="form-label" value="Indigenous Related Learning ?"/>
                     <Select class="form-select" id="inputIndiLearning" v-model="editForm.indigenous_related_learning">
-                        <option value=""></option>
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
@@ -47,16 +24,40 @@
                 <div class="col-md-4">
                     <Label for="inputDiversInc" class="form-label" value="Diversity Inclusion Related Learning?"/>
                     <Select class="form-select" id="inputDiversInc" v-model="editForm.diversity_inclusion_related_learning">
-                        <option value=""></option>
                         <option value="true">Yes</option>
                         <option value="false">No</option>
+                    </Select>
+                </div>
+
+
+                <div class="col-md-3">
+                    <Label for="inputDeliveryMethod" class="form-label" value="Delivery Method" />
+                    <Select class="form-select" id="inputDeliveryMethod" v-model="editForm.delivery_method">
+                        <option v-for="stat in $attrs.utils['Delivery Method']" :value="stat.field_name">{{ stat.field_name }}</option>
+                    </Select>
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputOnlineDeliveryType" class="form-label" value="Online Delivery Type" />
+                    <Select class="form-select" id="inputOnlineDeliveryType" v-model="editForm.online_delivery_type">
+                        <option v-for="stat in $attrs.utils['Online Delivery Type']" :value="stat.field_name">{{ stat.field_name }}</option>
+                    </Select>
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputCredentialType" class="form-label" value="Credential Type"/>
+                    <Select class="form-select" id="inputCredentialType" v-model="editForm.credential_type">
+                        <option v-for="stat in $attrs.utils['Credential Type']" :value="stat.field_name">{{ stat.field_name }}</option>
+                    </Select>
+                </div>
+                <div class="col-md-3">
+                    <Label for="inputMicroCredentialType" class="form-label" value="Micro Credential"/>
+                    <Select class="form-select" id="inputMicroCredentialType" v-model="editForm.micro_credential_type">
+                        <option v-for="stat in $attrs.utils['Micro Credential Type']" :value="stat.field_name">{{ stat.field_name }}</option>
                     </Select>
                 </div>
 
                 <div class="col-md-3">
                     <Label for="inputMicroCred" class="form-label" value="Prov. Funded Micro cred ?"/>
                     <Select class="form-select" id="inputMicroCred" v-model="editForm.prov_funded_micro_cred">
-                        <option value=""></option>
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
@@ -64,7 +65,6 @@
                 <div class="col-md-3">
                     <Label for="inputCreditable" class="form-label" value="Creditable ?"/>
                     <Select class="form-select" id="inputCreditable" v-model="editForm.creditable">
-                        <option value=""></option>
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
@@ -72,7 +72,6 @@
                 <div class="col-md-3">
                     <Label for="inputFullTime" class="form-label" value="Full-time ?"/>
                     <Select class="form-select" id="inputFullTime" v-model="editForm.full_time">
-                        <option value=""></option>
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
@@ -80,7 +79,6 @@
                 <div class="col-md-3">
                     <Label for="inputActive" class="form-label" value="Active?" />
                     <Select class="form-select" id="inputActive" v-model="editForm.active_status">
-                        <option value=""></option>
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>

@@ -15,9 +15,9 @@ nav.navbar .form-select {
 <template>
     <nav class="navbar navbar-expand-lg sticky-top navbar-dark shadow">
         <div class="container-fluid">
-            <Link class="navbar-brand" href="/student/dashboard">
+            <Link class="navbar-brand" href="/applications">
                 <ApplicationLogo width="126" height="34" class="d-inline-block align-text-top me-3" />
-                <span class="d-none d-xl-inline fw-light">FSG - Future Skills Grant</span>
+                <span class="d-none d-xl-inline fw-light">StrongerBC Future Skills Grant</span>
             </Link>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
                     aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,9 +27,9 @@ nav.navbar .form-select {
                 <ul class="navbar-nav flex-row flex-wrap ms-md-auto" style="--bs-scroll-height: 100px;">
 
                     <li class="nav-item">
-                        <NavLink class="nav-link" href="/student/dashboard"
+                        <NavLink class="nav-link" href="/applications"
                                  :class="{ 'active':
-                                     $page.url.indexOf('/dashboard') > -1  }">
+                                     $page.url.indexOf('/profile') > -1  }">
                             Dashboard
                         </NavLink>
                     </li>

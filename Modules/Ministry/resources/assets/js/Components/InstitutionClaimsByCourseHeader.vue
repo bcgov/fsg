@@ -30,14 +30,14 @@
         </th>
         <th scope="col" class="text-nowrap">
             <a href="#" @click="switchSort('estimated_hold_amount')">
-                <span>Estimated Hold</span>
+                <span title="Estimated Hold + Admin Fee">Est. Hold incl. fee</span>
                 <em v-if="sortClmn === 'estimated_hold_amount' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
                 <em v-else class="bi bi bi-sort-numeric-down"></em>
             </a>
         </th>
         <th scope="col" class="text-nowrap">
             <a href="#" @click="switchSort('total_claim_amount')">
-                <span>Total Claim</span>
+                <span>Claim Total</span>
                 <em v-if="sortClmn === 'total_claim_amount' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
                 <em v-else class="bi bi bi-sort-numeric-down"></em>
             </a>

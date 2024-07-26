@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Redis;
 
 Route::get('/logout', [UserController::class, 'logout'])->name('get-logout');
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
@@ -14,3 +15,12 @@ Route::get('/bceid-login', [UserController::class, 'bceidLogin'])->name('bceid-l
 Route::get('/bcsc-login', [UserController::class, 'bcscLogin'])->name('bcsc-login');
 Route::middleware(['auth'])->get('/home', [UserController::class, 'home'])->name('home');
 
+
+//Route::get('/test-redis', function () {
+//    try {
+//        $name = Redis::get('name');
+//        return "Redis connection successful. Name: " . $name;
+//    } catch (Exception $e) {
+//        return "Redis connection failed: " . $e->getMessage();
+//    }
+//});

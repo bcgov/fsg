@@ -55,62 +55,157 @@
 
                 <hr/>
 
-                <div class="col-md-4">
-                    <Label for="input52Week" class="form-label" value="52 Week Affirm."/>
-                    <Select class="form-select" id="input52Week" v-model="editStudentClaimForm.fifty_two_week_affirmation">
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </Select>
-                </div>
-                <div class="col-md-4">
-                    <Label for="inputExpiryDate" class="form-label" value="Expiry Date" />
-                    <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpiryDate" v-model="editStudentClaimForm.expiry_date" />
-                </div>
-                <div class="col-md-4">
+<!--                <div class="col-md-6">-->
+<!--                    <Label for="input52Week" class="form-label" value="52 Week Affirm."/>-->
+<!--                    <Select class="form-select" id="input52Week" v-model="editStudentClaimForm.fifty_two_week_affirmation">-->
+<!--                        <option value="true">Yes</option>-->
+<!--                        <option value="false">No</option>-->
+<!--                    </Select>-->
+<!--                </div>-->
+                <div class="col-md-12">
                     <Label for="inputStatus" class="form-label" value="Claim Status"/>
                     <Select class="form-select" id="inputStatus" v-model="editStudentClaimForm.claim_status">
                         <option v-for="status in $attrs.utils['Claim Status']" :value="status.field_name">{{ status.field_name }}</option>
                     </Select>
                 </div>
 
+                <hr/>
 
-                <div v-if="claim.claim_status === 'Submitted'" class="col-md-12">
-                    <Label for="inputEstimatedHoldAmount" class="form-label" value="Estimated Hold Amount" />
-                    <Input type="number" step=".01" max="3500" class="form-control" id="inputEstimatedHoldAmount" v-model="editStudentClaimForm.estimated_hold_amount" />
-                </div>
-                <template v-if="claim.claim_status === 'Hold'">
+
+                <template v-if="claim.claim_status === 'Submitted'">
                     <div class="col-md-3">
-                        <Label for="inputEstimatedHoldAmount" class="form-label" value="Estimated Hold Amount" />
+                        <Label for="inputExpiryDate" class="form-label" value="Hold Amount Expiry Date" />
+                        <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpiryDate" v-model="editStudentClaimForm.expiry_date" />
+                    </div>
+                    <div class="col-md-3">
+                        <Label for="inputEstimatedHoldAmount" class="form-label" value="Est. Hold Amount (Max.)" />
                         <Input type="number" step=".01" max="3500" class="form-control" id="inputEstimatedHoldAmount" v-model="editStudentClaimForm.estimated_hold_amount" />
                     </div>
                     <div class="col-md-3">
+                        <Label for="inputExpStableEnrolDate" class="form-label" value="Expected Stable Enrol. Date" />
+                        <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpStableEnrolDate" v-model="editStudentClaimForm.expected_stable_enrolment_date" />
+                    </div>
+                    <div class="col-md-3">
+                        <Label for="inputExpCompletionDate" class="form-label" value="Expected Completion Date" />
+                        <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpCompletionDate" v-model="editStudentClaimForm.expected_completion_date" />
+                    </div>
+
+                </template>
+                <template v-if="claim.claim_status === 'Hold'">
+                    <div class="col-md-3">
+                        <Label for="inputExpiryDate" class="form-label" value="Hold Amount Expiry Date" />
+                        {{ editStudentClaimForm.expiry_date }}
+                    </div>
+
+                    <div class="col-md-3">
+                        <Label for="inputEstimatedHoldAmount" class="form-label" value="Estimated Hold Amount" />
+                        ${{ editStudentClaimForm.estimated_hold_amount }}
+                    </div>
+                    <div class="col-md-3">
+                        <Label for="inputExpStableEnrolDate" class="form-label" value="Expected Stable Enrol. Date" />
+                        <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpStableEnrolDate" v-model="editStudentClaimForm.expected_stable_enrolment_date" />
+                    </div>
+                    <div class="col-md-3">
+                        <Label for="inputExpCompletionDate" class="form-label" value="Expected Completion Date" />
+                        <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputExpCompletionDate" v-model="editStudentClaimForm.expected_completion_date" />
+                    </div>
+
+                    <hr/>
+
+                    <div class="col-md-4">
+                        <Label for="inputProgramFee" class="form-label" value="Program/Tuition Fee" />
+                        <Input type="number" step=".01" class="form-control" id="inputProgramFee" v-model="editStudentClaimForm.program_fee" />
+                    </div>
+                    <div class="col-md-4">
                         <Label for="inputRegistrationFee" class="form-label" value="Registration Fee" />
                         <Input type="number" step=".01" class="form-control" id="inputRegistrationFee" v-model="editStudentClaimForm.registration_fee" />
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <Label for="inputMaterialsFee" class="form-label" value="Materials Fee" />
                         <Input type="number" step=".01" class="form-control" id="inputMaterialsFee" v-model="editStudentClaimForm.materials_fee" />
                     </div>
+
                     <div class="col-md-3">
-                        <Label for="inputProgramFee" class="form-label" value="Program Fee" />
-                        <Input type="number" step=".01" class="form-control" id="inputProgramFee" v-model="editStudentClaimForm.program_fee" />
+                        <Label for="inputStableDate" class="form-label" value="Admin Fee" />
+                        {{ editStudentClaimForm.allocation.py_admin_fee }}%
+                    </div>
+                    <div class="col-md-3">
+                        <Label for="inputStableDate" class="form-label" value="Total + Admin" />
+                        ${{ totalPlusAdmin }}
+                    </div>
+                    <div class="col-md-3">
+                        <Label for="inputStableDate" class="form-label" value="Actual Stable Enrol. Date" />
+                        <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputStableDate" v-model="editStudentClaimForm.stable_enrolment_date" />
+                    </div>
+                    <div class="col-md-3">
+                        <Label for="inputStableDate" class="form-label" value="Expected Stable Enrol. Date" />
+                        <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputStableDate" v-model="editStudentClaimForm.expected_stable_enrolment_date" />
                     </div>
 
                 </template>
 
-                <div class="col-md-4">
-                    <Label for="inputStableDate" class="form-label" value="Stable Enrol. Date" />
-                    <Input type="date" min="2020-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputStableDate" v-model="editStudentClaimForm.stable_enrolment_date" />
-                </div>
-                <div class="col-md-4">
-                    <Label for="inputPsiDate" class="form-label" value="PSI Claim Request Date" />
-                    {{ editStudentClaimForm.psi_claim_request_date == null ? '-' : editStudentClaimForm.psi_claim_request_date }}
-                </div>
-                <div class="col-md-4">
-                    <Label for="inputCompleteDate" class="form-label" value="Reporting Complete Date" />
-                    {{ editStudentClaimForm.reporting_completed_date == null ? '-' : editStudentClaimForm.reporting_completed_date }}
-                </div>
+                <template v-if="claim.claim_status === 'Claimed' || claim.claim_status === 'Expired' || claim.claim_status === 'Cancelled'">
+                    <div class="col-md-3">
+                        <Label for="inputExpiryDate" class="form-label" value="Hold Amount Expiry Date" />
+                        {{ editStudentClaimForm.expiry_date }}
+                    </div>
+                    <div class="col-md-3">
+                        <Label for="inputEstimatedHoldAmount" class="form-label" value="Estimated Hold Amount" />
+                        ${{ editStudentClaimForm.estimated_hold_amount }}
+                    </div>
+                    <div class="col-md-3">
+                        <Label for="inputExpStableEnrolDate" class="form-label" value="Expected Stable Enrol. Date" />
+                        {{ editStudentClaimForm.expected_stable_enrolment_date }}
+                    </div>
+                    <div class="col-md-3">
+                        <Label for="inputExpCompletionDate" class="form-label" value="Expected Completion Date" />
+                        {{ editStudentClaimForm.expected_completion_date }}
+                    </div>
 
+                    <hr v-if="claim.claim_status !== 'Draft'"/>
+
+                    <div class="col-md-4">
+                        <Label for="inputProgramFee" class="form-label" value="Tuition/Program Fee" />
+                        ${{ editStudentClaimForm.program_fee }}
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputRegistrationFee" class="form-label" value="Registration Fee" />
+                        ${{ editStudentClaimForm.registration_fee }}
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputMaterialsFee" class="form-label" value="Materials Fee" />
+                        ${{ editStudentClaimForm.materials_fee }}
+                    </div>
+
+                    <div class="col-md-4">
+                        <Label for="inputStableDate" class="form-label" value="Admin Fee" />
+                        {{ editStudentClaimForm.allocation.py_admin_fee }}%
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputStableDate" class="form-label" value="Total + Admin" />
+                        ${{ totalPlusAdmin }}
+                    </div>
+                    <div class="col-md-4">
+                        <Label for="inputStableDate" class="form-label" value="Actual Stable Enrol. Date" />
+                        {{ editStudentClaimForm.expected_stable_enrolment_date }}
+                    </div>
+
+                </template>
+
+                <hr v-if="claim.claim_status !== 'Draft'"/>
+
+                <template v-if="claim.claim_status === 'Claimed'">
+                    <div class="col-md-6">
+                        <Label for="inputOutcomeDate" class="form-label" value="Outcome Effective Date" />
+                        <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputOutcomeDate" v-model="editStudentClaimForm.outcome_effective_date" />
+                    </div>
+                    <div class="col-md-6">
+                        <Label for="inputOutcomeStatus" class="form-label" value="Outcome Status"/>
+                        <Select class="form-select" id="inputOutcomeStatus" v-model="editStudentClaimForm.outcome_status">
+                            <option v-for="status in $attrs.utils['Outcome Status']" :value="status.field_name">{{ status.field_name }}</option>
+                        </Select>
+                    </div>
+                </template>
 
                 <div v-if="editStudentClaimForm.process_feedback != null" class="row">
                     <div class="col-12">
@@ -173,13 +268,27 @@ export default {
                 program_year_guid: "",
                 status: "",
             },
-            programs: [],
-            // editClaim: ''
+            programs: []
         }
     },
     methods: {
 
         submitForm: function () {
+            // Show confirm only if the user is switching the status from Submitted to Hold
+            if(this.claim.claim_status === 'Submitted' && this.editStudentClaimForm.claim_status === 'Hold'){
+                if(!confirm("You are about to switch the status of this claim to Hold. The field Estimated Hold Amount is going to be locked. Proceed?")){
+                    return false;
+                }
+            }
+
+            // Show confirm only if the user is switching the status from Hold to Claimed
+            if(this.claim.claim_status === 'Hold' && this.editStudentClaimForm.claim_status === 'Claimed'){
+                if(!confirm("You are about to switch the status of this claim to Claimed. " +
+                    "The fields Registration, Materials, and Program Fee are going to be locked. Proceed?")){
+                    return false;
+                }
+            }
+
             let vm = this;
             this.editStudentClaimForm.formState = null;
             this.editStudentClaimForm.put('/ministry/claims', {
@@ -220,6 +329,19 @@ export default {
                     console.log(error);
                 });
         },
+    },
+    computed: {
+        totalPlusAdmin() {
+            const programFee = parseFloat(this.editStudentClaimForm.program_fee) || 0;
+            const registrationFee = parseFloat(this.editStudentClaimForm.registration_fee) || 0;
+            const materialsFee = parseFloat(this.editStudentClaimForm.materials_fee) || 0;
+            const adminFeePercentage = parseInt(this.editStudentClaimForm.allocation.py_admin_fee) || 0;
+
+            const total = programFee + registrationFee + materialsFee;
+            const adminFee = total * (adminFeePercentage / 100);
+
+            return total + adminFee;
+        }
     },
     mounted() {
         this.fetchData();
