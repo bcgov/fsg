@@ -291,7 +291,7 @@ export default {
             this.editStudentClaimForm.put('/institution/claims', {
                 onSuccess: (response) => {
                     this.editStudentClaimForm.formState = true;
-                    vm.$inertia.visit('/institution/claims');
+                    // vm.$inertia.visit('/institution/claims');
                     setTimeout(function () {
                         $("#editClaimModal").modal('hide')
                             .on('hidden.bs.modal', function () {
