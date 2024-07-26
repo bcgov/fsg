@@ -291,14 +291,15 @@ export default {
             this.editStudentClaimForm.put('/institution/claims', {
                 onSuccess: (response) => {
                     this.editStudentClaimForm.formState = true;
+                    this.$emit('close');
                     // vm.$inertia.visit('/institution/claims');
-                    setTimeout(function () {
-                        $("#editClaimModal").modal('hide')
-                            .on('hidden.bs.modal', function () {
-                                vm.editStudentClaimForm.reset();
-                                vm.$emit('close');
-                            });
-                    }, 1500);
+                    // setTimeout(function () {
+                    //     $("#editClaimModal").modal('hide')
+                    //         .on('hidden.bs.modal', function () {
+                    //             vm.editStudentClaimForm.reset();
+                    //
+                    //         });
+                    // }, 1500);
                 },
                 onError: () => {
                     this.editStudentClaimForm.formState = false;
