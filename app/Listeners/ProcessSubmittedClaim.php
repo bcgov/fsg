@@ -147,16 +147,11 @@ class ProcessSubmittedClaim
                     ->where('allocation_guid', $claim->allocation_guid)
                     ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
 
-                // Plus this new claim
-                $current_claim_sum = $claim->program_fee + $claim->materials_fee + $claim->registration_fee;
 
-
-                Log::info("current_claim_sum = " . number_format($current_claim_sum, 0));
                 Log::info("claims sum_claims = " . number_format($sum_claims, 0));
                 Log::info("allocation total_amount = " . number_format($claim->allocation->total_amount, 0));
 
-                $total = (float)$sum_claims + (float)$current_claim_sum +
-                    ( ((float)$sum_claims + (float)$current_claim_sum) / (float)$claim->py_admin_fee);
+                $total = (float)$sum_claims + ((float)$sum_claims / (float)$claim->py_admin_fee);
                 Log::info("total + admin fee = " . number_format($total, 0));
 
                 // Prevent inst. from switching to Claimed if the total of their claims is gte the allocation total
@@ -203,7 +198,6 @@ class ProcessSubmittedClaim
                 $claim->registration_fee = 0;
             }
         }
-
 
         $claim->save();
     }
