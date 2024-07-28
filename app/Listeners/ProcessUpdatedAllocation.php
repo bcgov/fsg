@@ -7,7 +7,6 @@ use App\Models\Allocation;
 
 class ProcessUpdatedAllocation
 {
-
     /**
      * Handle the event.
      */
@@ -19,7 +18,7 @@ class ProcessUpdatedAllocation
         $allocation = Allocation::where('id', $allocation_before_update->id)->first();
 
         // If the claim submitted against an inactive allocation stop there.
-        if($status === 'active'){
+        if ($status === 'active') {
             Allocation::where('institution_guid', $allocation->institution_guid)
                 ->whereNot('id', $allocation->id)
                 ->update(['status' => 'inactive']);

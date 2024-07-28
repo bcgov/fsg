@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Response;
 
 class TestController extends Controller
 {
@@ -15,7 +14,6 @@ class TestController extends Controller
     {
         return Inertia::render('Home');
     }
-
 
     /**
      * Display the login view.
@@ -30,5 +28,4 @@ class TestController extends Controller
             'status' => session('status'),
         ]);
     }
-
 }

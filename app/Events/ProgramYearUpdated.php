@@ -22,5 +22,4 @@ class ProgramYearUpdated
         $this->programYear = $programYear;
         $this->status = $status;
     }
-
 }

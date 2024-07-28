@@ -3,10 +3,10 @@
 namespace App\Http\Requests;
 
 use App\Models\Claim;
+use App\Rules\ValidSin;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
-use App\Rules\ValidSin;
 
 class ClaimEditRequest extends FormRequest
 {
@@ -19,7 +19,7 @@ class ClaimEditRequest extends FormRequest
     {
         $claim = Claim::find($this->id);
 
-        if (!$claim) {
+        if (! $claim) {
             return false; // Claim not found
         }
 
@@ -29,19 +29,18 @@ class ClaimEditRequest extends FormRequest
         }
 
         // Allow switching to Cancelled only if claim is in Hold status and stable enrol. date is yet to come
-//        if ($this->claim_status === 'Cancelled' && $claim->claim_status !== 'Hold') {
-//            return false;
-//        }
-//        if ($this->claim_status === 'Cancelled' && $claim->claim_status === 'Hold') {
-            // Robyn said remove this.
-//            if($claim->stable_enrolment_date < Carbon::now()) {
-//                return false;
-//            }
-//        }
+        //        if ($this->claim_status === 'Cancelled' && $claim->claim_status !== 'Hold') {
+        //            return false;
+        //        }
+        //        if ($this->claim_status === 'Cancelled' && $claim->claim_status === 'Hold') {
+        // Robyn said remove this.
+        //            if($claim->stable_enrolment_date < Carbon::now()) {
+        //                return false;
+        //            }
+        //        }
         if ($this->claim_status === 'Cancelled' && ($claim->claim_status == 'Draft' || $claim->claim_status == 'Expired')) {
             return false;
         }
-
 
         // Check if the authenticated user has the necessary permissions to edit the institution.
         // You can access the authenticated user using the Auth facade or $this->user() method.
@@ -76,7 +75,7 @@ class ClaimEditRequest extends FormRequest
             'expected_completion_date' => 'nullable',
             'outcome_effective_date' => 'nullable',
             'outcome_status' => 'nullable',
-            ];
+        ];
 
         // If the status is "Cancelled" or 'Expired', do not validate other fields
         if ($this->claim_status === 'Cancelled' || $this->claim_status === 'Expired') {
@@ -219,7 +218,7 @@ class ClaimEditRequest extends FormRequest
     /**
      * Sanitize and convert a value to float.
      *
-     * @param mixed $value
+     * @param  mixed  $value
      * @return float
      */
     protected function sanitizeAndConvertToFloat($value)

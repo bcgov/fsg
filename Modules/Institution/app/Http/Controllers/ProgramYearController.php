@@ -4,12 +4,8 @@ namespace Modules\Institution\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProgramYear;
-use App\Models\User;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Inertia\Inertia;
 use Response;
 
 class ProgramYearController extends Controller
@@ -24,9 +20,10 @@ class ProgramYearController extends Controller
         Cache::forget('global_program_years');
         Cache::remember('global_program_years', now()->addHours(10), function () use ($programYear) {
             $programYears = ProgramYear::orderBy('id')->get();
+
             return [
                 'list' => $programYears,
-                'default' => $programYear->guid
+                'default' => $programYear->guid,
             ];
         });
 

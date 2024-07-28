@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AllocationEditRequest;
 use App\Http\Requests\AllocationStoreRequest;
 use App\Models\Allocation;
-use App\Models\Program;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Response;
@@ -33,6 +32,7 @@ class AllocationController extends Controller
         $allocation = Allocation::create($request->validated());
 
         event(new AllocationCreated($allocation));
+
         return Redirect::route('ministry.institutions.show', [$allocation->institution->id, 'allocations']);
     }
 

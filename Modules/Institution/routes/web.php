@@ -23,24 +23,24 @@ Route::prefix('institution')->group(function () {
             'middleware' => ['auth', 'institution_active'],
             'as' => 'institution.',
         ], function () {
-        Route::get('/dashboard', [InstitutionController::class, 'index'])->name('dashboard');
-        Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
-        Route::put('/claims', [ClaimController::class, 'update'])->name('claims.update');
-//        Route::get('/claims/download/{claim}', [ClaimController::class, 'download'])->name('claims.download');
-//        Route::get('/claims/export', [ClaimController::class, 'exportCsv'])->name('claims.export');
+            Route::get('/dashboard', [InstitutionController::class, 'index'])->name('dashboard');
+            Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
+            Route::put('/claims', [ClaimController::class, 'update'])->name('claims.update');
+            //        Route::get('/claims/download/{claim}', [ClaimController::class, 'download'])->name('claims.download');
+            //        Route::get('/claims/export', [ClaimController::class, 'exportCsv'])->name('claims.export');
 
-        Route::get('/students', [StudentController::class, 'index'])->name('students.index');
-        Route::get('/students/{student}/{page?}', [StudentController::class, 'show'])->name('students.show');
-        Route::put('/students', [StudentController::class, 'update'])->name('students.update');
+            Route::get('/students', [StudentController::class, 'index'])->name('students.index');
+            Route::get('/students/{student}/{page?}', [StudentController::class, 'show'])->name('students.show');
+            Route::put('/students', [StudentController::class, 'update'])->name('students.update');
 
-        Route::get('/account', [InstitutionController::class, 'show'])->name('show');
+            Route::get('/account', [InstitutionController::class, 'show'])->name('show');
 
-        Route::post('/program_years/default', [ProgramYearController::class, 'setDefault'])->name('program_years.set-default');
+            Route::post('/program_years/default', [ProgramYearController::class, 'setDefault'])->name('program_years.set-default');
 
-        Route::get('/api/fetch/claims/{guid?}', [ClaimController::class, 'fetchClaims'])->name('institutions.fetchClaims');
-        Route::get('/api/fetch/students/claims-by-student', [ClaimController::class, 'fetchStudentsClaims'])->name('claims.fetchStudentsClaims');
+            Route::get('/api/fetch/claims/{guid?}', [ClaimController::class, 'fetchClaims'])->name('institutions.fetchClaims');
+            Route::get('/api/fetch/students/claims-by-student', [ClaimController::class, 'fetchStudentsClaims'])->name('claims.fetchStudentsClaims');
 
-    });
+        });
 
     Route::group([
         'middleware' => ['institution_admin'],

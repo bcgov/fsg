@@ -20,12 +20,11 @@ use Modules\Student\Http\Controllers\StudentController;
 //    Route::resource('student', StudentController::class)->names('student');
 //});
 
-
-    Route::group(
-        [
-            'middleware' => [Authenticate::class, ],
-            'as' => 'student.',
-        ], function () {
+Route::group(
+    [
+        'middleware' => [Authenticate::class],
+        'as' => 'student.',
+    ], function () {
         Route::get('/applications', [ApplicationController::class, 'applications'])->name('home');
         Route::post('/applications', [ApplicationController::class, 'store'])->name('applications.store');
         Route::put('/applications', [ApplicationController::class, 'update'])->name('applications.update');

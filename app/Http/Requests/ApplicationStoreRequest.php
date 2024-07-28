@@ -6,9 +6,9 @@ use App\Models\Allocation;
 use App\Models\Claim;
 use App\Models\Student;
 use App\Rules\InstitutionAllocationReached;
+use App\Rules\ValidSin;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
-use App\Rules\ValidSin;
 
 class ApplicationStoreRequest extends FormRequest
 {
@@ -70,7 +70,7 @@ class ApplicationStoreRequest extends FormRequest
                 'registration_confirmed' => 'boolean',
             ]);
 
-        }elseif ($this->claim_status === 'Submitted') {
+        } elseif ($this->claim_status === 'Submitted') {
             $rules = array_merge($rules, [
 
                 'allocation_limit_reached' => new InstitutionAllocationReached($allocation),
@@ -108,57 +108,55 @@ class ApplicationStoreRequest extends FormRequest
             ->orderByDesc('created_at')
             ->first();
 
-
         if ($student && $allocation) {
 
             // Only allow the student to submit an application if the allocation limit has not been reached.
 
             // We need the sum of claims that are in Hold, Submitted or Claimed
-//            $sum_claims = Claim::whereIn('claim_status', ['Submitted', 'Claimed'])
-//                ->where('institution_guid', $this->institution_guid)
-//                ->where('allocation_guid', $allocation->guid)
-//                ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
-//            $sum_hold_claims = Claim::where('claim_status', 'Hold')
-//                ->where('institution_guid', $this->institution_guid)
-//                ->where('allocation_guid', $allocation->guid)
-//                ->sum('estimated_hold_amount');
-//
-//            if((float)$sum_claims + (float)$sum_hold_claims < (float)$allocation->total_amount) {
-                $this->merge([
-                    'allocation_limit_reached' => null,
-                    'guid' => Str::orderedUuid()->getHex(),
-                    'last_touch_by_user_guid' => $this->user()->guid,
+            //            $sum_claims = Claim::whereIn('claim_status', ['Submitted', 'Claimed'])
+            //                ->where('institution_guid', $this->institution_guid)
+            //                ->where('allocation_guid', $allocation->guid)
+            //                ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
+            //            $sum_hold_claims = Claim::where('claim_status', 'Hold')
+            //                ->where('institution_guid', $this->institution_guid)
+            //                ->where('allocation_guid', $allocation->guid)
+            //                ->sum('estimated_hold_amount');
+            //
+            //            if((float)$sum_claims + (float)$sum_hold_claims < (float)$allocation->total_amount) {
+            $this->merge([
+                'allocation_limit_reached' => null,
+                'guid' => Str::orderedUuid()->getHex(),
+                'last_touch_by_user_guid' => $this->user()->guid,
 
-                    'allocation_guid' => $allocation->guid,
-                    'student_guid' => $student->guid,
-                    'first_name' => $student->first_name,
-                    'last_name' => $student->last_name,
-                    'email' => $student->email,
-                    'zip_code' => $student->zip_code,
-                    'city' => $student->city,
-                    'sin' => $student->sin,
-                    'dob' => $student->dob,
+                'allocation_guid' => $allocation->guid,
+                'student_guid' => $student->guid,
+                'first_name' => $student->first_name,
+                'last_name' => $student->last_name,
+                'email' => $student->email,
+                'zip_code' => $student->zip_code,
+                'city' => $student->city,
+                'sin' => $student->sin,
+                'dob' => $student->dob,
 
-//                'registration_confirmed' => $student->registration_confirmed,
-//                'agreement_confirmed' => $student->agreement_confirmed,
+                //                'registration_confirmed' => $student->registration_confirmed,
+                //                'agreement_confirmed' => $student->agreement_confirmed,
 
-                    'agreement_confirmed' => $this->toBoolean($this->agreement_confirmed),
-                    'registration_confirmed' => $this->toBoolean($this->registration_confirmed),
+                'agreement_confirmed' => $this->toBoolean($this->agreement_confirmed),
+                'registration_confirmed' => $this->toBoolean($this->registration_confirmed),
 
-                    'registration_fee' => 0,
-                    'materials_fee' => 0,
-                    'program_fee' => 0,
-                    'estimated_hold_amount' => 0,
-                    'total_claim_amount' => 0,
-                    'claim_percent' => 0,
-                ]);
-//            } else {
-//                // Handle cases where $student or $allocation is null
-//                // This could involve throwing an exception or logging an error
-//                // For example:
-//                throw new \Exception('The institution allocation limit has been reached.');
-//            }
-
+                'registration_fee' => 0,
+                'materials_fee' => 0,
+                'program_fee' => 0,
+                'estimated_hold_amount' => 0,
+                'total_claim_amount' => 0,
+                'claim_percent' => 0,
+            ]);
+            //            } else {
+            //                // Handle cases where $student or $allocation is null
+            //                // This could involve throwing an exception or logging an error
+            //                // For example:
+            //                throw new \Exception('The institution allocation limit has been reached.');
+            //            }
 
         } else {
             // Handle cases where $student or $allocation is null

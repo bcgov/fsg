@@ -2,10 +2,6 @@
 
 namespace Modules\Institution\Http\Controllers;
 
-use App\Models\ProgramYear;
-use Illuminate\Support\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-
 use App\Events\ClaimSubmitted;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClaimEditRequest;
@@ -13,10 +9,11 @@ use App\Models\Allocation;
 use App\Models\Claim;
 use App\Models\Country;
 use App\Models\Program;
+use App\Models\ProgramYear;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
@@ -62,9 +59,9 @@ class ClaimController extends Controller
 
     public function fetchClaims(Request $request, $guid = null)
     {
-        if(!is_null($guid)){
+        if (! is_null($guid)) {
             $claim = Claim::where('guid', $guid)->with('institution', 'program', 'student', 'allocation')->first();
-            if(!is_null($claim)){
+            if (! is_null($claim)) {
                 $programs = Program::where('institution_guid', $claim->institution_guid)->IsActive()->get();
             }
 
@@ -77,7 +74,6 @@ class ClaimController extends Controller
 
         return Response::json(['status' => true, 'body' => $body]);
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -101,13 +97,11 @@ class ClaimController extends Controller
         return Response::json(['status' => true, 'body' => $body]);
     }
 
-
     private function paginateStudentClaims($studentGuid)
     {
         $user = Auth::user();
         $claims = Claim::where('student_guid', $studentGuid)->with('student', 'program', 'allocation', 'institution')
             ->where('institution_guid', $user->institution->guid);
-
 
         if (request()->sort !== null) {
             $claims = $claims->orderBy(request()->sort, request()->direction);
@@ -122,7 +116,7 @@ class ClaimController extends Controller
     {
         $user = Auth::user();
 
-        if(is_null($allocation)) {
+        if (is_null($allocation)) {
             // Return empty paginator
             $emptyData = new Collection();
             $emptyPaginator = new LengthAwarePaginator(
@@ -135,6 +129,7 @@ class ClaimController extends Controller
                     'query' => request()->query(),
                 ]
             );
+
             return $emptyPaginator->onEachSide(1);
         }
 

@@ -22,5 +22,4 @@ class ApplicationSubmitted
         $this->application = $application;
         $this->status = $status;
     }
-
 }

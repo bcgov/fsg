@@ -29,6 +29,7 @@ class Role extends Model
     public const Ministry_GUEST = 'Ministry Guest';
 
     public const Institution_GUEST = 'Institution Guest';
+
     public const Student = 'Student';
 
     /**

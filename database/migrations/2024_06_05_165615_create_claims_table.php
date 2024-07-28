@@ -36,9 +36,9 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('city')->nullable();
             $table->string('zip_code')->nullable();
-            $table->string('claim_type')->nullable()->default("Program")
+            $table->string('claim_type')->nullable()->default('Program')
                 ->comment('This used to be course-by-course. All new records will be set to Program');
-            $table->string('course_name')->nullable()->comment("Historical. no need to be populated. ");
+            $table->string('course_name')->nullable()->comment('Historical. no need to be populated. ');
 
             $table->string('claim_status')->nullable();
             $table->string('outcome_status')->nullable();

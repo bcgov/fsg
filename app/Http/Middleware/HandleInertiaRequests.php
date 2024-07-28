@@ -53,7 +53,7 @@ class HandleInertiaRequests extends Middleware
 
         $globalProgramYears = Cache::remember('global_program_years', now()->addHours(10), function () {
             $programYears = ProgramYear::orderBy('id')->get();
-            if($programYears->isEmpty()) {
+            if ($programYears->isEmpty()) {
                 return [
                     'list' => [],
                     'default' => null,
@@ -65,9 +65,10 @@ class HandleInertiaRequests extends Middleware
 
             return [
                 'list' => $programYears,
-                'default' => $activeProgramYear ? $activeProgramYear->guid : $programYears[0]->guid
+                'default' => $activeProgramYear ? $activeProgramYear->guid : $programYears[0]->guid,
             ];
         });
+
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $user,
