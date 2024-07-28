@@ -2,10 +2,6 @@
 
 namespace App\Providers;
 
-use App\Events\ClaimSubmitted1;
-use App\Events\StaffRoleChanged;
-use App\Listeners\ProcessSubmittedClaim1;
-use App\Listeners\SendActiveRoleNotification;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

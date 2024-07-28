@@ -22,11 +22,11 @@ class IsAdmin
         $roles = empty($roles) ? [null] : $roles;
 
         if (! Auth::check()) {
-//            return Inertia::render('Auth/Login', [
-//                'loginAttempt' => true,
-//                'hasAccess' => false,
-//                'status' => 'Please login again.',
-//            ]);
+            //            return Inertia::render('Auth/Login', [
+            //                'loginAttempt' => true,
+            //                'hasAccess' => false,
+            //                'status' => 'Please login again.',
+            //            ]);
             return redirect()->route('login');
         }
 

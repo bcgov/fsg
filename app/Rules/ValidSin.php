@@ -20,6 +20,7 @@ class ValidSin implements ValidationRule
         // SIN must be exactly 9 digits
         if (strlen($sin) !== 9) {
             $fail('The :attribute must be exactly 9 digits.');
+
             return;
         }
 

@@ -22,5 +22,4 @@ class AllocationUpdated
         $this->allocation = $allocation;
         $this->status = $status;
     }
-
 }

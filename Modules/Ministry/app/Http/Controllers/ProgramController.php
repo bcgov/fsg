@@ -5,14 +5,9 @@ namespace Modules\Ministry\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProgramEditRequest;
 use App\Http\Requests\ProgramStoreRequest;
-use App\Models\Country;
-use App\Models\FedCap;
-use App\Models\Institution;
 use App\Models\Program;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
-use Inertia\Inertia;
 use Response;
 
 class ProgramController extends Controller
@@ -35,6 +30,7 @@ class ProgramController extends Controller
         $program = Program::create($request->validated());
 
         $program = Program::find($program->id);
+
         return Redirect::route('ministry.institutions.show', [$program->institution->id, 'programs']);
 
     }
@@ -46,6 +42,7 @@ class ProgramController extends Controller
     {
         $program_id = Program::where('id', $request->id)->update($request->validated());
         $program = Program::find($request->id);
+
         return Redirect::route('ministry.institutions.show', [$program->institution->id, 'programs']);
     }
 }

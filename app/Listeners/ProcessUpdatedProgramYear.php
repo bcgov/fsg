@@ -8,7 +8,6 @@ use App\Models\ProgramYear;
 
 class ProcessUpdatedProgramYear
 {
-
     /**
      * Handle the event.
      * This will update the status of all allocations under the modified program year to match the program year's status.

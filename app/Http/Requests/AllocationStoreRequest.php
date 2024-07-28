@@ -20,10 +20,8 @@ class AllocationStoreRequest extends FormRequest
 
     /**
      * Get the error messages for the defined validation rules.
-     *
-     * @return array
      */
-    public function messages() :array
+    public function messages(): array
     {
         return [
             'institution_guid.required' => 'The Institution field is required.',

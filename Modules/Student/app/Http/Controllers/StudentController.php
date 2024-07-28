@@ -8,7 +8,6 @@ use App\Http\Requests\StudentStoreRequest;
 use App\Models\Claim;
 use App\Models\Institution;
 use App\Models\Student;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -31,25 +30,25 @@ class StudentController extends Controller
     {
         $student_id = Student::where('id', $request->id)->update($request->validated());
         $student = Student::find($request->id);
+
         return Redirect::route('student.home');
     }
-
 
     /**
      * Update the specified resource in storage.
      */
-    public function store(StudentStoreRequest $request): \Illuminate\Http\RedirectResponse | \Inertia\Response
+    public function store(StudentStoreRequest $request): \Illuminate\Http\RedirectResponse|\Inertia\Response
     {
         // Check if a student with the given SIN already exists
         $existingStudent = Student::where('sin', $request->sin)->first();
 
         if ($existingStudent) {
             // If dob matches as well, update the existing student record
-            if($request->dob === $existingStudent->dob){
+            if ($request->dob === $existingStudent->dob) {
                 $existingStudent->update([
-                    'user_guid' => Auth::user()->guid
+                    'user_guid' => Auth::user()->guid,
                 ]);
-            }else{
+            } else {
                 return $this->index('profile', 'Failed to connect account');
             }
         } else {
@@ -57,6 +56,7 @@ class StudentController extends Controller
             $student_id = Student::create($request->validated());
         }
         $student = Student::find($request->id);
+
         return Redirect::route('student.home');
     }
 
@@ -74,14 +74,14 @@ class StudentController extends Controller
         return Response::json(['status' => true, 'body' => $body]);
     }
 
-
     public function fetchInstitutions(Request $request, $institution = null)
     {
-        if(!is_null($institution)) {
+        if (! is_null($institution)) {
             $institution = Institution::where('guid', $institution)->with('activePrograms')
                 ->whereHas('allocations', function ($query) {
-                $query->where('status', 'active');
-            })->first();
+                    $query->where('status', 'active');
+                })->first();
+
             return Response::json(['status' => true, 'institution' => $institution]);
         }
 
@@ -92,20 +92,18 @@ class StudentController extends Controller
         return Response::json(['status' => true, 'institutions' => $institutions]);
     }
 
-
-
     private function paginateClaims()
     {
         $student = Student::where('user_guid', Auth::user()->guid)->first();
-        if(is_null($student)){
-           return null;
+        if (is_null($student)) {
+            return null;
         }
 
         $claims = Claim::where('student_guid', $student->guid)->with('student', 'program', 'allocation');
-//
-//        if (request()->filter_name !== null) {
-//            $institutions = $institutions->where('name', 'ILIKE', '%'.request()->filter_name.'%');
-//        }
+        //
+        //        if (request()->filter_name !== null) {
+        //            $institutions = $institutions->where('name', 'ILIKE', '%'.request()->filter_name.'%');
+        //        }
 
         if (request()->sort !== null) {
             $claims = $claims->orderBy(request()->sort, request()->direction);
@@ -115,6 +113,7 @@ class StudentController extends Controller
 
         return $claims->paginate(25)->onEachSide(1)->appends(request()->query());
     }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -122,7 +121,6 @@ class StudentController extends Controller
     {
         return view('student::create');
     }
-
 
     /**
      * Show the specified resource.
@@ -139,7 +137,6 @@ class StudentController extends Controller
     {
         return view('student::edit');
     }
-
 
     /**
      * Remove the specified resource from storage.

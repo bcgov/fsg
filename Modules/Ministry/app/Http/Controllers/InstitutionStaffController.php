@@ -27,6 +27,7 @@ class InstitutionStaffController extends Controller
         $countries = Cache::remember('countries', 180, function () {
             return Country::where('active', true)->orderBy('name')->get();
         });
+
         return Inertia::render('Ministry::Institution', ['page' => 'staff', 'results' => $institution,
             'countries' => $countries]);
     }
@@ -63,6 +64,7 @@ class InstitutionStaffController extends Controller
         $countries = Cache::remember('countries', 180, function () {
             return Country::where('active', true)->orderBy('name')->get();
         });
+
         return Inertia::render('Ministry::Institution', ['page' => 'staff', 'results' => $institution,
             'countries' => $countries]);
 
@@ -74,7 +76,7 @@ class InstitutionStaffController extends Controller
     public function ministryLogin(Request $request, $guid): \Illuminate\Http\RedirectResponse
     {
         $staff = InstitutionStaff::where('guid', $guid)->first();
-        if(!is_null($staff)){
+        if (! is_null($staff)) {
             $user = Auth::user();
             Auth::logout($user);
 
@@ -86,8 +88,7 @@ class InstitutionStaffController extends Controller
 
             return to_route('institution.dashboard');
         }
-        return to_route('ministry/institutions/' . $staff->institution->id . '/staff');
+
+        return to_route('ministry/institutions/'.$staff->institution->id.'/staff');
     }
-
-
 }

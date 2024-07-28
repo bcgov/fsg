@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 
 class ProcessSubmittedApplication
 {
-
     /**
      * Handle the event.
      */
@@ -25,14 +24,13 @@ class ProcessSubmittedApplication
         $claim->process_feedback = null;
 
         // If the claim submitted against an inactive allocation stop there.
-        if($claim->allocation->status != 'active'){
-            $claim->claim_status = "Draft";
-            $claim->process_feedback = "Claim submitted against an inactive allocation";
-        }else{
-
+        if ($claim->allocation->status != 'active') {
+            $claim->claim_status = 'Draft';
+            $claim->process_feedback = 'Claim submitted against an inactive allocation';
+        } else {
 
             // If the claim is new, add the claim percent from ProgramYear
-            if (!is_null($program) && $status === 'Draft') {
+            if (! is_null($program) && $status === 'Draft') {
                 $claim->claim_percent = $claim->allocation->py->claim_percent;
             }
 
@@ -52,9 +50,9 @@ class ProcessSubmittedApplication
                     ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
 
                 // If the student has reached the grant limit, prevent moving it to Submitted
-                if (((float)$totalHoldClaims + (float)$totalActiveClaims) > (float)env('TOTAL_GRANT')) {
-                    $claim->process_feedback = "Student has reached the total claim amount";
-                    $claim->claim_status = "Draft";
+                if (((float) $totalHoldClaims + (float) $totalActiveClaims) > (float) env('TOTAL_GRANT')) {
+                    $claim->process_feedback = 'Student has reached the total claim amount';
+                    $claim->claim_status = 'Draft';
                 }
             }
 
@@ -75,9 +73,9 @@ class ProcessSubmittedApplication
                     ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
 
                 // If the student has reached the grant limit, prevent moving it to Submitted
-                if (((float)$totalHoldClaims + (float)$totalActiveClaims) > (float)env('TOTAL_GRANT')) {
-                    $claim->process_feedback = "Student has reached the total claim amount";
-                    $claim->claim_status = "Submitted";
+                if (((float) $totalHoldClaims + (float) $totalActiveClaims) > (float) env('TOTAL_GRANT')) {
+                    $claim->process_feedback = 'Student has reached the total claim amount';
+                    $claim->claim_status = 'Submitted';
                 }
 
             }
@@ -85,29 +83,27 @@ class ProcessSubmittedApplication
             // If the claim is moving from Hold to Claimed
             elseif ($claim_before_update->claim_status === 'Hold' && $status === 'Claimed') {
 
-                Log::info("claim is moving from Hold to Claimed");
+                Log::info('claim is moving from Hold to Claimed');
 
                 // Calculate sum claims of the institution that are not Draft, Cancelled or Expired
                 $sum_claims = Claim::
 
                     // We need the sum of claims that are in Hold, Submitted or Claimed
                     whereNotIn('claim_status', ['Draft', 'Expired', 'Cancelled'])
-                    ->where('institution_guid', $claim->institution_guid)
-                    ->where('allocation_guid', $claim->allocation_guid)
+                        ->where('institution_guid', $claim->institution_guid)
+                        ->where('allocation_guid', $claim->allocation_guid)
 //                    ->sum('total_claim_amount');
-                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
+                        ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
 
-                Log::info("sum_claims = " . number_format($sum_claims, 0));
-                Log::info("total_amount = " . number_format($claim->allocation->total_amount, 0));
+                Log::info('sum_claims = '.number_format($sum_claims, 0));
+                Log::info('total_amount = '.number_format($claim->allocation->total_amount, 0));
 
                 // Prevent inst. from switching to Claimed if the total of their claims is gte the allocation total
-                if ((float)$sum_claims > (float)$claim->allocation->total_amount) {
-                    $claim->process_feedback = "Institution has reached the total claim amount";
-                    $claim->claim_status = "Hold";
+                if ((float) $sum_claims > (float) $claim->allocation->total_amount) {
+                    $claim->process_feedback = 'Institution has reached the total claim amount';
+                    $claim->claim_status = 'Hold';
                     $claim->total_claim_amount = 0;
                 }
-
-
 
                 //check student
                 // Calculate the total of claims for the student that are in Hold
@@ -118,20 +114,19 @@ class ProcessSubmittedApplication
                     ->sum();
 
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired
-//                    ->whereNotIn('claim_status', ['Draft', 'Submitted', 'Hold', 'Expired', 'Cancelled'])
+                //                    ->whereNotIn('claim_status', ['Draft', 'Submitted', 'Hold', 'Expired', 'Cancelled'])
                 $totalActiveClaims = $student->claims()
                     ->where('claim_status', 'Claimed')
                     ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
 
                 // If the student has reached the grant limit, prevent moving it to Submitted
-                if (((float)$totalHoldClaims + (float)$totalActiveClaims) > (float)env('TOTAL_GRANT')) {
-                    $claim->process_feedback = "Student has exceeded the grant total amount";
-                    $claim->claim_status = "Hold";
+                if (((float) $totalHoldClaims + (float) $totalActiveClaims) > (float) env('TOTAL_GRANT')) {
+                    $claim->process_feedback = 'Student has exceeded the grant total amount';
+                    $claim->claim_status = 'Hold';
                     $claim->total_claim_amount = 0;
                 }
             }
         }
-
 
         $claim->save();
     }

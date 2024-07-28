@@ -3,10 +3,10 @@
 namespace App\Http\Requests;
 
 use App\Models\Student;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
 use App\Rules\ValidSin;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class StudentStoreRequest extends FormRequest
 {
@@ -19,7 +19,7 @@ class StudentStoreRequest extends FormRequest
         $student = Student::where('sin', $this->sin)->first();
 
         // If there is an existing student with the same name
-        if(!is_null($student)){
+        if (! is_null($student)) {
             // Prevent updates if the current claim_status is "Claimed"
             if ($student->dob !== $this->dob && strtolower($student->last_name) !== strtolower($this->last_name)) {
                 return false;
@@ -64,6 +64,7 @@ class StudentStoreRequest extends FormRequest
             'bc_resident.accepted' => 'The BC Resident field must be true.',
         ];
     }
+
     public function attributes()
     {
         return [
@@ -105,7 +106,7 @@ class StudentStoreRequest extends FormRequest
             'duplicative_funding' => 'boolean|accepted:true',
             'tax_implications' => 'boolean|accepted:true',
             'lifetime_max' => 'boolean|accepted:true',
-            'fed_prov_benefits'  => 'boolean|accepted:true',
+            'fed_prov_benefits' => 'boolean|accepted:true',
             'workbc_client' => 'boolean|accepted:true',
             'additional_supports' => 'boolean|accepted:true',
             'bc_resident' => 'boolean|accepted:true',
@@ -132,7 +133,7 @@ class StudentStoreRequest extends FormRequest
             'duplicative_funding' => $this->toBoolean($this->duplicative_funding),
             'tax_implications' => $this->toBoolean($this->tax_implications),
             'lifetime_max' => $this->toBoolean($this->lifetime_max),
-            'fed_prov_benefits'  => $this->toBoolean($this->fed_prov_benefits),
+            'fed_prov_benefits' => $this->toBoolean($this->fed_prov_benefits),
             'workbc_client' => $this->toBoolean($this->workbc_client),
             'additional_supports' => $this->toBoolean($this->additional_supports),
             'bc_resident' => $this->toBoolean($this->bc_resident),

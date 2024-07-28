@@ -3,7 +3,6 @@
 namespace Modules\Ministry\Http\Controllers;
 
 use App\Events\ProgramYearUpdated;
-use App\Events\StaffRoleChanged;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProgramYearEditRequest;
 use App\Http\Requests\ProgramYearStoreRequest;
@@ -17,10 +16,10 @@ use App\Models\User;
 use App\Models\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Response;
-use Illuminate\Support\Facades\Gate;
 
 class MaintenanceController extends Controller
 {
@@ -90,7 +89,7 @@ class MaintenanceController extends Controller
         }
 
         $user->roles()->attach($newRole);
-//        event(new StaffRoleChanged1($user, $newRole));
+        //        event(new StaffRoleChanged1($user, $newRole));
 
         return Redirect::route('ministry.maintenance.staff.list');
     }
@@ -146,7 +145,6 @@ class MaintenanceController extends Controller
         return Redirect::route('ministry.maintenance.utils.list');
     }
 
-
     /**
      * Display a listing of the resource.
      *
@@ -171,6 +169,7 @@ class MaintenanceController extends Controller
         Cache::forget('global_program_years');
 
         event(new ProgramYearUpdated($programYear, $request->status));
+
         return Redirect::route('ministry.maintenance.program_years.list');
     }
 
@@ -186,8 +185,6 @@ class MaintenanceController extends Controller
 
         return Redirect::route('ministry.maintenance.program_years.list');
     }
-
-
 
     /**
      * Display a listing of the resource.
@@ -208,9 +205,9 @@ class MaintenanceController extends Controller
     {
         $institutions = Institution::select('guid', 'name', 'category')->with('activeCaps')->orderBy('name')->get();
         $categories = Institution::select('category')->whereNotNull('category')->groupBy('category')->orderBy('category')->get();
+
         return Inertia::render('Ministry::Reports', ['results' => ['institutions' => $institutions, 'categories' => $categories], 'page' => 'detail']);
     }
-
 
     /**
      * Display a listing of the resource.
@@ -222,7 +219,6 @@ class MaintenanceController extends Controller
         return Inertia::render('Ministry::Reports', ['results' => null, 'page' => 'sources']);
     }
 
-
     /**
      * Display a listing of the resource.
      *
@@ -231,9 +227,9 @@ class MaintenanceController extends Controller
     public function reportSourcesFetch(Request $request, $from, $to, $type)
     {
         $fromDate = $from;
-        $toDate = $to . " 23:59:59";
+        $toDate = $to.' 23:59:59';
 
-        if($type === 'attestation'){
+        if ($type === 'attestation') {
             $rows = Attestation::select(
                 \DB::raw('NOW()'),
                 'attestations.institution_guid',
@@ -253,7 +249,7 @@ class MaintenanceController extends Controller
                 ->whereBetween('attestations.created_at', [$fromDate, $toDate])
                 ->get();
         }
-        if($type === 'cap'){
+        if ($type === 'cap') {
             $rows = Cap::select(
                 \DB::raw('NOW()'),
                 'caps.institution_guid',
@@ -280,7 +276,7 @@ class MaintenanceController extends Controller
                 ->selectedFedcap()
                 ->get();
         }
-        if($type === 'staff'){
+        if ($type === 'staff') {
             $rows = InstitutionStaff::select(
                 \DB::raw('NOW()'),
                 'institution_staff.institution_guid',
@@ -292,7 +288,7 @@ class MaintenanceController extends Controller
                 ->whereBetween('institution_staff.created_at', [$fromDate, $toDate])
                 ->get();
         }
-        if($type === 'ircc'){
+        if ($type === 'ircc') {
             $rows = Attestation::select(
                 'institutions.name as institution_name',
                 'institutions.dli',
@@ -318,7 +314,9 @@ class MaintenanceController extends Controller
 
         $csvData = [];
         $csvDataHeader = [];
-        if($rows->isEmpty()) return "No results for the date range selected.";
+        if ($rows->isEmpty()) {
+            return 'No results for the date range selected.';
+        }
 
         // Capture column names dynamically
         $attributes = $rows->first()->getAttributes();
@@ -346,7 +344,7 @@ class MaintenanceController extends Controller
         rewind($output);
         $response = Response::make(stream_get_contents($output), 200);
         $response->header('Content-Type', 'text/csv');
-        $response->header('Content-Disposition', 'attachment; filename=' . $request->type . "_data.csv");
+        $response->header('Content-Disposition', 'attachment; filename='.$request->type.'_data.csv');
         fclose($output);
 
         return $response;
@@ -359,7 +357,7 @@ class MaintenanceController extends Controller
     public function reportsSummaryFetch(Request $request)
     {
         $fromDate = $request->from_date;
-        $toDate = $request->to_date . " 23:59:59";
+        $toDate = $request->to_date.' 23:59:59';
 
         $publicReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
         $privateReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
@@ -396,14 +394,14 @@ class MaintenanceController extends Controller
             'status' => true,
             'body' => [
                 'publicReport' => $publicReport,
-                'privateReport' => $privateReport
-            ]
+                'privateReport' => $privateReport,
+            ],
         ]);
     }
 
     private function addInstToReport($inst, &$report)
     {
-        if (!isset($report[$inst->category])) {
+        if (! isset($report[$inst->category])) {
             $report[$inst->category] = ['instList' => [], 'total' => 0, 'issued' => 0, 'draft' => 0];
         }
 
@@ -411,7 +409,7 @@ class MaintenanceController extends Controller
         $report[$inst->category]['instList'][$inst->name] = [
             'total' => $total,
             'issued' => 0,
-            'draft' => 0
+            'draft' => 0,
         ];
 
         $report[$inst->category]['total'] += $total;
@@ -424,7 +422,7 @@ class MaintenanceController extends Controller
         $instName = $inst->name;
         $status = ($att->status === 'Issued') ? 'issued' : 'draft';
 
-        if (!isset($report[$inst->category])) {
+        if (! isset($report[$inst->category])) {
             $this->addInstToReport($inst, $report);
         }
 
@@ -444,7 +442,7 @@ class MaintenanceController extends Controller
     public function reportsDetailFetch(Request $request)
     {
         $fromDate = $request->from_date;
-        $toDate = $request->to_date . " 23:59:59";
+        $toDate = $request->to_date.' 23:59:59';
 
         // Fetch all institutions with active attestations
         $institutions = Institution::with(['activeCaps.attestations'])->whereHas('activeCaps')->get();
@@ -482,9 +480,8 @@ class MaintenanceController extends Controller
             'status' => true,
             'body' => [
                 'publicReport' => $publicReport,
-                'privateReport' => $privateReport
-            ]
+                'privateReport' => $privateReport,
+            ],
         ]);
     }
-
 }

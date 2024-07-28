@@ -19,5 +19,4 @@ class AllocationCreated
     {
         $this->allocation = $allocation;
     }
-
 }

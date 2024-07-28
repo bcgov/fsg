@@ -4,9 +4,9 @@ namespace App\Listeners;
 
 use App\Events\AllocationCreated;
 use App\Models\Allocation;
+
 class ProcessCreatedAllocation
 {
-
     /**
      * Handle the event.
      */

@@ -17,9 +17,9 @@ class ClaimController extends Controller
 {
     public function fetchClaims(Request $request, $guid = null)
     {
-        if(!is_null($guid)){
+        if (! is_null($guid)) {
             $claim = Claim::where('guid', $guid)->with('institution', 'program', 'student', 'allocation')->first();
-            if(!is_null($claim)){
+            if (! is_null($claim)) {
                 $programs = Program::where('institution_guid', $claim->institution_guid)->IsActive()->get();
             }
 
@@ -60,6 +60,7 @@ class ClaimController extends Controller
         $claim = Claim::create($request->validated());
 
         $claim = Claim::find($claim->id);
+
         return Redirect::route('ministry.institutions.show', [$claim->institution->id, 'claims-by-course']);
     }
 
@@ -75,14 +76,12 @@ class ClaimController extends Controller
         $claim = Claim::find($request->id);
         $id = $request->page === 'students' ? $claim->student->id : $claim->institution->id;
 
-        return Redirect::route('ministry.' . $request->page . '.show', [$id, $request->subpage]);
+        return Redirect::route('ministry.'.$request->page.'.show', [$id, $request->subpage]);
     }
-
 
     private function paginateClaims($institutionGuid)
     {
         $claims = Claim::where('institution_guid', $institutionGuid)->with('student', 'program', 'allocation');
-
 
         if (request()->sort !== null) {
             $claims = $claims->orderBy(request()->sort, request()->direction);
@@ -92,8 +91,6 @@ class ClaimController extends Controller
 
         return $claims->paginate(25)->onEachSide(1)->appends(request()->query());
     }
-
-
 
     private function paginateStudentClaims($studentGuid)
     {
@@ -107,7 +104,6 @@ class ClaimController extends Controller
 
         return $claims->paginate(25)->onEachSide(1)->appends(request()->query());
     }
-
 
     private function paginateClaimsByStudent($institutionGuid)
     {

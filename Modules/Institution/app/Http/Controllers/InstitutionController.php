@@ -11,9 +11,7 @@ use App\Models\InstitutionStaff;
 use App\Models\ProgramYear;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
@@ -28,28 +26,27 @@ class InstitutionController extends Controller
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;
 
-
-
         $cacheProgramYear = Cache::remember('global_program_years', now()->addHours(1), function () {
             $programYears = ProgramYear::orderBy('id')->get();
             $programYear = ProgramYear::where('status', 'active')->first();
+
             return [
                 'list' => $programYears,
-                'default' => $programYear->guid
+                'default' => $programYear->guid,
             ];
         });
 
         $programYear = ProgramYear::where('guid', $cacheProgramYear['default'])->first();
 
         // Eager load active allocation
-        $institution->load(['allocations' => function ($query) use ($programYear){
+        $institution->load(['allocations' => function ($query) use ($programYear) {
             $query->where('program_year_guid', $programYear->guid);
-//            $query->where('status', 'active')->orderByDesc('created_at');
+            //            $query->where('status', 'active')->orderByDesc('created_at');
             $query->orderByDesc('created_at');
         }]);
 
         $instAllocation = $institution->allocations->first();
-        if(!is_null($instAllocation)){
+        if (! is_null($instAllocation)) {
 
             $claimCounts = Claim::where('institution_guid', $institution->guid)
                 ->where('allocation_guid', $instAllocation->guid)
@@ -58,7 +55,7 @@ class InstitutionController extends Controller
         SUM(CASE WHEN claim_status = 'Hold' THEN COALESCE(estimated_hold_amount, 0) ELSE 0 END) as hold
     ")
                 ->first();
-            if($programYear->claim_percent == 0){
+            if ($programYear->claim_percent == 0) {
                 return Inertia::render('Institution::Dashboard', [
                     'results' => $institution,
                     'activeAllocation' => $instAllocation,
@@ -73,11 +70,10 @@ class InstitutionController extends Controller
                 'results' => $institution,
                 'activeAllocation' => $instAllocation,
                 'programYear' => $programYear,
-                'holdApps' => $claimCounts->hold ? (float)$claimCounts->hold + ((float)$claimCounts->hold / (float)$programYear->claim_percent): 0,
-                'claimedApps' => $claimCounts->claimed ? (float)$claimCounts->claimed + ((float)$claimCounts->claimed / (float)$programYear->claim_percent) : 0,
+                'holdApps' => $claimCounts->hold ? (float) $claimCounts->hold + ((float) $claimCounts->hold / (float) $programYear->claim_percent) : 0,
+                'claimedApps' => $claimCounts->claimed ? (float) $claimCounts->claimed + ((float) $claimCounts->claimed / (float) $programYear->claim_percent) : 0,
             ]);
         }
-
 
         return Inertia::render('Institution::Dashboard', [
             'results' => $institution,
