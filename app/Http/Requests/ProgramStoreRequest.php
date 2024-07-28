@@ -54,8 +54,8 @@ class ProgramStoreRequest extends FormRequest
             'online_delivery_type.required' => 'Online delivery method is required',
             'credential_type.required' => 'Credential type is required',
             'high_priority_industry.required' => 'High priority industry is required',
-//            'start_date.required' => 'Start date is required',
-//            'end_date.required' => 'End date is required',
+            //            'start_date.required' => 'Start date is required',
+            //            'end_date.required' => 'End date is required',
             'creditable.required' => 'Creditable is required',
             'full_time.required' => 'Full time is required',
 

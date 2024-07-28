@@ -17,11 +17,6 @@ class InstitutionAllocationReached implements ValidationRule
 
     /**
      * Run the validation rule.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @param  \Closure  $fail
-     * @return void
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
@@ -37,7 +32,7 @@ class InstitutionAllocationReached implements ValidationRule
             ->where('allocation_guid', $this->allocation->guid)
             ->sum('estimated_hold_amount');
 
-        if((float)$sum_claims + (float)$sum_hold_claims >= (float)$this->allocation->total_amount) {
+        if ((float) $sum_claims + (float) $sum_hold_claims >= (float) $this->allocation->total_amount) {
             $fail('The institution has reached its allocation limit. Please contact the institution administrator.');
         }
     }

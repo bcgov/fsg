@@ -17,6 +17,7 @@ class ProgramYearPolicy
     public function viewAny(User $user): bool
     {
         $rolesToCheck = [Role::Ministry_ADMIN, Role::SUPER_ADMIN];
+
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }
 
@@ -26,6 +27,7 @@ class ProgramYearPolicy
     public function view(User $user, ProgramYear $model): bool
     {
         $rolesToCheck = [Role::Ministry_ADMIN, Role::SUPER_ADMIN];
+
         return $user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty() && $user->disabled === false;
     }
 

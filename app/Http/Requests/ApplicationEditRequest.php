@@ -6,9 +6,9 @@ use App\Models\Allocation;
 use App\Models\Claim;
 use App\Models\Student;
 use App\Rules\InstitutionAllocationReached;
+use App\Rules\ValidSin;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
-use App\Rules\ValidSin;
 
 class ApplicationEditRequest extends FormRequest
 {
@@ -71,7 +71,7 @@ class ApplicationEditRequest extends FormRequest
                 'registration_confirmed' => 'boolean',
             ]);
 
-        }elseif ($this->claim_status === 'Submitted') {
+        } elseif ($this->claim_status === 'Submitted') {
             $rules = array_merge($rules, [
                 'allocation_limit_reached' => new InstitutionAllocationReached($allocation),
 
@@ -113,7 +113,7 @@ class ApplicationEditRequest extends FormRequest
 
             $this->merge([
                 'allocation_limit_reached' => null,
-//                'guid' => Str::orderedUuid()->getHex(),
+                //                'guid' => Str::orderedUuid()->getHex(),
                 'last_touch_by_user_guid' => $this->user()->guid,
 
                 'allocation_guid' => $allocation->guid,
@@ -126,8 +126,8 @@ class ApplicationEditRequest extends FormRequest
                 'sin' => $student->sin,
                 'dob' => $student->dob,
 
-//                'registration_confirmed' => $student->registration_confirmed,
-//                'agreement_confirmed' => $student->agreement_confirmed,
+                //                'registration_confirmed' => $student->registration_confirmed,
+                //                'agreement_confirmed' => $student->agreement_confirmed,
 
                 'agreement_confirmed' => $this->toBoolean($this->agreement_confirmed),
                 'registration_confirmed' => $this->toBoolean($this->registration_confirmed),

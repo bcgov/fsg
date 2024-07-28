@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Models\Allocation;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
 
 class AllocationEditRequest extends FormRequest
 {
@@ -18,7 +17,7 @@ class AllocationEditRequest extends FormRequest
         $allocation = Allocation::find($this->id);
 
         // Only allow editing active allocations
-        if($allocation->status !== 'active'){
+        if ($allocation->status !== 'active') {
             return false;
         }
 

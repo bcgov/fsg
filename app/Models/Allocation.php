@@ -17,8 +17,8 @@ class Allocation extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ["guid", "institution_guid", "program_year_guid", "total_amount",
-        "on_hold_amount", "status", "claimed_amount",];
+    protected $fillable = ['guid', 'institution_guid', 'program_year_guid', 'total_amount',
+        'on_hold_amount', 'status', 'claimed_amount', ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -41,7 +41,6 @@ class Allocation extends Model
     {
         return $this->hasMany(Claim::class, 'allocation_guid', 'guid')->orderByDesc('created_at');
     }
-
 
     // Define the accessor for the computed attribute
     public function getClaimedAttribute()

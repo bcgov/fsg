@@ -22,5 +22,4 @@ class ClaimSubmitted
         $this->claim = $claim;
         $this->status = $status;
     }
-
 }

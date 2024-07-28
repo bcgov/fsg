@@ -4,10 +4,7 @@ namespace Modules\Ministry\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InstitutionEditRequest;
-use App\Http\Requests\InstitutionStoreRequest;
-use App\Models\Attestation;
 use App\Models\Country;
-use App\Models\FedCap;
 use App\Models\Institution;
 use App\Models\Program;
 use App\Models\ProgramYear;
@@ -30,14 +27,13 @@ class InstitutionController extends Controller
         return Inertia::render('Ministry::Institutions', ['status' => true, 'results' => $institutions]);
     }
 
-
     /**
      * Show the specified resource.
      */
     public function show(Institution $institution, $page = 'details')
     {
         $institution = Institution::where('id', $institution->id)->with(
-            ['allocations.py', 'activeAllocation', 'staff.user.roles', 'programs',]
+            ['allocations.py', 'activeAllocation', 'staff.user.roles', 'programs']
         )->first();
 
         $countries = Cache::remember('countries', 380, function () {
@@ -85,5 +81,4 @@ class InstitutionController extends Controller
 
         return Response::json(['status' => true, 'body' => $programs]);
     }
-
 }

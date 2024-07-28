@@ -26,12 +26,13 @@ class Institution extends Model
      *
      * @var array<int, string>
      */
-    protected $hidden = ['last_touch_by_user_guid',];
+    protected $hidden = ['last_touch_by_user_guid'];
 
     public function claims()
     {
         return $this->hasMany(Claim::class, 'institution_guid', 'guid')->orderBy('created_at');
     }
+
     public function activeClaims()
     {
         return $this->hasMany(Claim::class, 'institution_guid', 'guid')->where('claim_status', '!=', 'draft')->orderBy('created_at');
@@ -53,6 +54,7 @@ class Institution extends Model
     {
         return $this->hasMany(Allocation::class, 'institution_guid', 'guid')->orderByDesc('created_at');
     }
+
     public function activeAllocation()
     {
         return $this->hasOne(Allocation::class, 'institution_guid', 'guid')
@@ -85,7 +87,7 @@ class Institution extends Model
     public function getOverallocationFlagAttribute()
     {
         $activeAllocation = $this->activeAllocation;
-        if (!$activeAllocation) {
+        if (! $activeAllocation) {
             return false; // No active allocation found, no overallocation
         }
 
@@ -101,7 +103,7 @@ class Institution extends Model
         $this->setClaimedAmountAttribute($claimedAmount);
 
         //$claimedAmount needs to be a formatted number to avoid = "1.159671e+06" since it is going to too large
-//        $claimed = number_format($claimedAmount, 2);
+        //        $claimed = number_format($claimedAmount, 2);
 
         // Calculate the overallocation flag
         $overAllocationFlag = $this->activeAllocation->total_amount >
@@ -109,12 +111,11 @@ class Institution extends Model
                     $claimedAmount)
                 * 1.1 * $claimPercent);
 
-
         return $overAllocationFlag;
     }
 
-    public function setClaimedAmountAttribute($value){
+    public function setClaimedAmountAttribute($value)
+    {
         $this->attributes['claimed_amount'] = $value;
     }
-
 }
