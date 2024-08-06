@@ -51,8 +51,7 @@ class ApplicationController extends Controller
         $student = Student::with('applications')->where('user_guid', Auth::user()->guid)->first();
         if (is_null($student)) {
             $page = 'profile';
-            $providerUser = json_decode(Cache::get('bcsc_provider_user'));
-
+            $providerUser = json_decode(Cache::get('bcsc_provider_user_' . Auth::user()->id));
         }
 
         return Inertia::render('Student::Dashboard', ['status' => true, 'results' => $student,
@@ -87,10 +86,6 @@ class ApplicationController extends Controller
         }
 
         $claims = Claim::where('student_guid', $student->guid)->with('student', 'program', 'institution');
-        //
-        //        if (request()->filter_name !== null) {
-        //            $institutions = $institutions->where('name', 'ILIKE', '%'.request()->filter_name.'%');
-        //        }
 
         if (request()->sort !== null) {
             $claims = $claims->orderBy(request()->sort, request()->direction);

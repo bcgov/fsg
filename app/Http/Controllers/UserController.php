@@ -161,7 +161,7 @@ class UserController extends Controller
                 [$valid, $user] = $this->newUser($provider_user, $type);
                 if ($valid == '200' && $type === Role::Student) {
 
-                    Cache::put('bcsc_provider_user', json_encode($provider_user));
+                    Cache::put('bcsc_provider_user_' . $user->id, json_encode($provider_user));
                     Auth::login($user);
 
                     return Redirect::route('student.home');

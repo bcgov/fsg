@@ -2,21 +2,21 @@
     <tr>
 
         <th scope="col" class="text-nowrap">
-                <span>Program Name</span>
+            <span>Program Name</span>
         </th>
         <th scope="col" class="text-nowrap">
-                <span>Institution Name</span>
+            <span>Institution Name</span>
         </th>
         <th scope="col" class="text-nowrap">
-                <span>Grant Total</span>
+            <span>Grant Total</span>
         </th>
         <th scope="col" class="text-nowrap">
             <span>Student Claims</span>
         </th>
         <th scope="col" class="text-nowrap">
-            <a href="#" @click="switchSort('active_status')">
+            <a href="#" @click="switchSort('claim_status')">
                 <span>Status</span>
-                <em v-if="sortClmn === 'active_status' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
+                <em v-if="sortClmn === 'claim_status' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
                 <em v-else class="bi bi-sort-alpha-down"></em>
             </a>
         </th>
