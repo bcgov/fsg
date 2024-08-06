@@ -38,13 +38,11 @@
                 <em v-else class="bi bi bi-sort-numeric-down"></em>
             </a>
         </th>
-<!--        <th scope="col" class="text-nowrap">-->
-<!--            <span>Student Claims</span>-->
-<!--        </th>-->
+
         <th scope="col" class="text-nowrap">
-            <a href="#" @click="switchSort('active_status')">
+            <a href="#" @click="switchSort('claim_status')">
                 <span>Status</span>
-                <em v-if="sortClmn === 'active_status' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
+                <em v-if="sortClmn === 'claim_status' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
                 <em v-else class="bi bi-sort-alpha-down"></em>
             </a>
         </th>
