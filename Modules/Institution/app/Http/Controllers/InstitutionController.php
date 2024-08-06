@@ -26,7 +26,7 @@ class InstitutionController extends Controller
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;
 
-        $cacheProgramYear = Cache::remember('global_program_years', now()->addHours(1), function () {
+        $cacheProgramYear = Cache::remember('global_program_years_' . $user->institution->guid, now()->addHours(1), function () {
             $programYears = ProgramYear::orderBy('id')->get();
             $programYear = ProgramYear::where('status', 'active')->first();
 

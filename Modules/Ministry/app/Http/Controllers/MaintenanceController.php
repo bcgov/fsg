@@ -166,7 +166,7 @@ class MaintenanceController extends Controller
     public function pyUpdate(ProgramYearEditRequest $request, ProgramYear $programYear): \Illuminate\Http\RedirectResponse
     {
         $programYear->update($request->validated());
-        Cache::forget('global_program_years');
+//        Cache::forget('global_program_years');
 
         event(new ProgramYearUpdated($programYear, $request->status));
 
@@ -181,7 +181,7 @@ class MaintenanceController extends Controller
     public function pyStore(ProgramYearStoreRequest $request): \Illuminate\Http\RedirectResponse
     {
         ProgramYear::create($request->validated());
-        Cache::forget('global_program_years');
+//        Cache::forget('global_program_years');
 
         return Redirect::route('ministry.maintenance.program_years.list');
     }
