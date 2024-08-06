@@ -3,39 +3,6 @@
         <div class="modal-body">
             <div class="row g-3">
 
-
-                <div class="col-md-4">
-                    <Label for="inputFirstName" class="form-label" value="First Name" />
-                    <Input type="text" class="form-control" id="inputFirstName" :value="results.first_name" readonly="readonly" disabled/>
-                </div>
-                <div class="col-md-4">
-                    <Label for="inputLastName" class="form-label" value="Last Name" />
-                    <Input type="text" class="form-control" id="inputLastName" :value="results.last_name" readonly="readonly" disabled/>
-                </div>
-                <div class="col-md-4">
-                    <Label for="inputEmail" class="form-label" value="Email" />
-                    <Input type="email" class="form-control" id="inputEmail" :value="results.email" readonly="readonly" disabled/>
-                </div>
-
-                <div class="col-md-3">
-                    <Label for="inputSin" class="form-label" value="SIN" />
-                    <Input type="number" min="100000000" max="999999999" class="form-control" id="inputSin" :value="results.sin" readonly="readonly" disabled/>
-                </div>
-                <div class="col-md-3">
-                    <Label for="inputDob" class="form-label" value="Birth Date" />
-                    <Input type="text" class="form-control" id="inputDob" :value="results.dob" readonly="readonly" disabled/>
-                </div>
-                <div class="col-md-3">
-                    <Label for="inputCity" class="form-label" value="City" />
-                    <Input type="text" class="form-control" id="inputCity" :value="results.city" readonly="readonly" disabled/>
-                </div>
-                <div class="col-md-3">
-                    <Label for="inputPostalCode" class="form-label" value="Postal Code" />
-                    <Input type="text" class="form-control" id="inputPostalCode" :value="results.zip_code" readonly="readonly" disabled/>
-                </div>
-
-                <hr/>
-
                 <div v-if="programs != null && programs.length > 0" class="row col-12 g-3 mt-0">
                     <div class="col-12">
                         <Label for="inputInstGuid" class="form-label" value="Institution Name"/>
@@ -94,8 +61,6 @@
                         </div>
                     </div>
                 </div>
-
-
 
             </div>
         </div>
