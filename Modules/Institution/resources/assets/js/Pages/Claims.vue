@@ -19,7 +19,7 @@
                     <div class="card mb-3">
                         <div class="card-header">
                             Student Claims
-                            <small v-if="claimList != ''" class="text-danger float-end">* Includes {{ claimList[0].py_admin_fee }}% Administration Fee</small>
+                            <a href="/institution/claims/export" target="_blank" class="btn btn-outline-success btn-sm float-end" title="Export Claims"><i class="bi bi-filetype-csv"></i></a>
                         </div>
                         <div class="card-body">
                             <div v-if="claimList != '' && results.data.length > 0" class="table-responsive pb-3">
@@ -51,6 +51,7 @@
                                     </tbody>
 
                                 </table>
+                                <small v-if="claimList != ''" class="text-danger">* Includes {{ claimList[0].py_admin_fee }}% Administration Fee</small>
                                 <Pagination :links="results.links" :active-page="results.current_page" />
                             </div>
                             <h1 v-else class="lead">No results</h1>
