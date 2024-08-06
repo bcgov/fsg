@@ -10,7 +10,7 @@ class Claim extends Model
     use SoftDeletes;
 
     // Append the computed attribute
-    protected $appends = ['py_admin_fee'];
+    protected $appends = ['py_admin_fee', 'claimed_by_name'];
 
     /**
      * The attributes that are mass assignable.
@@ -50,5 +50,16 @@ class Claim extends Model
     public function getPyAdminFeeAttribute()
     {
         return $this->allocation->py->claim_percent;
+    }
+
+    public function getClaimedByNameAttribute()
+    {
+        if (is_null($this->claimed_by_user_guid)) {
+            return null;
+        }
+
+        $user = User::where('guid', $this->claimed_by_user_guid)->first();
+
+        return $user->first_name.' '.$user->last_name;
     }
 }

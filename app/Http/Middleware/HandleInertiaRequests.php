@@ -43,30 +43,34 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = null;
+        $globalProgramYears = ['list' => [], 'default' => null];
         if (Auth::check()) {
             $user = User::find(Auth::user()->id);
         }
 
+        if(!is_null($user) && !is_null($user->institution)){
+            $globalProgramYears = Cache::remember('global_program_years_' . $user->institution->guid, now()->addHours(10), function () {
+                $programYears = ProgramYear::orderBy('id')->get();
+                if ($programYears->isEmpty()) {
+                    return [
+                        'list' => [],
+                        'default' => null,
+                    ];
+                }
+
+                // Find the program year with status 'active'
+                $activeProgramYear = $programYears->firstWhere('status', 'active');
+
+                return [
+                    'list' => $programYears,
+                    'default' => $activeProgramYear ? $activeProgramYear->guid : $programYears[0]->guid,
+                ];
+            });
+        }
+
+
         $sortedUtils = Cache::remember('sorted_utils', 3600, function () { //for an hour
             return Util::getSortedUtils();
-        });
-
-        $globalProgramYears = Cache::remember('global_program_years', now()->addHours(10), function () {
-            $programYears = ProgramYear::orderBy('id')->get();
-            if ($programYears->isEmpty()) {
-                return [
-                    'list' => [],
-                    'default' => null,
-                ];
-            }
-
-            // Find the program year with status 'active'
-            $activeProgramYear = $programYears->firstWhere('status', 'active');
-
-            return [
-                'list' => $programYears,
-                'default' => $activeProgramYear ? $activeProgramYear->guid : $programYears[0]->guid,
-            ];
         });
 
         return array_merge(parent::share($request), [

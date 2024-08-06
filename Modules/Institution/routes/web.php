@@ -27,7 +27,7 @@ Route::prefix('institution')->group(function () {
             Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
             Route::put('/claims', [ClaimController::class, 'update'])->name('claims.update');
             //        Route::get('/claims/download/{claim}', [ClaimController::class, 'download'])->name('claims.download');
-            //        Route::get('/claims/export', [ClaimController::class, 'exportCsv'])->name('claims.export');
+            Route::get('/claims/export', [ClaimController::class, 'exportCsv'])->name('claims.export');
 
             Route::get('/students', [StudentController::class, 'index'])->name('students.index');
             Route::get('/students/{student}/{page?}', [StudentController::class, 'show'])->name('students.show');
