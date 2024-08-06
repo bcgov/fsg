@@ -37,8 +37,11 @@ export const globalMixins = {
             }
             return value;
         },
+
+        // Round the number to 2 decimal places
         $amountPlusPyFee: function(amount, pyFee){
-            return parseFloat(amount) + (parseFloat(amount) / parseFloat(pyFee));
+            return (parseFloat(amount) + (parseFloat(amount) / parseFloat(pyFee))).toFixed(2);
+
         }
     }
 };

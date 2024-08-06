@@ -31,8 +31,7 @@ class ClaimController extends Controller
         $cacheProgramYear = Cache::get('global_program_years');
         $programYear = ProgramYear::where('guid', $cacheProgramYear['default'])->first();
 
-        $this->allocations = Allocation::where('status', 'active')
-            ->where('program_year_guid', $programYear->guid)
+        $this->allocations = Allocation::where('program_year_guid', $programYear->guid)
             ->with('py')->orderByDesc('created_at')->get();
         $this->countries = Country::select('name')->where('active', true)->get();
     }
@@ -154,5 +153,48 @@ class ClaimController extends Controller
         }
 
         return $claims->with('institution.allocations', 'institution.programs')->paginate(25)->onEachSide(1)->appends(request()->query());
+    }
+
+
+    public function exportCsv()
+    {
+//        $user = User::find(Auth::user()->id);
+//        $institution = $user->institution;
+        $user = User::find(Auth::user()->id);
+        $allocation = $this->allocations->where('institution_guid', $user->institution->guid)->first();
+
+        $data = Claim::where('institution_guid', $user->institution->guid)
+            ->where('allocation_guid', $allocation->guid)
+            ->whereNotIn('claim_status', ['Draft'])
+            ->with('student', 'program', 'allocation', 'institution')
+            ->orderByDesc('created_at')->get();
+
+        $csvData = [];
+        $csvDataHeader = ['PROGRAM NAME', 'SIN', 'FIRST NAME', 'LAST NAME', 'DOB', 'EMAIL', 'CITY',
+            'POSTAL CODE', 'STATUS', 'REGISTRATION FEE', 'MATERIALS FEE', 'PROGRAM FEE', 'ADMIN %', 'EST. HOLD AMOUNT',
+            'TOTAL CLAIM AMOUNT', 'STABLE ENROL. DATE', 'EXPEC. STABLE ENROL. DATE', 'EXPIRY DATE','CLAIMED BY', 'ISSUE DATE'];
+
+        foreach ($data as $d) {
+            $csvData[] = [$d->program->program_name, $d->sin, $d->first_name, $d->last_name, $d->dob, $d->email, $d->city,
+                $d->zip_code, $d->claim_status, $d->registration_fee, $d->materials_fee, $d->program_fee, $d->claim_percent,
+                $d->estimated_hold_amount, $d->total_claim_amount, $d->stable_enrolment_date, $d->expected_stable_enrolment_date,
+                $d->expiry_date, $d->claimed_by_name, $d->updated_at];
+        }
+        $output = fopen('php://temp', 'w');
+        // Write CSV headers
+        fputcsv($output, $csvDataHeader);
+
+        // Write CSV rows
+        foreach ($csvData as $row) {
+            fputcsv($output, $row);
+        }
+        rewind($output);
+        $response = Response::make(stream_get_contents($output), 200);
+        $response->header('Content-Type', 'text/csv');
+        $response->header('Content-Disposition', 'attachment; filename="claims_export.csv"');
+        fclose($output);
+
+        return $response;
+
     }
 }
