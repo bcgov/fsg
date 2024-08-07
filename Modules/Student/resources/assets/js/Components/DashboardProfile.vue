@@ -200,7 +200,8 @@ export default {
             // Check for false checkbox fields
             let trueFieldsValid = true;
             const requiredTrueFields = [
-                'bc_resident', 'info_consent', 'duplicative_funding', 'tax_implications', 'lifetime_max', 'fed_prov_benefits', 'workbc_client', 'additional_supports'
+                'sin', 'dob', 'bc_resident', 'info_consent', 'duplicative_funding', 'tax_implications', 'lifetime_max',
+                'fed_prov_benefits', 'workbc_client', 'additional_supports'
             ];
             requiredTrueFields.forEach(field => {
                 if (!this.editForm[field]) {
@@ -209,9 +210,9 @@ export default {
                 }
             });
             if(!trueFieldsValid) {
-                errors['bc_resident'] = `Please make sure you agree to all of the above fields.`;
+                errors['bc_resident'] = `Please make sure you provided your SIN, Date of Birth and agree to all of the above fields.`;
             }
-            console.log(errors2);
+            // console.log(errors2);
 
             this.editForm.errors = errors;
             return Object.keys(errors).length === 0;
