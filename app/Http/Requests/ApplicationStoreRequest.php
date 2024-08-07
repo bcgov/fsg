@@ -74,8 +74,8 @@ class ApplicationStoreRequest extends FormRequest
             $rules = array_merge($rules, [
 
                 'allocation_limit_reached' => new InstitutionAllocationReached($allocation),
-                'agreement_confirmed' => 'required|boolean',
-                'registration_confirmed' => 'required|boolean',
+                'agreement_confirmed' => 'required|boolean|accepted:true',
+                'registration_confirmed' => 'required|boolean|accepted:true',
 
                 'registration_fee' => 'nullable|numeric',
                 'materials_fee' => 'nullable|numeric',
