@@ -140,8 +140,6 @@ class UserController extends Controller
             $user = null;
             $failMsg = null;
             if ($type === Role::Student) {
-                Cache::put('bcsc_provider_user_' . $user->id, json_encode($provider_user));
-
                 if (! isset($provider_user['bcsc_user_guid'])) {
                     $failMsg = 'Session conflict. Please use incognito window';
                 } else {
@@ -163,6 +161,7 @@ class UserController extends Controller
                 [$valid, $user] = $this->newUser($provider_user, $type);
                 if ($valid == '200' && $type === Role::Student) {
 
+                    Cache::put('bcsc_provider_user_' . $user->id, json_encode($provider_user));
                     Auth::login($user);
 
                     return Redirect::route('student.home');
@@ -212,6 +211,7 @@ class UserController extends Controller
             }
 
             if ($type === Role::Student) {
+                Cache::put('bcsc_provider_user_' . $user->id, json_encode($provider_user));
                 Auth::login($user);
 
                 return Redirect::route('student.home');

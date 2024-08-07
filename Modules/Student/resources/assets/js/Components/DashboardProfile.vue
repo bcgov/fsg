@@ -188,15 +188,6 @@ export default {
             const errors = {};
             const errors2 = {};
 
-            // Check for empty fields
-            // const requiredFields = [
-            //     'first_name', 'last_name', 'email', 'sin', 'dob', 'city', 'zip_code', 'citizenship', 'grade12_or_over19'
-            // ];
-            // requiredFields.forEach(field => {
-            //     if (!this.editForm[field]) {
-            //         errors[field] = `${field.replace(/_/g, ' ')} is required.`;
-            //     }
-            // });
 
             // Check for false checkbox fields
             let trueFieldsValid = true;
