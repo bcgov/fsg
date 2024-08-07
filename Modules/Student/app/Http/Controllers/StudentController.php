@@ -46,9 +46,15 @@ class StudentController extends Controller
             // If dob matches as well, update the existing student record
             if ($request->dob === $existingStudent->dob) {
 
+                // Validate the request
+                $validatedData = $request->validated();
+
+                // Remove 'guid' from validated data
+                unset($validatedData['guid']);
+
                 // Update the existing student record with all request data plus user_guid
                 $existingStudent->update(array_merge(
-                    $request->validated(), // Merge validated request data
+                    $validatedData, // Merge validated request data
                     ['user_guid' => Auth::user()->guid] // Add user_guid
                 ));
 
