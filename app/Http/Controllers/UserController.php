@@ -284,11 +284,16 @@ class UserController extends Controller
             if (! is_null($check)) {
                 $valid = 'This BC Services Card is already in use. Please contact the admin.';
             }
+            if (! isset($provider_user['email'])) {
+                \Log::info('Your BC Services Card is missing a required Email Address. Please resolve that and try again.');
+                $valid = 'Your BC Services Card is missing a required Email Address. Please resolve that and try again.';
+            }
         } else {
             $valid = 'You are not authorized to access this page.';
         }
 
         if ($valid === '200') {
+//            $email = isset($provider_user['email']) ? Str::lower($provider_user['email']) : null;
             $user = new User();
             $user->guid = Str::orderedUuid()->getHex();
             $user->name = Str::title($provider_user['name']);

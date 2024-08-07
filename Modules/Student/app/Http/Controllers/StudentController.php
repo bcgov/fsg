@@ -45,9 +45,13 @@ class StudentController extends Controller
         if ($existingStudent) {
             // If dob matches as well, update the existing student record
             if ($request->dob === $existingStudent->dob) {
-                $existingStudent->update([
-                    'user_guid' => Auth::user()->guid,
-                ]);
+
+                // Update the existing student record with all request data plus user_guid
+                $existingStudent->update(array_merge(
+                    $request->validated(), // Merge validated request data
+                    ['user_guid' => Auth::user()->guid] // Add user_guid
+                ));
+
             } else {
                 return $this->index('profile', 'Failed to connect account');
             }
