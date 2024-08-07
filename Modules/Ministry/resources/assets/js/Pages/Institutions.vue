@@ -10,7 +10,7 @@
 
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-3 mb-3">
                         <div class="card">
                             <div class="card-header">
                                 Institution Search
@@ -20,8 +20,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-9">
-                        <div class="card mb-3">
+                    <div class="col-md-9 mb-3">
+                        <div class="card">
                             <div class="card-header">
                                 Institutions
 <!--                                <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#newInstModal">New Institution</button>-->

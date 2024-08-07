@@ -8,6 +8,7 @@ use App\Http\Requests\ProgramYearEditRequest;
 use App\Http\Requests\ProgramYearStoreRequest;
 use App\Http\Requests\UtilEditRequest;
 use App\Http\Requests\UtilStoreRequest;
+use App\Models\Claim;
 use App\Models\Institution;
 use App\Models\InstitutionStaff;
 use App\Models\ProgramYear;
@@ -229,51 +230,24 @@ class MaintenanceController extends Controller
         $fromDate = $from;
         $toDate = $to.' 23:59:59';
 
-        if ($type === 'attestation') {
-            $rows = Attestation::select(
+        if ($type === 'claims') {
+            $rows = Claim::select(
                 \DB::raw('NOW()'),
-                'attestations.institution_guid',
-                'attestations.fed_guid',
-                'attestations.first_name',
-                'attestations.last_name',
-                'attestations.status',
-                'attestations.issue_date',
-                'attestations.country',
-                'attestations.dob',
-                'attestations.student_number',
-                'attestations.id_number',
+                'claims.institution_guid',
+                'claims.sin',
+                'claims.first_name',
+                'claims.last_name',
+                'claims.email',
+                'claims.dob',
+                'claims.claim_status',
                 'institutions.guid',
-                'institutions.name'
+                'institutions.name as institution_name',
+                'programs.guid',
+                'programs.program_name'
             )
-                ->join('institutions', 'institutions.guid', '=', 'attestations.institution_guid')
-                ->whereBetween('attestations.created_at', [$fromDate, $toDate])
-                ->get();
-        }
-        if ($type === 'cap') {
-            $rows = Cap::select(
-                \DB::raw('NOW()'),
-                'caps.institution_guid',
-                'caps.fed_cap_guid',
-                'caps.total_attestations',
-                'caps.issued_attestations',
-                'caps.draft_attestations',
-                'caps.active_status',
-                'institutions.guid as institution_guid',
-                'institutions.name',
-                'institutions.category',
-                'institutions.dli',
-                'institutions.info_sharing_agreement',
-                'fed_caps.guid as fed_cap_guid',
-                'fed_caps.start_date',
-                'fed_caps.end_date',
-                'fed_caps.total_attestations as fc_total_attestations',
-                'fed_caps.status'
-            )
-                ->join('institutions', 'institutions.guid', '=', 'caps.institution_guid')
-                ->join('fed_caps', 'fed_caps.guid', '=', 'caps.fed_cap_guid')
-                ->where('fed_caps.status', 'Active')
-                ->where('caps.active_status', true)
-                ->selectedFedcap()
+                ->join('institutions', 'institutions.guid', '=', 'claims.institution_guid')
+                ->join('programs', 'programs.guid', '=', 'claims.program_guid')
+                ->whereBetween('claims.created_at', [$fromDate, $toDate])
                 ->get();
         }
         if ($type === 'staff') {
@@ -286,29 +260,6 @@ class MaintenanceController extends Controller
             )
                 ->join('institutions', 'institutions.guid', '=', 'institution_staff.institution_guid')
                 ->whereBetween('institution_staff.created_at', [$fromDate, $toDate])
-                ->get();
-        }
-        if ($type === 'ircc') {
-            $rows = Attestation::select(
-                'institutions.name as institution_name',
-                'institutions.dli',
-                'programs.program_name',
-                'attestations.student_number',
-                'attestations.id_number',
-                'attestations.fed_guid',
-                'attestations.guid',
-                'attestations.first_name',
-                'attestations.last_name',
-                'attestations.address1',
-                'attestations.city',
-                'attestations.country',
-                'attestations.dob',
-                'attestations.issue_date',
-                'attestations.expiry_date'
-            )
-                ->join('institutions', 'institutions.guid', '=', 'attestations.institution_guid')
-                ->join('programs', 'programs.guid', '=', 'attestations.program_guid')
-                ->whereBetween('attestations.created_at', [$fromDate, $toDate])
                 ->get();
         }
 
@@ -363,7 +314,7 @@ class MaintenanceController extends Controller
         $privateReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
 
         // Fetch institutions with active attestations
-        $institutions = Institution::with(['activeCaps.attestations'])->get();
+        $institutions = Institution::with(['claims'])->get();
 
         foreach ($institutions as $inst) {
             $instType = $this->getReportType($inst->category);

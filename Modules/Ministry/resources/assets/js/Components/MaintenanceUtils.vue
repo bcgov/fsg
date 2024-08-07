@@ -1,6 +1,6 @@
 <template xmlns="http://www.w3.org/1999/html">
     <div>
-    <div v-for="cat in categories" class="card mb-3">
+    <div v-for="cat in categories" class="card">
         <div class="card-header">
             <div>{{ cat }}
                 <button v-if="cat.indexOf('Ministry') === -1" @click="newUtil(cat)" type="button" class="btn btn-success btn-sm float-end">New {{ cat }}</button>
