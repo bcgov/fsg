@@ -20,21 +20,17 @@
             </div>
 
             <div class="row g-3 mb-3">
-                <div class="col-md-3">
-                    <a :href="'/ministry/reports/sources-download/' + fromDate + '/' + toDate + '/attestation'" target="_blank" class="btn btn-outline-success w-100">
-                        <i class="bi bi-filetype-csv h1"></i><br/>Attestation</a>
+                <div class="col-md-4">
+                    <a :href="'/ministry/reports/sources-download/' + fromDate + '/' + toDate + '/claims'" target="_blank" class="btn btn-outline-success w-100">
+                        <i class="bi bi-filetype-csv h1"></i><br/>Claims</a>
                 </div>
-                <div class="col-md-3">
-                    <a :href="'/ministry/reports/sources-download/' + fromDate + '/' + toDate + '/cap'" target="_blank" class="btn btn-outline-success w-100">
-                        <i class="bi bi-filetype-csv h1"></i><br/>Cap</a>
+                <div class="col-md-4">
+                    <a :href="'/ministry/reports/sources-download/' + fromDate + '/' + toDate + '/allocations'" target="_blank" class="btn btn-outline-success w-100">
+                        <i class="bi bi-filetype-csv h1"></i><br/>Allocations</a>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <a :href="'/ministry/reports/sources-download/' + fromDate + '/' + toDate + '/staff'" target="_blank" class="btn btn-outline-success w-100">
                         <i class="bi bi-filetype-csv h1"></i><br/>Staff</a>
-                </div>
-                <div class="col-md-3">
-                    <a :href="'/ministry/reports/sources-download/' + fromDate + '/' + toDate + '/ircc'" target="_blank" class="btn btn-outline-success w-100">
-                        <i class="bi bi-filetype-csv h1"></i><br/>IRCC</a>
                 </div>
             </div>
 

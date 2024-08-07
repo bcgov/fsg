@@ -79,13 +79,13 @@ Route::prefix('ministry')->group(function () {
                 Route::put('/institution_roles', [InstitutionStaffController::class, 'updateRole'])->name('institution_roles.updateRole');
                 Route::get('/institution_login/{guid}', [InstitutionStaffController::class, 'ministryLogin'])->name('institution_login.login');
 
-                //            Route::get('/reports/summary', [MaintenanceController::class, 'reportsSummary'])->name('reports.summary');
-                //            Route::post('/reports/summary', [MaintenanceController::class, 'reportsSummaryFetch'])->name('reports.summary.fetch');
-                //            Route::get('/reports/detail', [MaintenanceController::class, 'reportsDetail'])->name('reports.detail');
-                //            Route::post('/reports/detail', [MaintenanceController::class, 'reportsDetailFetch'])->name('reports.detail.fetch');
-                //
-                //            Route::get('/reports/sources', [MaintenanceController::class, 'reportSources'])->name('reports.sources');
-                //            Route::get('/reports/sources-download/{from}/{to}/{type}', [MaintenanceController::class, 'reportSourcesFetch'])->name('reports.sources.fetch');
+                Route::get('/reports/summary', [MaintenanceController::class, 'reportsSummary'])->name('reports.summary');
+                Route::post('/reports/summary', [MaintenanceController::class, 'reportsSummaryFetch'])->name('reports.summary.fetch');
+                Route::get('/reports/detail', [MaintenanceController::class, 'reportsDetail'])->name('reports.detail');
+                Route::post('/reports/detail', [MaintenanceController::class, 'reportsDetailFetch'])->name('reports.detail.fetch');
+
+                Route::get('/reports/sources', [MaintenanceController::class, 'reportSources'])->name('reports.sources');
+                Route::get('/reports/sources-download/{from}/{to}/{type}', [MaintenanceController::class, 'reportSourcesFetch'])->name('reports.sources.fetch');
 
             });
         });

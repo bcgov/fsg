@@ -1,5 +1,5 @@
 <template>
-    <div class="card mb-3">
+    <div class="card">
         <div class="card-header">
             Institution Staff - BCeID Accounts
 <!--            <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#newStaffModal">New Staff</button>-->

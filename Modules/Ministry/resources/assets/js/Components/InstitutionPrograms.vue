@@ -1,5 +1,5 @@
 <template>
-    <div class="card mb-3">
+    <div class="card">
         <div class="card-header">
             Programs
             <button type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Program</button>

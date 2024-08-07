@@ -6,7 +6,7 @@
             <div v-if="results != null" class="container-fluid">
 
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-3 mb-3">
                         <div class="card">
                             <div class="card-header">
                                 Institution Menu
@@ -16,7 +16,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-9 mb-3">
                         <InstitutionDetails v-bind="$attrs" v-if="page === 'details'" :results="results"></InstitutionDetails>
                         <InstitutionPrograms v-bind="$attrs" v-if="page === 'programs'" :results="results"></InstitutionPrograms>
                         <InstitutionAllocations v-bind="$attrs" v-if="page === 'allocations'" :results="results" :program-years="programYears"></InstitutionAllocations>

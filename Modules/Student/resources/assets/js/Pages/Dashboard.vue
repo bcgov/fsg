@@ -5,7 +5,7 @@
 
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-3 mb-3">
                     <div class="card">
                         <div class="card-header">
                             Dashboard Menu
@@ -15,7 +15,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-9">
+                <div class="col-md-9 mb-3">
                     <DashboardProfile v-bind="$attrs" v-if="page === 'profile'" :error="error" :results="results" :provider-user="providerUser"></DashboardProfile>
                     <DashboardApplications v-bind="$attrs" v-if="page === 'applications' && results != null" :results="results"></DashboardApplications>
                 </div>

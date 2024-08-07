@@ -10,7 +10,7 @@
 
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-3 mb-3">
                         <div class="card">
                             <div class="card-header">
                                 Reports Menu
@@ -20,7 +20,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-9 mb-3">
                         <ReportsSummary v-if="page === 'summary'"></ReportsSummary>
                         <ReportsDetail v-if="page === 'detail'" :results="results"></ReportsDetail>
                         <ReportSources v-if="page === 'sources'"></ReportSources>

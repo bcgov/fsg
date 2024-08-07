@@ -1,5 +1,5 @@
 <template>
-    <div v-if="editForm != null" class="card mb-3">
+    <div v-if="editForm != null" class="card">
         <div class="card-header">
             <div>
                 Institution Details <small class="text-muted">{{ editForm.bceid_business_guid }}</small>
