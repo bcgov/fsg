@@ -100,9 +100,9 @@ class StudentEditRequest extends FormRequest
         $this->merge([
             'email' => Str::lower(str_replace(' ', '', $this->email)),
             'zip_code' => Str::upper(str_replace(' ', '', $this->zip_code)),
-            'city' => Str::title(str_replace(' ', '', $this->city)),
-            'first_name' => Str::title(str_replace(' ', '', $this->first_name)),
-            'last_name' => Str::title(str_replace(' ', '', $this->last_name)),
+            'city' => Str::title($this->city),
+            'first_name' => Str::title($this->first_name),
+            'last_name' => Str::title($this->last_name),
 
             'info_consent' => $this->toBoolean($this->info_consent),
             'duplicative_funding' => $this->toBoolean($this->duplicative_funding),
