@@ -113,7 +113,6 @@ class ApplicationEditRequest extends FormRequest
 
             $this->merge([
                 'allocation_limit_reached' => null,
-                //                'guid' => Str::orderedUuid()->getHex(),
                 'last_touch_by_user_guid' => $this->user()->guid,
 
                 'allocation_guid' => $allocation->guid,
@@ -125,9 +124,6 @@ class ApplicationEditRequest extends FormRequest
                 'city' => $student->city,
                 'sin' => $student->sin,
                 'dob' => $student->dob,
-
-                //                'registration_confirmed' => $student->registration_confirmed,
-                //                'agreement_confirmed' => $student->agreement_confirmed,
 
                 'agreement_confirmed' => $this->toBoolean($this->agreement_confirmed),
                 'registration_confirmed' => $this->toBoolean($this->registration_confirmed),

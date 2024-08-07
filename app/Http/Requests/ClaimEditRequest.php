@@ -178,11 +178,11 @@ class ClaimEditRequest extends FormRequest
 
         if ($this->claim_status === 'Draft') {
             $this->merge([
-                'first_name' => Str::title(str_replace(' ', '', $this->first_name)),
-                'last_name' => Str::title(str_replace(' ', '', $this->last_name)),
+                'first_name' => Str::title($this->first_name),
+                'last_name' => Str::title($this->last_name),
                 'email' => Str::lower(str_replace(' ', '', $this->email)),
                 'zip_code' => Str::upper(str_replace(' ', '', $this->zip_code)),
-                'city' => Str::title(str_replace(' ', '', $this->city)),
+                'city' => Str::title($this->city),
 
                 'agreement_confirmed' => $this->toBoolean($this->agreement_confirmed),
             ]);

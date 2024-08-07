@@ -15,10 +15,12 @@ class StudentStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        $student = null;
+        if(!is_null($this->sin)) {
+            $student = Student::where('sin', $this->sin)->first();
+        }
 
-        $student = Student::where('sin', $this->sin)->first();
-
-        // If there is an existing student with the same name
+        // If there is an existing student with the same sin
         if (! is_null($student)) {
             // Prevent updates if the current claim_status is "Claimed"
             if ($student->dob !== $this->dob && strtolower($student->last_name) !== strtolower($this->last_name)) {
@@ -125,9 +127,9 @@ class StudentStoreRequest extends FormRequest
             'user_guid' => Auth::user()->guid,
             'email' => Str::lower(str_replace(' ', '', $this->email)),
             'zip_code' => Str::upper(str_replace(' ', '', $this->zip_code)),
-            'city' => Str::title(str_replace(' ', '', $this->city)),
-            'first_name' => Str::title(str_replace(' ', '', $this->first_name)),
-            'last_name' => Str::title(str_replace(' ', '', $this->last_name)),
+            'city' => Str::title($this->city),
+            'first_name' => Str::title($this->first_name),
+            'last_name' => Str::title($this->last_name),
 
             'info_consent' => $this->toBoolean($this->info_consent),
             'duplicative_funding' => $this->toBoolean($this->duplicative_funding),

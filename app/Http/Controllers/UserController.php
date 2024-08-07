@@ -211,16 +211,7 @@ class UserController extends Controller
             }
 
             if ($type === Role::Student) {
-                //check if the user is a guest
-                //                $rolesToCheck = [Role::Student];
-                //                if ($user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()) {
-                //                    return Inertia::render('Auth/Login', [
-                //                        'loginAttempt' => true,
-                //                        'hasAccess' => false,
-                //                        'status' => $failMsg,
-                //                    ]);
-                //                }
-
+                Cache::put('bcsc_provider_user_' . $user->id, json_encode($provider_user));
                 Auth::login($user);
 
                 return Redirect::route('student.home');

@@ -112,17 +112,6 @@ class ApplicationStoreRequest extends FormRequest
 
             // Only allow the student to submit an application if the allocation limit has not been reached.
 
-            // We need the sum of claims that are in Hold, Submitted or Claimed
-            //            $sum_claims = Claim::whereIn('claim_status', ['Submitted', 'Claimed'])
-            //                ->where('institution_guid', $this->institution_guid)
-            //                ->where('allocation_guid', $allocation->guid)
-            //                ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
-            //            $sum_hold_claims = Claim::where('claim_status', 'Hold')
-            //                ->where('institution_guid', $this->institution_guid)
-            //                ->where('allocation_guid', $allocation->guid)
-            //                ->sum('estimated_hold_amount');
-            //
-            //            if((float)$sum_claims + (float)$sum_hold_claims < (float)$allocation->total_amount) {
             $this->merge([
                 'allocation_limit_reached' => null,
                 'guid' => Str::orderedUuid()->getHex(),
@@ -137,9 +126,6 @@ class ApplicationStoreRequest extends FormRequest
                 'city' => $student->city,
                 'sin' => $student->sin,
                 'dob' => $student->dob,
-
-                //                'registration_confirmed' => $student->registration_confirmed,
-                //                'agreement_confirmed' => $student->agreement_confirmed,
 
                 'agreement_confirmed' => $this->toBoolean($this->agreement_confirmed),
                 'registration_confirmed' => $this->toBoolean($this->registration_confirmed),
