@@ -176,6 +176,7 @@ class ClaimController extends Controller
                 'lname' => $claims->where('last_name', 'ILIKE', '%'.request()->filter_term.'%'),
                 'sin' => $claims->where('sin', 'ILIKE', '%'.request()->filter_term.'%'),
                 'email' => $claims->where('email', 'ILIKE', '%'.request()->filter_term.'%'),
+                default => $claims, // Default case: return $claims unchanged
             };
         }
 
