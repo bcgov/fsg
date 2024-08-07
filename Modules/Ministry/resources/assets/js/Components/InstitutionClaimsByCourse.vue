@@ -1,5 +1,5 @@
 <template>
-    <div v-if="claims != null && claims.data.length > 0" class="card mb-3">
+    <div v-if="claims != null && claims.data.length > 0" class="card">
     <div class="card-header">
             Institution Claims by Course
             <template>

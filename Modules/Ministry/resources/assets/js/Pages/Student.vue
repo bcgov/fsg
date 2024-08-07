@@ -6,7 +6,7 @@
             <div v-if="results != null" class="container-fluid">
 
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-3 mb-3">
                         <div class="card">
                             <div class="card-header">
                                 Student Menu
@@ -16,7 +16,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-9 mb-3">
                         <StudentDetails v-bind="$attrs" v-if="page === 'details'" :results="results"></StudentDetails>
                         <StudentClaims v-bind="$attrs" v-if="page === 'claims'" :results="results"></StudentClaims>
                     </div>
