@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
+
+    // Append the computed attribute
+    protected $appends = ['can_apply'];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -23,5 +27,16 @@ class Student extends Model
     public function applications()
     {
         return $this->hasMany(Claim::class, 'student_guid', 'guid')->orderBy('created_at');
+    }
+
+    // Add accessor for total_grant
+    public function getCanApplyAttribute()
+    {
+        if(is_null($this->sin) || is_null($this->dob) || !$this->additional_supports || !$this->bc_resident ||
+            !$this->duplicative_funding || !$this->fed_prov_benefits || !$this->info_consent || !$this->lifetime_max ||
+            !$this->tax_implications || !$this->workbc_client){
+            return false;
+        }
+        return true;
     }
 }
