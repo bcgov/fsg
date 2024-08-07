@@ -5,7 +5,7 @@
 <!--                <template>-->
 <!--                    <span class="badge rounded-pill text-bg-primary me-1">Active Application Total: {{ claims.data.length }}</span>-->
 <!--                </template>-->
-            <button v-if="institutions != '' && institutions.length > 0" type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Application</button>
+            <button v-if="results != null && results.can_apply === true && institutions != '' && institutions.length > 0" type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Application</button>
         </div>
         <div class="card-body">
             <div v-if="claims != null && claims.data != null && claims.data.length > 0" class="table-responsive pb-3">

@@ -131,7 +131,8 @@
 
             </div>
             <div class="card-footer mt-3">
-                <button type="submit" class="btn me-2 btn-success float-end" :disabled="editForm.processing">Update Profile</button>
+                <button v-if="results == null" type="submit" class="btn btn-success" :disabled="editForm.processing">Create Profile</button>
+                <button v-else type="submit" class="btn btn-success" :disabled="editForm.processing">Update Profile</button>
             </div>
             <FormSubmitAlert :form-state="editForm.formState"
                              :success-msg="'Student record was updated successfully.'"></FormSubmitAlert>
@@ -187,15 +188,6 @@ export default {
             const errors = {};
             const errors2 = {};
 
-            // Check for empty fields
-            // const requiredFields = [
-            //     'first_name', 'last_name', 'email', 'sin', 'dob', 'city', 'zip_code', 'citizenship', 'grade12_or_over19'
-            // ];
-            // requiredFields.forEach(field => {
-            //     if (!this.editForm[field]) {
-            //         errors[field] = `${field.replace(/_/g, ' ')} is required.`;
-            //     }
-            // });
 
             // Check for false checkbox fields
             let trueFieldsValid = true;
