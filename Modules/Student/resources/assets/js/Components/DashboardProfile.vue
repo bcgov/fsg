@@ -131,7 +131,8 @@
 
             </div>
             <div class="card-footer mt-3">
-                <button type="submit" class="btn me-2 btn-success float-end" :disabled="editForm.processing">Update Profile</button>
+                <button v-if="results == null" type="submit" class="btn btn-success" :disabled="editForm.processing">Create Profile</button>
+                <button v-else type="submit" class="btn btn-success" :disabled="editForm.processing">Update Profile</button>
             </div>
             <FormSubmitAlert :form-state="editForm.formState"
                              :success-msg="'Student record was updated successfully.'"></FormSubmitAlert>
