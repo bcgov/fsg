@@ -233,13 +233,7 @@ class MaintenanceController extends Controller
         if ($type === 'claims') {
             $rows = Claim::select(
                 \DB::raw('NOW()'),
-                'claims.institution_guid',
-                'claims.sin',
-                'claims.first_name',
-                'claims.last_name',
-                'claims.email',
-                'claims.dob',
-                'claims.claim_status',
+                'claims.*',
                 'institutions.guid',
                 'institutions.name as institution_name',
                 'programs.guid',

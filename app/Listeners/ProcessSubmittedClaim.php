@@ -87,7 +87,8 @@ class ProcessSubmittedClaim
                 // If the student has reached the grant limit, prevent moving it to Hold
                 if (((float) $totalHoldClaims + (float) $totalActiveClaims) > (float) env('TOTAL_GRANT')) {
                     $claim->process_feedback = 'Student total claims of Hold and Claimed, including this,
-                    is $'.(float) $totalHoldClaims + (float) $totalActiveClaims.' > $'.(float) env('TOTAL_GRANT');
+                    is $'.(float) $totalHoldClaims + (float) $totalActiveClaims.' > $'.(float) env('TOTAL_GRANT').',
+                    student currently has $' . (float) $totalHoldClaims + (float) $totalActiveClaims - (float)$claim->estimated_hold_amount . ' in claimed and held.';
                     $claim->claim_status = 'Submitted';
                     $claim->estimated_hold_amount = 0;
                 }
