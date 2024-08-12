@@ -68,7 +68,6 @@ class ProcessSubmittedApplication
 
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired, Cancelled
                 $totalActiveClaims = $student->claims()
-//                    ->whereNotIn('claim_status', ['Draft', 'Hold', 'Expired', 'Cancelled'])
                     ->where('claim_status', 'Claimed')
                     ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
 
@@ -92,7 +91,6 @@ class ProcessSubmittedApplication
                     whereNotIn('claim_status', ['Draft', 'Expired', 'Cancelled'])
                         ->where('institution_guid', $claim->institution_guid)
                         ->where('allocation_guid', $claim->allocation_guid)
-//                    ->sum('total_claim_amount');
                         ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
 
                 Log::info('sum_claims = '.number_format($sum_claims, 0));
@@ -114,7 +112,6 @@ class ProcessSubmittedApplication
                     ->sum();
 
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired
-                //                    ->whereNotIn('claim_status', ['Draft', 'Submitted', 'Hold', 'Expired', 'Cancelled'])
                 $totalActiveClaims = $student->claims()
                     ->where('claim_status', 'Claimed')
                     ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
