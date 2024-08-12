@@ -27,13 +27,10 @@ class ProcessSubmittedClaim
         if ($claim->allocation->status != 'active') {
             $claim->claim_status = 'Draft';
         } else {
-            // If the claim is new, add the claim percent from ProgramYear
-            if (! is_null($program) && $status === 'Draft') {
-                $claim->claim_percent = $claim->allocation->py->claim_percent;
-            }
+            $claim->claim_percent = $claim->allocation->py->claim_percent;
 
             // If the student is moving the claim from Draft to Submitted
-            elseif ($claim_before_update->claim_status === 'Draft' && $status === 'Submitted') {
+            if ($claim_before_update->claim_status === 'Draft' && $status === 'Submitted') {
                 Log::info('claim is moving from Draft to Submitted');
                 $claim->estimated_hold_amount = 0;
                 $claim->total_claim_amount = 0;
@@ -50,7 +47,6 @@ class ProcessSubmittedClaim
 
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired, Cancelled
                 $totalActiveClaims = $student->claims()
-//                    ->whereNotIn('claim_status', ['Draft', 'Hold', 'Expired', 'Cancelled'])
                     ->where('claim_status', 'Claimed')
                     ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
 
@@ -77,7 +73,6 @@ class ProcessSubmittedClaim
 
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired, Cancelled
                 $totalActiveClaims = $student->claims()
-//                    ->whereNotIn('claim_status', ['Draft', 'Hold', 'Expired', 'Cancelled'])
                     ->where('claim_status', 'Claimed')
                     ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
 
@@ -107,7 +102,6 @@ class ProcessSubmittedClaim
 
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired, Cancelled
                 $totalActiveClaims = $student->claims()
-//                    ->whereNotIn('claim_status', ['Draft', 'Hold', 'Expired', 'Cancelled'])
                     ->where('claim_status', 'Claimed')
                     ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
 
@@ -121,12 +115,6 @@ class ProcessSubmittedClaim
                     $claim->claim_status = 'Submitted';
                     $claim->estimated_hold_amount = 0;
                 }
-                //                else{
-                //                    $claim->total_claim_amount = 0;
-                //                    $claim->program_fee = 0;
-                //                    $claim->materials_fee = 0;
-                //                    $claim->registration_fee = 0;
-                //                }
             }
 
             // If the claim is moving from Hold to Claimed

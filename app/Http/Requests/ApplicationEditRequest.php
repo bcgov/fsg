@@ -137,8 +137,6 @@ class ApplicationEditRequest extends FormRequest
             ]);
         } else {
             // Handle cases where $student or $allocation is null
-            // This could involve throwing an exception or logging an error
-            // For example:
             throw new \Exception('Student or Allocation not found.');
         }
 

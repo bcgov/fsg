@@ -137,17 +137,9 @@ class ApplicationStoreRequest extends FormRequest
                 'total_claim_amount' => 0,
                 'claim_percent' => 0,
             ]);
-            //            } else {
-            //                // Handle cases where $student or $allocation is null
-            //                // This could involve throwing an exception or logging an error
-            //                // For example:
-            //                throw new \Exception('The institution allocation limit has been reached.');
-            //            }
 
         } else {
             // Handle cases where $student or $allocation is null
-            // This could involve throwing an exception or logging an error
-            // For example:
             throw new \Exception('Student or Allocation not found.');
         }
 
