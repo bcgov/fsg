@@ -70,7 +70,10 @@ class ClaimController extends Controller
     public function update(ClaimEditRequest $request): \Illuminate\Http\RedirectResponse
     {
         $claim = Claim::find($request->id);
-        $claim_id = Claim::where('id', $request->id)->update($request->validated());
+        $claim->fill($request->validated());
+        $claim->save();
+
+//        $claim_id = Claim::where('id', $request->id)->update($request->validated());
         event(new ClaimSubmitted($claim, $request->claim_status));
 
         $claim = Claim::find($request->id);
