@@ -25,7 +25,11 @@ class ApplicationController extends Controller
     {
         $validated = collect($request->validated())->except(['allocation_limit_reached'])->toArray();
 
-        $application_id = Claim::where('id', $request->id)->update($validated);
+        $claim = Claim::find($request->id);
+        $claim->fill($validated);
+        $claim->save();
+
+//        $application_id = Claim::where('id', $request->id)->update($validated);
         $application = Claim::find($request->id);
         event(new ApplicationSubmitted($application, $request->claim_status));
 
