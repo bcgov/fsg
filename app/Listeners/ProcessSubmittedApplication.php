@@ -30,12 +30,10 @@ class ProcessSubmittedApplication
         } else {
 
             // If the claim is new, add the claim percent from ProgramYear
-            if (! is_null($program) && $status === 'Draft') {
-                $claim->claim_percent = $claim->allocation->py->claim_percent;
-            }
+            $claim->claim_percent = $claim->allocation->py->claim_percent;
 
             // If the student is moving the claim from Draft to Submitted
-            elseif ($claim_before_update->claim_status === 'Draft' && $status === 'Submitted') {
+            if ($claim_before_update->claim_status === 'Draft' && $status === 'Submitted') {
 
                 // Calculate the total of claims for the student that are in Hold
                 $totalHoldClaims = $student->claims()
