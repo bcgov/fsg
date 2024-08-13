@@ -1,8 +1,3 @@
-<style scoped>
-[type='checkbox']:checked, [type='radio']:checked {
-    background-size: initial;
-}
-</style>
 <template>
     <Head title="Reports" />
 
@@ -21,9 +16,8 @@
                         </div>
                     </div>
                     <div class="col-md-9 mb-3">
-                        <ReportsSummary v-if="page === 'summary'"></ReportsSummary>
-                        <ReportsDetail v-if="page === 'detail'" :results="results"></ReportsDetail>
-                        <ReportSources v-if="page === 'sources'"></ReportSources>
+                        <ReportsSummary v-if="page === 'summary'" :py="py"></ReportsSummary>
+                        <ReportSources v-if="page === 'sources'" :py="py"></ReportSources>
                     </div>
                 </div>
             </div>
@@ -35,20 +29,18 @@ import BreezeAuthenticatedLayout from '../Layouts/Authenticated.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import ReportsMenu from "../Components/ReportsMenu";
 import ReportsSummary from "../Components/ReportsSummary";
-import ReportsDetail from "../Components/ReportsDetail";
 import ReportSources from "../Components/ReportSources";
 
 export default {
     name: 'Reports',
     components: {
         ReportsSummary,
-        ReportsDetail,
         ReportSources,
         BreezeAuthenticatedLayout, Head, Link, ReportsMenu
     },
     props: {
         results: Object,
-        categories: Object|null,
+        py: Object|null,
         page: String,
     },
     data() {

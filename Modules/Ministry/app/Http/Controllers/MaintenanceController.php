@@ -194,7 +194,8 @@ class MaintenanceController extends Controller
      */
     public function reportsSummary(Request $request): \Inertia\Response
     {
-        return Inertia::render('Ministry::Reports', ['results' => null, 'page' => 'summary']);
+        $activePy = ProgramYear::active()->first();
+        return Inertia::render('Ministry::Reports', ['results' => null, 'page' => 'summary', 'py' => $activePy]);
     }
 
     /**
@@ -217,7 +218,8 @@ class MaintenanceController extends Controller
      */
     public function reportSources(Request $request): \Inertia\Response
     {
-        return Inertia::render('Ministry::Reports', ['results' => null, 'page' => 'sources']);
+        $activePy = ProgramYear::active()->first();
+        return Inertia::render('Ministry::Reports', ['results' => null, 'page' => 'sources', 'py' => $activePy]);
     }
 
     /**
@@ -301,45 +303,35 @@ class MaintenanceController extends Controller
      */
     public function reportsSummaryFetch(Request $request)
     {
+        $activePy = ProgramYear::active()->with('allocations.institution')->first();
+
         $fromDate = $request->from_date;
         $toDate = $request->to_date.' 23:59:59';
 
-        $publicReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
-        $privateReport = ['total' => 0, 'issued' => 0, 'draft' => 0];
+        $publicReport = ['instList' => [], 'total' => 0, 'Claimed' => 0, 'Hold' => 0];
 
-        // Fetch institutions with active attestations
-        $institutions = Institution::with(['claims'])->get();
-
-        foreach ($institutions as $inst) {
-            $instType = $this->getReportType($inst->category);
-
-            if ($instType === 'public') {
-                $this->addInstToReport($inst, $publicReport);
-            }
-            if ($instType === 'private') {
-                $this->addInstToReport($inst, $privateReport);
-            }
+        foreach ($activePy->allocations as $allocation){
+            $publicReport['instList'][$allocation->institution->name] = [
+                'total' => $allocation->total_amount,
+                'Claimed' => 0, 'Hold' => 0
+            ];
+            $publicReport['total'] += $allocation->total_amount;
         }
 
+
         // Fetch attestations within the specified date range
-        $results = Attestation::with('institution')->whereBetween('created_at', [$fromDate, $toDate])->get();
+        $results = Claim::with('institution')->whereBetween('created_at', [$fromDate, $toDate])
+            ->whereIn('claim_status', ['Submitted', 'Hold', 'Claimed'])
+            ->get();
 
-        foreach ($results as $att) {
-            $reportType = $this->getReportType($att->institution->category);
-
-            if ($reportType === 'public') {
-                $this->updateReport($att, $publicReport);
-            }
-            if ($reportType === 'private') {
-                $this->updateReport($att, $privateReport);
-            }
+        foreach ($results as $claim) {
+            $this->updateReport($claim, $publicReport);
         }
 
         return response()->json([
             'status' => true,
             'body' => [
                 'publicReport' => $publicReport,
-                'privateReport' => $privateReport,
             ],
         ]);
     }
@@ -347,7 +339,7 @@ class MaintenanceController extends Controller
     private function addInstToReport($inst, &$report)
     {
         if (! isset($report[$inst->category])) {
-            $report[$inst->category] = ['instList' => [], 'total' => 0, 'issued' => 0, 'draft' => 0];
+            $report['public'] = ['instList' => [], 'total' => 0, 'claimed' => 0, 'hold' => 0, 'submitted' => 0];
         }
 
         $total = is_null($inst->activeCaps->first()) ? 0 : $inst->activeCaps->first()->total_attestations;
@@ -361,19 +353,25 @@ class MaintenanceController extends Controller
         $report['total'] += $total;
     }
 
-    private function updateReport($att, &$report)
+    private function updateReport($claim, &$report)
     {
-        $inst = $att->institution;
+        $inst = $claim->institution;
         $instName = $inst->name;
-        $status = ($att->status === 'Issued') ? 'issued' : 'draft';
+        $status = $claim->claim_status;
 
-        if (! isset($report[$inst->category])) {
-            $this->addInstToReport($inst, $report);
+        if($status == 'Hold'){
+            $report['instList'][$instName][$status] += $claim->estimated_hold_amount;
+            $report[$status] += $claim->estimated_hold_amount;
         }
-
-        $report[$inst->category]['instList'][$instName][$status]++;
-        $report[$inst->category][$status]++;
-        $report[$status]++;
+        if($status == 'Claimed'){
+            $report['instList'][$instName][$status] += $claim->registration_fee + $claim->program_fee + $claim->materials_fee;
+            $report[$status] += $claim->registration_fee + $claim->program_fee + $claim->materials_fee;
+        }
+//
+//
+//        $report['public']['instList'][$instName][$status] += $claim->total_amount;
+//        $report['public'][$status] += $claim->total_amount;
+//        $report[$status] += $claim->total_amount;
     }
 
     private function getReportType($category)
