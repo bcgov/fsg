@@ -9,12 +9,12 @@
             <div class="row g-3 mb-5">
                 <div class="col-md-6">
                     <label class="form-label">From:</label>
-                    <Input type="date" min="2024-03-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
+                    <Input type="date" :min="py.start_date" :max="py.end_date" placeholder="YYYY-MM-DD"
                            class="form-control" v-model="fromDate"/>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">To:</label>
-                    <Input type="date" min="2024-03-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
+                    <Input type="date" :min="py.start_date" :max="py.end_date" placeholder="YYYY-MM-DD"
                            class="form-control" v-model="toDate"/>
                 </div>
             </div>
@@ -50,7 +50,7 @@ export default {
         Input, Link
     },
     props: {
-        results: Object,
+        py: Object|null,
     },
     data() {
         return {
@@ -80,8 +80,8 @@ export default {
         }
     },
     mounted() {
-        this.toDate = this.$getFormattedDate();
-        this.fromDate = this.$getFormattedDate();
+        this.toDate = this.py.end_date;
+        this.fromDate = this.py.start_date;
     }
 }
 
