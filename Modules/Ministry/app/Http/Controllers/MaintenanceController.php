@@ -218,7 +218,8 @@ class MaintenanceController extends Controller
      */
     public function reportSources(Request $request): \Inertia\Response
     {
-        return Inertia::render('Ministry::Reports', ['results' => null, 'page' => 'sources']);
+        $activePy = ProgramYear::active()->first();
+        return Inertia::render('Ministry::Reports', ['results' => null, 'page' => 'sources', 'py' => $activePy]);
     }
 
     /**
