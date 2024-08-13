@@ -11,9 +11,9 @@ StrongerBC Future Skills Grant
 
 </p>
 
-| Project Lead  | Security Officer | Project Owner | Business Analyst |
-| ------------- | ------------- | ------------- | ------------- |
-| Kal Marsh  | David Malcolm  | John Marchesan   | Shareen Prasad |
+| Project Lead  | Security Officer | Project Owner   | Business Analyst |
+| ------------- | ------------- |-----------------|------------------|
+| Kal Marsh  | David Malcolm  | Robyn Terepocki | Ravin Maan       |
 
 <br/>
 
