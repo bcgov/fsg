@@ -58,11 +58,21 @@ class StudentController extends Controller
     {
         $students = Student::with('claims');
 
-        if (request()->filter_last_name !== null) {
-            $students = $students->where('last_name', 'ILIKE', '%'.request()->filter_last_name.'%');
-        }
-        if (request()->filter_email !== null) {
-            $students = $students->where('email', 'ILIKE', '%'.request()->filter_email.'%');
+//        if (request()->filter_last_name !== null) {
+//            $students = $students->where('last_name', 'ILIKE', '%'.request()->filter_last_name.'%');
+//        }
+//        if (request()->filter_email !== null) {
+//            $students = $students->where('email', 'ILIKE', '%'.request()->filter_email.'%');
+//        }
+
+        if (request()->filter_term !== null && request()->filter_type !== null) {
+            $students = match (request()->filter_type) {
+                'fname' => $students->where('first_name', 'ILIKE', '%'.request()->filter_term.'%'),
+                'lname' => $students->where('last_name', 'ILIKE', '%'.request()->filter_term.'%'),
+                'sin' => $students->where('sin', 'ILIKE', '%'.request()->filter_term.'%'),
+                'email' => $students->where('email', 'ILIKE', '%'.request()->filter_term.'%'),
+                default => $students, // Default case: return $students unchanged
+            };
         }
 
         if (request()->sort !== null) {

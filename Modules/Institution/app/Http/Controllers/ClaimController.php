@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ClaimEditRequest;
 use App\Models\Allocation;
 use App\Models\Claim;
-use App\Models\Country;
 use App\Models\Program;
 use App\Models\ProgramYear;
 use App\Models\User;
@@ -71,7 +70,6 @@ class ClaimController extends Controller
         $claim->fill($request->validated());
         $claim->save();
 
-//        $claim_id = Claim::where('id', $request->id)->update($request->validated());
         event(new ClaimSubmitted($claim, $request->claim_status));
 
         $claim = Claim::find($request->id);
@@ -104,8 +102,7 @@ class ClaimController extends Controller
 
     public function exportCsv()
     {
-//        $user = User::find(Auth::user()->id);
-//        $institution = $user->institution;
+
         $user = User::find(Auth::user()->id);
         $allocations = $this->getAllocations($user);
 
@@ -120,13 +117,13 @@ class ClaimController extends Controller
         $csvData = [];
         $csvDataHeader = ['PROGRAM NAME', 'SIN', 'FIRST NAME', 'LAST NAME', 'DOB', 'EMAIL', 'CITY',
             'POSTAL CODE', 'STATUS', 'REGISTRATION FEE', 'MATERIALS FEE', 'PROGRAM FEE', 'ADMIN %', 'EST. HOLD AMOUNT',
-            'TOTAL CLAIM AMOUNT', 'STABLE ENROL. DATE', 'EXPEC. STABLE ENROL. DATE', 'EXPIRY DATE','CLAIMED BY', 'ISSUE DATE'];
+            'TOTAL CLAIM AMOUNT', 'STABLE ENROL. DATE', 'EXPEC. STABLE ENROL. DATE', 'EXPIRY DATE','CLAIMED BY', 'ISSUE DATE', 'FEEDBACK'];
 
         foreach ($data as $d) {
             $csvData[] = [$d->program->program_name, $d->sin, $d->first_name, $d->last_name, $d->dob, $d->email, $d->city,
                 $d->zip_code, $d->claim_status, $d->registration_fee, $d->materials_fee, $d->program_fee, $d->claim_percent,
                 $d->estimated_hold_amount, $d->total_claim_amount, $d->stable_enrolment_date, $d->expected_stable_enrolment_date,
-                $d->expiry_date, $d->claimed_by_name, $d->updated_at];
+                $d->expiry_date, $d->claimed_by_name, $d->updated_at, $d->process_feedback];
         }
         $output = fopen('php://temp', 'w');
         // Write CSV headers
@@ -143,9 +140,7 @@ class ClaimController extends Controller
         fclose($output);
 
         return $response;
-
     }
-
 
     private function paginateClaims($allocation)
     {

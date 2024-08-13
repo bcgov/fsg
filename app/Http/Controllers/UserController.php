@@ -125,11 +125,12 @@ class UserController extends Controller
                         $idToken.'&post_logout_redirect_uri='.env('KEYCLOAK_BCSC_REDIRECT_LOGOUT_URI'));
                 }
                 \Log::info('KC Logout : '.$provider->getLogoutUrl(['access_token' => $token]));
-                \Log::info('idToken: ');
-                \Log::info($token->getValues());
+//                \Log::info('idToken: ');
+//                \Log::info($token->getValues());
                 \Log::info('We got a token: '.$token);
                 \Log::info('$provider_user: '.json_encode($provider_user));
             } catch (\Exception $e) {
+                \Log::info(' ');
                 return Inertia::render('Auth/Login', [
                     'loginAttempt' => true,
                     'hasAccess' => false,
@@ -164,15 +165,18 @@ class UserController extends Controller
                     Cache::put('bcsc_provider_user_' . $user->id, json_encode($provider_user));
                     Auth::login($user);
 
+                    \Log::info(' ');
                     return Redirect::route('student.home');
 
                 } elseif ($valid == '200' && $type !== Role::Student) {
+                    \Log::info(' ');
                     return Inertia::render('Auth/Login', [
                         'loginAttempt' => true,
                         'hasAccess' => false,
                         'status' => 'Please contact Admin to grant you access.',
                     ]);
                 } else {
+                    \Log::info(' ');
                     return Inertia::render('Auth/Login', [
                         'loginAttempt' => true,
                         'hasAccess' => false,
@@ -182,6 +186,7 @@ class UserController extends Controller
 
                 //if the user has been disabled
             } elseif ($user->disabled === true) {
+                \Log::info(' ');
                 return Inertia::render('Auth/Login', [
                     'loginAttempt' => true,
                     'hasAccess' => false,
@@ -198,6 +203,7 @@ class UserController extends Controller
                 //check if the user is a guest
                 $rolesToCheck = [Role::Ministry_GUEST];
                 if ($user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()) {
+                    \Log::info(' ');
                     return Inertia::render('Auth/Login', [
                         'loginAttempt' => true,
                         'hasAccess' => false,
@@ -207,6 +213,7 @@ class UserController extends Controller
 
                 Auth::login($user);
 
+                \Log::info(' ');
                 return Redirect::route('ministry.home');
             }
 
@@ -214,6 +221,7 @@ class UserController extends Controller
                 Cache::put('bcsc_provider_user_' . $user->id, json_encode($provider_user));
                 Auth::login($user);
 
+                \Log::info(' ');
                 return Redirect::route('student.home');
             }
 
@@ -221,6 +229,7 @@ class UserController extends Controller
                 //check if the user is a guest
                 $rolesToCheck = [Role::Institution_GUEST];
                 if ($user->roles()->pluck('name')->intersect($rolesToCheck)->isNotEmpty()) {
+                    \Log::info(' ');
                     return Inertia::render('Auth/Login', [
                         'loginAttempt' => true,
                         'hasAccess' => false,
@@ -230,9 +239,11 @@ class UserController extends Controller
 
                 Auth::login($user);
 
+                \Log::info(' ');
                 return Redirect::route('institution.dashboard');
             }
 
+            \Log::info(' ');
             return Redirect::route('login');
         }
     }
