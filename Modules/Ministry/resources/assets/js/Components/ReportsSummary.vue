@@ -2,8 +2,8 @@
     <div>
     <div class="card">
         <div class="card-header">
-            <div>Executive Summary
-                <button @click="exportCsv" class="btn btn-outline-success btn-sm float-end me-1" title="Export Attestations"><i class="bi bi-filetype-csv"></i></button>
+            <div>Reports Summary
+                <button @click="exportCsv" class="btn btn-outline-success btn-sm float-end me-1" title="Export Claims"><i class="bi bi-filetype-csv"></i></button>
             </div>
         </div>
 
@@ -11,12 +11,12 @@
             <div class="row g-3 mb-3">
                 <div class="col-md-4">
                     <label class="form-label">From:</label>
-                    <Input type="date" min="2024-03-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
+                    <Input type="date" :min="py.start_date" :max="py.end_date" placeholder="YYYY-MM-DD"
                            class="form-control" v-model="fromDate"/>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">To:</label>
-                    <Input type="date" min="2024-03-01" :max="$getFormattedDate()" placeholder="YYYY-MM-DD"
+                    <Input type="date" :min="py.start_date" :max="py.end_date" placeholder="YYYY-MM-DD"
                            class="form-control" v-model="toDate"/>
                 </div>
                 <div class="col-md-2">
@@ -33,92 +33,27 @@
                 <table id="summaryReportTbl" class="table table-striped">
                     <thead>
                     <tr>
-                        <th scope="col"></th>
-                        <th scope="col">PAL Allocation</th>
-                        <th scope="col">Total Issued</th>
-                        <th scope="col">Total Draft</th>
+                        <th scope="col">Institution</th>
+                        <th scope="col">Total Allocation</th>
+                        <th scope="col">Total Claimed</th>
+                        <th scope="col">Total Hold</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td><strong>PUBLIC INSTITUTIONS</strong></td>
-                        <td><strong>{{ reportData.publicReport.total }}</strong></td>
-                        <td><strong>{{ reportData.publicReport.issued}}</strong></td>
-                        <td><strong>{{ reportData.publicReport.draft }}</strong></td>
-
-                    </tr>
-                    <template v-for="(value, name, index) in reportData.publicReport">
-                        <template v-if="typeof value === 'object'">
-                        <tr>
-                            <td><strong>&nbsp;{{ name }}</strong></td>
-                            <td><strong>{{ value.total }}</strong></td>
-                            <td><strong>{{ value.issued}}</strong></td>
-                            <td><strong>{{ value.draft }}</strong></td>
-                        </tr>
-                        <tr v-for="(row, k, i) in value.instList">
+                        <tr v-for="(row, k, i) in reportData.publicReport.instList">
                             <td>&nbsp;&nbsp;{{ k }}</td>
-                            <td>{{ row.total }}</td>
-                            <td>{{ row.issued}}</td>
-                            <td>{{ row.draft }}</td>
+                            <td>${{ $formatNumberWithCommas(row.total) }}</td>
+                            <td>${{ $formatNumberWithCommas(row.Claimed) }}</td>
+                            <td>${{ $formatNumberWithCommas(row.Hold) }}</td>
                         </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        </template>
-                    </template>
                     </tbody>
-
-                    <tfoot>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                    </tr>
-                    </tfoot>
-
-                    <tbody>
-                    <tr>
-                        <td><strong>PRIVATE INSTITUTIONS</strong></td>
-                        <td><strong>{{ reportData.privateReport.total }}</strong></td>
-                        <td><strong>{{ reportData.privateReport.issued}}</strong></td>
-                        <td><strong>{{ reportData.privateReport.draft }}</strong></td>
-
-                    </tr>
-                    <template v-for="(value, name, index) in reportData.privateReport">
-                        <template v-if="typeof value === 'object'">
-                            <tr>
-                                <td><strong>&nbsp;{{ name }}</strong></td>
-                                <td><strong>{{ value.total }}</strong></td>
-                                <td><strong>{{ value.issued}}</strong></td>
-                                <td><strong>{{ value.draft }}</strong></td>
-                            </tr>
-                            <tr v-for="(row, k, i) in value.instList">
-                                <td>&nbsp;&nbsp;{{ k }}</td>
-                                <td>{{ row.total }}</td>
-                                <td>{{ row.issued}}</td>
-                                <td>{{ row.draft }}</td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </template>
-                    </template>
-                    </tbody>
-
 
                     <tfoot>
                     <tr>
                         <th scope="col">Grand Total</th>
-                        <th scope="col">{{ reportData.publicReport.total + reportData.privateReport.total}}</th>
-                        <th scope="col">{{ reportData.publicReport.issued + reportData.privateReport.issued}}</th>
-                        <th scope="col">{{ reportData.publicReport.draft + reportData.privateReport.draft}}</th>
+                        <th scope="col">${{ $formatNumberWithCommas(reportData.publicReport.total) }}</th>
+                        <th scope="col">${{ $formatNumberWithCommas(reportData.publicReport.Claimed) }}</th>
+                        <th scope="col">${{ $formatNumberWithCommas(reportData.publicReport.Hold) }}</th>
                     </tr>
                     </tfoot>
                 </table>
@@ -140,7 +75,7 @@ export default {
         Input, Link
     },
     props: {
-        results: Object,
+        py: Object|null,
     },
     data() {
         return {
@@ -198,8 +133,8 @@ export default {
             }
         },
         clearForm: function () {
-            this.toDate = this.$getFormattedDate();
-            this.fromDate = this.$getFormattedDate();
+            this.toDate = this.py.end_date;
+            this.fromDate = this.py.start_date;
             this.submitForm();
         },
 
@@ -220,9 +155,8 @@ export default {
         }
     },
     mounted() {
-        //this.reportData = this.results;
-        this.toDate = this.$getFormattedDate();
-        this.fromDate = this.$getFormattedDate();
+        this.toDate = this.py.end_date;
+        this.fromDate = this.py.start_date;
         this.submitForm();
     }
 }

@@ -32,9 +32,7 @@ class Claim extends Model
         parent::boot();
 
         static::updated(function ($claim) {
-            \Log::info('Claim is being saving: ' . $claim->id);
             $changes = $claim->getChanges();
-            \Log::info($changes);
             if (!empty($changes)) {
 
                 // Capture the original attributes before the update

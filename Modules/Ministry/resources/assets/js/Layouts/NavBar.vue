@@ -40,7 +40,7 @@ nav.navbar .form-select {
                         </NavLink>
                     </li>
                     <li v-if="isAdmin" class="nav-item">
-                        <NavLink class="nav-link" href="/ministry/maintenance/reports/summary"
+                        <NavLink class="nav-link" href="/ministry/reports/summary"
                                  :class="{ 'active': $page.url.indexOf('reports') > -1 }">
                             Reports
                         </NavLink>
