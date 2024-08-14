@@ -1,33 +1,46 @@
-<br/>
 <p align="center">
-Ministry of Post-Secondary Education and Future Skills<br/> 
-Student Services Division<br/><br/>
-StrongerBC Future Skills Grant
-<br/>
-<br/>
+  <strong>Ministry of Post-Secondary Education and Future Skills</strong><br/>
+  Student Services Division<br/><br/>
+  <strong>StrongerBC Future Skills Grant</strong><br/><br/>
 
-<img src="https://img.shields.io/packagist/l/laravel/framework" alt="License">
-<img src="https://img.shields.io/badge/Lifecycle-Stable-97ca00" alt="Stable">
+  <img src="https://img.shields.io/badge/Lifecycle-Stable-97ca00" alt="Stable">
+  <img src="https://img.shields.io/badge/License-Apache%202.0-blue" alt="Apache 2.0">
 
 </p>
 
-| Project Lead  | Security Officer | Project Owner   | Business Analyst |
-| ------------- | ------------- |-----------------|------------------|
-| Kal Marsh  | David Malcolm  | Robyn Terepocki | Ravin Maan       |
+<p align="center">
+  <strong>Team Members</strong>
+</p>
+
+<p align="center">
+
+  | Project Lead   | Security Officer | Project Owner   | Business Analyst |
+  | -------------- | ---------------- | --------------- | ---------------- |
+  | Kal Marsh      | David Malcolm    | Robyn Terepocki | Ravin Maan       |
+
+</p>
 
 <br/>
 
-Components:
-- Openshift hosting
-    - DEV https://[app-id].apps.silver.devops.gov.bc.ca/
-- Laravel framework
-    - Documentation https://laravel.com/docs
-- Vue.js
-    - Documentation https://vuejs.org/guide
-- Patroni database for app
-- Patroni database for backups
-    - Documentation https://patroni.readthedocs.io/en/latest/
-- SSO (Single Sign-On) App for authentication - BCSC, BCeID and IDIR
-- SonarCloud Scanner
+## Components
+
+- **Openshift Hosting**
+    - DEV: [https://[app-id].apps.silver.devops.gov.bc.ca/](https://[app-id].apps.silver.devops.gov.bc.ca/)
+
+- **Laravel Framework**
+    - Documentation: [https://laravel.com/docs](https://laravel.com/docs)
+
+- **Vue.js**
+    - Documentation: [https://vuejs.org/guide](https://vuejs.org/guide)
+
+- **Patroni Database for App**
+
+- **Patroni Database for Backups**
+    - Documentation: [https://patroni.readthedocs.io/en/latest/](https://patroni.readthedocs.io/en/latest/)
+
+- **SSO (Single Sign-On) App for Authentication**
+    - BCSC, BCeID, and IDIR
+
+- **SonarCloud Scanner**
 
 <br/>
