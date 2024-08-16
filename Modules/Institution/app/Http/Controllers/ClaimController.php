@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ClaimEditRequest;
 use App\Models\Allocation;
 use App\Models\Claim;
+use App\Models\Country;
 use App\Models\Program;
 use App\Models\ProgramYear;
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -64,7 +66,7 @@ class ClaimController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ClaimEditRequest $request): \Illuminate\Http\RedirectResponse
+    public function update(ClaimEditRequest $request): \Illuminate\Http\RedirectResponse | \Inertia\Response
     {
         $claim = Claim::find($request->id);
         $claim->fill($request->validated());
@@ -75,6 +77,20 @@ class ClaimController extends Controller
         $claim = Claim::find($request->id);
         $id = $request->page === 'students' ? $claim->student->id : $claim->institution->id;
 
+        if(isset($request->page) && $request->page === 'students') {
+            $student = Student::where('id', $claim->student->id)->with(
+                ['claims']
+            )->first();
+
+            $countries = Cache::remember('countries', 380, function () {
+                return Country::where('active', true)->orderBy('name')->get();
+            });
+            $program_years = Cache::remember('program_years', 380, function () {
+                return ProgramYear::where('status', 'active')->orderBy('guid')->get();
+            });
+            return Inertia::render('Institution::Student', ['page' => 'claims', 'results' => $student,
+                'countries' => $countries, 'programYears' => $program_years]);
+        }
         return Redirect::route('institution.claims.index');
     }
 
