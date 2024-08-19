@@ -14,14 +14,19 @@
                 </div>
                 <div class="col-md-3">
                     <Label for="inputAgreeConfirmed" class="form-label" value="Consent Confirmed?" />
-                    <span v-if="editStudentClaimForm.agreement_confirmed == true" class="badge rounded-pill text-bg-success">True</span>
-                    <span v-else class="badge rounded-pill text-bg-danger">False</span>
+                    <Select class="form-select" id="inputAgreeConfirmed" v-model="editStudentClaimForm.agreement_confirmed">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </Select>
                 </div>
                 <div class="col-md-3">
                     <Label for="inputRegisterConfirmed" class="form-label" value="Registration Confirmed?" />
-                    <span v-if="editStudentClaimForm.registration_confirmed == true" class="badge rounded-pill text-bg-success">True</span>
-                    <span v-else class="badge rounded-pill text-bg-danger">False</span>
+                    <Select class="form-select" id="inputRegisterConfirmed" v-model="editStudentClaimForm.registration_confirmed">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </Select>
                 </div>
+
 
                 <div class="col-md-4">
                     <Label for="inputFirstName" class="form-label" value="First Name" />
@@ -55,13 +60,6 @@
 
                 <hr/>
 
-<!--                <div class="col-md-6">-->
-<!--                    <Label for="input52Week" class="form-label" value="52 Week Affirm."/>-->
-<!--                    <Select class="form-select" id="input52Week" v-model="editStudentClaimForm.fifty_two_week_affirmation">-->
-<!--                        <option value="true">Yes</option>-->
-<!--                        <option value="false">No</option>-->
-<!--                    </Select>-->
-<!--                </div>-->
                 <div class="col-md-12">
                     <Label for="inputStatus" class="form-label" value="Claim Status"/>
                     <Select class="form-select" id="inputStatus" v-model="editStudentClaimForm.claim_status">
@@ -70,7 +68,6 @@
                 </div>
 
                 <hr/>
-
 
                 <template v-if="claim.claim_status === 'Submitted'">
                     <div class="col-md-3">
@@ -300,7 +297,7 @@ export default {
                             vm.editStudentClaimForm.reset();
                             vm.$emit('close');
                         });
-                    }, 2500);
+                    }, 1500);
                 },
                 onError: () => {
                     this.editStudentClaimForm.formState = false;
@@ -321,8 +318,6 @@ export default {
                     vm.editStudentClaimFormData.page = vm.page;
                     vm.editStudentClaimFormData.subpage = vm.subPage;
                     vm.editStudentClaimForm = useForm(vm.editStudentClaimFormData);
-
-
                 })
                 .catch(function (error) {
                     // handle error
