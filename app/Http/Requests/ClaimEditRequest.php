@@ -176,6 +176,11 @@ class ClaimEditRequest extends FormRequest
         $materialsFee = $this->sanitizeAndConvertToFloat($this->input('materials_fee'));
         $programFee = $this->sanitizeAndConvertToFloat($this->input('program_fee'));
 
+        $this->merge([
+            'agreement_confirmed' => $this->toBoolean($this->agreement_confirmed),
+            'registration_confirmed' => $this->toBoolean($this->registration_confirmed),
+        ]);
+
         if ($this->claim_status === 'Draft') {
             $this->merge([
                 'first_name' => Str::title($this->first_name),
@@ -183,8 +188,6 @@ class ClaimEditRequest extends FormRequest
                 'email' => Str::lower(str_replace(' ', '', $this->email)),
                 'zip_code' => Str::upper(str_replace(' ', '', $this->zip_code)),
                 'city' => Str::title($this->city),
-
-                'agreement_confirmed' => $this->toBoolean($this->agreement_confirmed),
             ]);
         } elseif ($this->claim_status === 'Submitted' || $this->claim_status === 'Hold') {
             $this->merge([
