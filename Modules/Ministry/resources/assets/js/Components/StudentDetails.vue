@@ -33,7 +33,7 @@
 
                 <div class="col-md-2">
                     <Label for="inputDob" class="form-label" value="Birth Date" />
-                    <Input type="date" min="1950-01-01" max="2024-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputDob" v-model="editForm.dob" />
+                    <Input type="date" min="1920-01-01" max="2024-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputDob" v-model="editForm.dob" />
                 </div>
                 <div class="col-md-2">
                     <Label for="inputCity" class="form-label" value="City" />
