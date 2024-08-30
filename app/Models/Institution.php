@@ -106,8 +106,8 @@ class Institution extends Model
         //        $claimed = number_format($claimedAmount, 2);
 
         // Calculate the overallocation flag
-        $overAllocationFlag = $this->activeAllocation->total_amount >
-            (($this->activeAllocation->total_amount -
+        $overAllocationFlag = (float) $this->activeAllocation->total_amount >
+            (((float) $this->activeAllocation->total_amount -
                     $claimedAmount)
                 * 1.1 * $claimPercent);
 

@@ -124,8 +124,8 @@ class ClaimEditRequest extends FormRequest
                 'estimated_hold_amount' => 'required|numeric|gte:0',
                 'total_claim_amount' => 'nullable|numeric',
                 'claim_percent' => 'required|numeric',
-                'stable_enrolment_date' => 'nullable|date_format:Y-m-d',
-                'expected_stable_enrolment_date' => 'nullable|date_format:Y-m-d',
+                'stable_enrolment_date' => 'required|date_format:Y-m-d',
+                'expected_stable_enrolment_date' => 'required|date_format:Y-m-d',
                 'expiry_date' => 'required|date_format:Y-m-d',
 
                 'fifty_two_week_affirmation' => 'required|boolean|in:true,1',
