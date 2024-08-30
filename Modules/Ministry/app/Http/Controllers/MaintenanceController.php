@@ -238,11 +238,29 @@ class MaintenanceController extends Controller
                 'claims.*',
                 'institutions.guid',
                 'institutions.name as institution_name',
+                'institutions.size',
+                'institutions.address1',
+                'institutions.city',
+                'institutions.postal_code',
                 'programs.guid',
-                'programs.program_name'
+                'programs.program_name',
+                'programs.delivery_method',
+                'programs.online_delivery_type',
+                'programs.credential_type',
+                'programs.high_priority_industry',
+                'programs.creditable',
+                'programs.full_time',
+                'programs.prov_funded_micro_cred',
+                'programs.indigenous_related_learning',
+                'programs.diversity_inclusion_related_learning',
+                'programs.active_status',
+                'economic_regions.fsa',
+                'economic_regions.region as claim_economic_region'
             )
                 ->join('institutions', 'institutions.guid', '=', 'claims.institution_guid')
                 ->join('programs', 'programs.guid', '=', 'claims.program_guid')
+                ->leftJoin('economic_regions', \DB::raw('SUBSTRING(claims.zip_code, 1, 3)'), '=', 'economic_regions.fsa')
+
                 ->whereBetween('claims.created_at', [$fromDate, $toDate])
                 ->get();
         }
