@@ -86,7 +86,9 @@
                         </div>
                         <div class="col-md-4">
                             <Label for="inputEstimatedHoldAmount" class="form-label" value="Estimated Hold Amount" />
-                            ${{ editStudentClaimForm.estimated_hold_amount }}
+<!--                            ${{ editStudentClaimForm.estimated_hold_amount }}-->
+                            <Input type="number" step=".01" max="3500" class="form-control" id="inputEstimatedHoldAmount" v-model="editStudentClaimForm.estimated_hold_amount" />
+
                         </div>
                         <div class="col-md-4">
                             <Label for="inputExpStableEnrolDate" class="form-label" value="Expected Stable Enrol. Date" />
