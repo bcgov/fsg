@@ -10,7 +10,7 @@
                 <div class="row g-3">
 
                     <div class="col-md-6">
-                        <Label for="inputSd" class="form-label" value="Program Name"/>
+                        <label for="inputSd" class="block font-medium text-sm text-gray-700 form-label">{{ getInactiveProgramName() }}</label>
                         <Select v-if="editStudentClaimForm.program !== null"
                                 class="form-select" id="inputSd" v-model="editStudentClaimForm.program_guid">
                             <template  v-for="p in programs">
@@ -257,6 +257,13 @@ export default {
         }
     },
     methods: {
+        getInactiveProgramName: function () {
+            let txt = 'Program Name';
+            if(this.editStudentClaimForm.program.active_status === false) {
+                txt += ' (' + this.editStudentClaimForm.program.program_name + ')';
+            }
+            return txt;
+        },
 
         submitForm: function (status) {
             if(status === 'Update'){
