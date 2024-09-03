@@ -55,6 +55,10 @@ class ClaimEditRequest extends FormRequest
     public function messages()
     {
         return [
+            'dob.*' => 'The Date of Birth field is invalid.',
+            'estimated_hold_amount.*' => 'The Est. Hold Amount field is invalid.',
+            'stable_enrolment_date.*' => 'The Actual Stable Enrol. Date field is invalid.',
+            'expected_stable_enrolment_date.*' => 'The Expected Stable Enrol. Date field is invalid.',
         ];
     }
 
@@ -124,7 +128,7 @@ class ClaimEditRequest extends FormRequest
                 'estimated_hold_amount' => 'required|numeric|gte:0',
                 'total_claim_amount' => 'nullable|numeric',
                 'claim_percent' => 'required|numeric',
-                'stable_enrolment_date' => 'required|date_format:Y-m-d',
+                'stable_enrolment_date' => 'nullable|date_format:Y-m-d',
                 'expected_stable_enrolment_date' => 'required|date_format:Y-m-d',
                 'expiry_date' => 'required|date_format:Y-m-d',
 
