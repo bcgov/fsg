@@ -62,7 +62,7 @@ class ApplicationEditRequest extends FormRequest
             'email' => 'required|email',
             'city' => 'required|string',
             'zip_code' => 'required|string|regex:/^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/',
-
+            'expiry_date' => 'required|date_format:Y-m-d',
         ];
 
         if ($this->claim_status === 'Draft') {
@@ -134,6 +134,7 @@ class ApplicationEditRequest extends FormRequest
                 'estimated_hold_amount' => 0,
                 'total_claim_amount' => 0,
                 'claim_percent' => 0,
+                'expiry_date' => $allocation->py->end_date,
             ]);
         } else {
             // Handle cases where $student or $allocation is null

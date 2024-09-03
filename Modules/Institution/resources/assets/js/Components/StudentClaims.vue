@@ -98,7 +98,11 @@ export default {
         openEditForm: function (claim) {
             this.editClaim = claim;
             setTimeout(function () {
-                $("#editClaimModal").modal('show');
+                let vm = this;
+                $("#editClaimModal").modal('show').on('hidden.bs.modal', function () {
+                    vm.editClaim = '';
+                });
+
             }, 10);
         },
         closeEditForm: function () {
