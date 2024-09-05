@@ -308,7 +308,7 @@ class UserController extends Controller
             $user = new User();
             $user->guid = Str::orderedUuid()->getHex();
             $user->name = Str::title($provider_user['name']);
-            $user->first_name = Str::title($provider_user['given_name']);
+            $user->first_name = Str::title($provider_user['given_name'] ?? Str::title($provider_user['family_name']));
             $user->last_name = Str::title($provider_user['family_name']);
             $user->email = Str::lower($provider_user['email']);
             $user->disabled = false;
