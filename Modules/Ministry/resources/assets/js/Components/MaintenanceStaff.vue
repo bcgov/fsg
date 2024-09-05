@@ -17,34 +17,36 @@
                     </thead>
                     <tbody>
                         <tr v-for="(row, i) in results">
-                            <td>{{ row.name}}</td>
-                            <td>{{ row.email }}</td>
-                            <td>
-                                <div class="btn-group btn-group-sm" role="group" aria-label="Toggle staff role">
-                                    <input type="radio" class="btn-check" :name="'btnRadioRole0'+i"
-                                           :id="'btnRadioRole0'+i" autocomplete="off" :checked="isAdmin(row.roles)">
-                                    <label @click.prevent="switchRole(row,'Admin')" class="btn btn-outline-success" :for="'btnRadioRole0'+i">Admin</label>
+                            <template v-if="!row.disabled">
+                                <td>{{ row.name}}</td>
+                                <td>{{ row.email }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Toggle staff role">
+                                        <input type="radio" class="btn-check" :name="'btnRadioRole0'+i"
+                                               :id="'btnRadioRole0'+i" autocomplete="off" :checked="isAdmin(row.roles)">
+                                        <label @click.prevent="switchRole(row,'Admin')" class="btn btn-outline-success" :for="'btnRadioRole0'+i">Admin</label>
 
-                                    <input type="radio" class="btn-check" :name="'btnRadioRole1'+i"
-                                           :id="'btnRadioRole1'+i" autocomplete="off" :checked="isUser(row.roles)">
-                                    <label @click.prevent="switchRole(row,'User')" class="btn btn-outline-success" :for="'btnRadioRole1'+i">User</label>
+                                        <input type="radio" class="btn-check" :name="'btnRadioRole1'+i"
+                                               :id="'btnRadioRole1'+i" autocomplete="off" :checked="isUser(row.roles)">
+                                        <label @click.prevent="switchRole(row,'User')" class="btn btn-outline-success" :for="'btnRadioRole1'+i">User</label>
 
-                                    <input type="radio" class="btn-check" :name="'btnRadioRole2'+i"
-                                           :id="'btnRadioRole2'+i" autocomplete="off" :checked="isGuest(row.roles)">
-                                    <label @click.prevent="switchRole(row,'Guest')" class="btn btn-outline-success" :for="'btnRadioRole2'+i">Guest</label>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="btn-group btn-group-sm" role="group" aria-label="Toggle staff status">
-                                    <input type="radio" class="btn-check" :name="'btnRadioStatus1'+i"
-                                           :id="'btnRadioStatus1'+i" autocomplete="off" :checked="!row.disabled">
-                                    <label @click.prevent="switchStatus(row,false)" class="btn btn-outline-success" :for="'btnRadioStatus1'+i">Active</label>
+                                        <input type="radio" class="btn-check" :name="'btnRadioRole2'+i"
+                                               :id="'btnRadioRole2'+i" autocomplete="off" :checked="isGuest(row.roles)">
+                                        <label @click.prevent="switchRole(row,'Guest')" class="btn btn-outline-success" :for="'btnRadioRole2'+i">Guest</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Toggle staff status">
+                                        <input type="radio" class="btn-check" :name="'btnRadioStatus1'+i"
+                                               :id="'btnRadioStatus1'+i" autocomplete="off" :checked="!row.disabled">
+                                        <label @click.prevent="switchStatus(row,false)" class="btn btn-outline-success" :for="'btnRadioStatus1'+i">Active</label>
 
-                                    <input type="radio" class="btn-check" :name="'btnRadioStatus2'+i"
-                                           :id="'btnRadioStatus2'+i" autocomplete="off" :checked="row.disabled">
-                                    <label @click.prevent="switchStatus(row,true)" class="btn btn-outline-success" :for="'btnRadioStatus2'+i">Inactive</label>
-                                </div>
-                            </td>
+                                        <input type="radio" class="btn-check" :name="'btnRadioStatus2'+i"
+                                               :id="'btnRadioStatus2'+i" autocomplete="off" :checked="row.disabled">
+                                        <label @click.prevent="switchStatus(row,true)" class="btn btn-outline-success" :for="'btnRadioStatus2'+i">Inactive</label>
+                                    </div>
+                                </td>
+                            </template>
                         </tr>
                     </tbody>
                 </table>
