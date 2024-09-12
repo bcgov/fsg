@@ -24,7 +24,7 @@ class ProcessSubmittedClaim
         $claim->process_feedback = null;
 
         // If the claim submitted against an inactive allocation stop there.
-        if ($claim->allocation->status != 'active') {
+        if ($claim->allocation->status != 'active' && $status != 'Cancelled') {
             $claim->claim_status = 'Draft';
         } else {
             $claim->claim_percent = $claim->allocation->py->claim_percent;
@@ -179,6 +179,7 @@ class ProcessSubmittedClaim
                 $claim->program_fee = 0;
                 $claim->materials_fee = 0;
                 $claim->registration_fee = 0;
+                $claim->claim_percent = 0;
             }
         }
 
