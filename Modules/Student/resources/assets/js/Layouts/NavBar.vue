@@ -33,6 +33,13 @@ nav.navbar .form-select {
                             Dashboard
                         </NavLink>
                     </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/faqs"
+                                 :class="{ 'active': $page.url.indexOf('/faqs') > -1 ||
+                            $page.url.indexOf('/faqs') > -1 }">
+                            FAQ
+                        </NavLink>
+                    </li>
 
 
                     <li class="nav-item dropdown">

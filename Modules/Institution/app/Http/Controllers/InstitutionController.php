@@ -5,7 +5,6 @@ namespace Modules\Institution\Http\Controllers;
 use App\Events\StaffRoleChanged;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InstitutionStaffEditRequest;
-use App\Models\Allocation;
 use App\Models\Claim;
 use App\Models\InstitutionStaff;
 use App\Models\ProgramYear;

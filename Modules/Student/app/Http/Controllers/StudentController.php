@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StudentEditRequest;
 use App\Http\Requests\StudentStoreRequest;
 use App\Models\Claim;
+use App\Models\Faq;
 use App\Models\Institution;
 use App\Models\Student;
 use Illuminate\Http\Request;
@@ -110,10 +111,6 @@ class StudentController extends Controller
         }
 
         $claims = Claim::where('student_guid', $student->guid)->with('student', 'program', 'allocation');
-        //
-        //        if (request()->filter_name !== null) {
-        //            $institutions = $institutions->where('name', 'ILIKE', '%'.request()->filter_name.'%');
-        //        }
 
         if (request()->sort !== null) {
             $claims = $claims->orderBy(request()->sort, request()->direction);
@@ -154,5 +151,13 @@ class StudentController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    public function faqList(Request $request): \Inertia\Response
+    {
+        $faqs = Faq::where('active_status', true)->orderBy('order', 'asc')->get();
+
+        return Inertia::render('Student::Faq', ['status' => true, 'results' => $faqs,]);
     }
 }

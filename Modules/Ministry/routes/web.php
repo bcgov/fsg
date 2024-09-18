@@ -73,6 +73,10 @@ Route::prefix('ministry')->group(function () {
                     Route::put('/program_years/{programYear}', [MaintenanceController::class, 'pyUpdate'])->name('program_years.update');
                     Route::post('/program_years', [MaintenanceController::class, 'pyStore'])->name('program_years.store');
 
+
+                    Route::get('/faqs', [MaintenanceController::class, 'faqList'])->name('faqs.list');
+                    Route::put('/faqs/{faq}', [MaintenanceController::class, 'faqUpdate'])->name('faqs.update');
+                    Route::post('/faqs', [MaintenanceController::class, 'faqStore'])->name('faqs.store');
                 });
 
                 Route::put('/institution_staff', [InstitutionStaffController::class, 'update'])->name('institution_staff.update');

@@ -4,11 +4,14 @@ namespace Modules\Ministry\Http\Controllers;
 
 use App\Events\ProgramYearUpdated;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FaqEditRequest;
+use App\Http\Requests\FaqStoreRequest;
 use App\Http\Requests\ProgramYearEditRequest;
 use App\Http\Requests\ProgramYearStoreRequest;
 use App\Http\Requests\UtilEditRequest;
 use App\Http\Requests\UtilStoreRequest;
 use App\Models\Claim;
+use App\Models\Faq;
 use App\Models\Institution;
 use App\Models\InstitutionStaff;
 use App\Models\ProgramYear;
@@ -185,6 +188,44 @@ class MaintenanceController extends Controller
 //        Cache::forget('global_program_years');
 
         return Redirect::route('ministry.maintenance.program_years.list');
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Inertia\Response::render
+     */
+    public function faqList(Request $request): \Inertia\Response
+    {
+        $faqs = Faq::orderBy('order', 'asc')->get();
+
+        return Inertia::render('Ministry::Maintenance', ['status' => true, 'results' => $faqs,
+            'page' => 'faqs']);
+    }
+
+    /**
+     * Update a utility resource.
+     *
+     * @return \Illuminate\Http\RedirectResponse::render
+     */
+    public function faqUpdate(FaqEditRequest $request, Faq $faq): \Illuminate\Http\RedirectResponse
+    {
+        $faq->update($request->validated());
+
+        return Redirect::route('ministry.maintenance.faqs.list');
+    }
+
+    /**
+     * Store a utility resource.
+     *
+     * @return \Illuminate\Http\RedirectResponse::render
+     */
+    public function faqStore(FaqStoreRequest $request): \Illuminate\Http\RedirectResponse
+    {
+        Faq::create($request->validated());
+
+        return Redirect::route('ministry.maintenance.faqs.list');
     }
 
     /**
