@@ -62,7 +62,6 @@ nav.navbar .form-select {
                         </NavLink>
                     </li>
 
-
                     <li class="nav-item dropdown">
                         <NavLink class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button"
                                  data-bs-toggle="dropdown" aria-expanded="false">

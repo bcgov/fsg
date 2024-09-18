@@ -2,9 +2,6 @@
     <div class="card">
         <div class="card-header">
             Applications
-<!--                <template>-->
-<!--                    <span class="badge rounded-pill text-bg-primary me-1">Active Application Total: {{ claims.data.length }}</span>-->
-<!--                </template>-->
             <button v-if="results != null && results.can_apply === true && institutions != '' && institutions.length > 0" type="button" class="btn btn-success btn-sm float-end" @click="openNewForm">New Application</button>
         </div>
         <div class="card-body">
@@ -27,6 +24,7 @@
                                 <span v-else-if="row.claim_status === 'Submitted'" class="badge rounded-pill text-bg-primary">Submitted</span>
                                 <span v-else-if="row.claim_status === 'Hold'" class="badge rounded-pill text-bg-warning">Hold</span>
                                 <span v-else-if="row.claim_status === 'Claimed'" class="badge rounded-pill text-bg-success">Claimed</span>
+                                <span v-else-if="row.claim_status === 'Expired'" class="badge rounded-pill text-bg-danger">Expired</span>
                                 <span v-else class="badge rounded-pill text-bg-secondary">{{ row.claim_status }}</span>
                             </td>
                             <td>{{ formatDate(row.created_at) }}</td>
@@ -46,7 +44,16 @@
             </div>
             <h1 v-else class="lead">No applications</h1>
         </div>
-
+        <div v-if="claims != null && claims.data != null && claims.data.length > 0" class="card-footer">
+            <fieldset>
+                <legend>Application Status Definitions </legend>
+                    <p><span class="badge rounded-pill text-bg-primary">Submitted</span> <small>Your application has been sent to the institute for review. </small></p>
+                    <p><span class="badge rounded-pill text-bg-warning">Hold</span> <small>The institution has reserved grant money for your enrollment, which will be applied to your payment once you are stably enrolled. </small></p>
+                    <p><span class="badge rounded-pill text-bg-success">Claimed</span> <small>The institution has claimed funding for your program. </small></p>
+                    <p><span class="badge rounded-pill text-bg-secondary">Canceled</span> <small>The institution has withdrawn a previously reserved grant amount for your program.</small></p>
+                    <p><span class="badge rounded-pill text-bg-danger">Expired</span> <small>The hold period for the grant application has ended.</small></p>
+            </fieldset>
+        </div>
 
             <div v-if="editApplication == ''" class="modal modal-lg fade" id="newApplicationModal" tabindex="-1"
                  aria-labelledby="newApplicationModalLabel" aria-hidden="true" data-bs-backdrop="static">

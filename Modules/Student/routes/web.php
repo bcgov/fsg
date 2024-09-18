@@ -32,4 +32,6 @@ Route::group(
         Route::get('/student/api/fetch/students/applications', [ApplicationController::class, 'fetchApplications'])->name('claims.fetchApplications');
         Route::get('/student/api/fetch/institutions/{institution?}', [StudentController::class, 'fetchInstitutions'])->name('claims.fetchInstitutions');
 
+    Route::get('/faqs', [StudentController::class, 'faqList'])->name('faqs.index');
+
     });
