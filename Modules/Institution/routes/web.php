@@ -40,7 +40,9 @@ Route::prefix('institution')->group(function () {
             Route::get('/api/fetch/claims/{guid?}', [ClaimController::class, 'fetchClaims'])->name('institutions.fetchClaims');
             Route::get('/api/fetch/students/claims-by-student', [ClaimController::class, 'fetchStudentsClaims'])->name('claims.fetchStudentsClaims');
 
-        });
+//        Route::get('/faqs', [InstitutionController::class, 'faqList'])->name('faqs.index');
+
+    });
 
     Route::group([
         'middleware' => ['institution_admin'],

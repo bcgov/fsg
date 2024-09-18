@@ -38,7 +38,6 @@
                                             <td>{{ row.dob }}</td>
                                             <td>{{ row.sin }}</td>
                                             <td>{{ row.email }}</td>
-                                            <td>${{ row.total_grant }}</td>
                                             <td>
                                                 <span v-if="row.claims != null && row.claims.length > 0">{{ row.claims.length }}</span>
                                             </td>

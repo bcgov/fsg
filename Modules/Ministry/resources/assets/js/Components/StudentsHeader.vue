@@ -35,15 +35,9 @@
                 <em v-else class="bi bi-sort-alpha-down"></em>
             </a>
         </th>
+
         <th scope="col">
-            <a href="#" @click="switchSort('total_grant')">
-                <span>Total Grant</span>
-                <em v-if="sortClmn === 'total_grant' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
-                <em v-else class="bi bi-sort-numeric-down"></em>
-            </a>
-        </th>
-        <th scope="col">
-                <span>Total Claims</span>
+                <span># Claims</span>
         </th>
     </tr>
 </template>
