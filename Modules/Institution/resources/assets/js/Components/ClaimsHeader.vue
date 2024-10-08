@@ -26,7 +26,7 @@
         </th>
         <th scope="col" class="text-nowrap">
             <a href="#" @click="switchSort('estimated_hold_amount')">
-                <span>* Estimated Hold</span>
+                <span title="Estimated Hold">* Est. Hold</span>
                 <em v-if="sortClmn === 'estimated_hold_amount' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
                 <em v-else class="bi bi bi-sort-numeric-down"></em>
             </a>
@@ -43,6 +43,13 @@
             <a href="#" @click="switchSort('claim_status')">
                 <span>Status</span>
                 <em v-if="sortClmn === 'claim_status' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
+                <em v-else class="bi bi-sort-alpha-down"></em>
+            </a>
+        </th>
+        <th scope="col" class="text-nowrap">
+            <a href="#" @click="switchSort('outcome_status')">
+                <span>Outcome</span>
+                <em v-if="sortClmn === 'outcome_status' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
                 <em v-else class="bi bi-sort-alpha-down"></em>
             </a>
         </th>

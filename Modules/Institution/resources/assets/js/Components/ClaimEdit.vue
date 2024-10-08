@@ -150,13 +150,15 @@
                         </div>
                         <div class="col-md-3">
                             <Label for="inputOutcomeDate" class="form-label" value="Outcome Effective Date" />
-                            <Input type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputOutcomeDate" v-model="editStudentClaimForm.outcome_effective_date" />
+                            <Input v-if="claim.outcome_effective_date == null" type="date" min="2024-01-01" max="2034-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputOutcomeDate" v-model="editStudentClaimForm.outcome_effective_date" />
+                            <span v-else>{{ editStudentClaimForm.outcome_effective_date }}</span>
                         </div>
                         <div class="col-md-3">
                             <Label for="inputOutcomeStatus" class="form-label" value="Outcome Status"/>
-                            <Select class="form-select" id="inputOutcomeStatus" v-model="editStudentClaimForm.outcome_status">
+                            <Select v-if="claim.outcome_status == null" class="form-select" id="inputOutcomeStatus" v-model="editStudentClaimForm.outcome_status">
                                 <option v-for="status in $attrs.utils['Outcome Status']" :value="status.field_name">{{ status.field_name }}</option>
                             </Select>
+                            <span v-else>{{ editStudentClaimForm.outcome_status }}</span>
                         </div>
                     </template>
                     <template v-else>
@@ -198,7 +200,7 @@
 
                 </div>
             </div>
-            <div class="modal-footer d-flex justify-content-between">
+            <div v-if="claim.outcome_status == null && claim.outcome_effective_date == null" class="modal-footer d-flex justify-content-between">
                 <button @click="submitForm('Cancelled')" v-if="claim.claim_status === 'Submitted' || claim.claim_status === 'Hold'" type="button" class="btn btn-sm btn-danger" :disabled="editStudentClaimForm.processing">
                     Cancel Request
                 </button>
@@ -297,18 +299,10 @@ export default {
 
             let vm = this;
             this.editStudentClaimForm.formState = null;
-            this.editStudentClaimForm.put('/institution/claims', {
+            this.editStudentClaimForm.put(`/institution/claims${window.location.search}`, {
                 onSuccess: (response) => {
                     this.editStudentClaimForm.formState = true;
                     this.$emit('close');
-                    // vm.$inertia.visit('/institution/claims');
-                    // setTimeout(function () {
-                    //     $("#editClaimModal").modal('hide')
-                    //         .on('hidden.bs.modal', function () {
-                    //             vm.editStudentClaimForm.reset();
-                    //
-                    //         });
-                    // }, 1500);
                 },
                 onError: () => {
                     this.editStudentClaimForm.formState = false;

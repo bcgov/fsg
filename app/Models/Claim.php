@@ -25,7 +25,7 @@ class Claim extends Model
         'stable_enrolment_date', 'expiry_date', 'psi_claim_request_date', 'reporting_completed_date',
         'fifty_two_week_affirmation', 'agreement_confirmed', 'registration_confirmed',
         'guid', 'institution_guid', 'allocation_guid', 'program_guid', 'student_guid', 'expected_stable_enrolment_date',
-        'expected_completion_date', ];
+        'expected_completion_date', 'outcome_effective_date', 'outcome_status', ];
 
     protected static function boot()
     {
