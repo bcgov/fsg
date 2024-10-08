@@ -77,8 +77,8 @@ class ClaimEditRequest extends FormRequest
             'stable_enrolment_date' => 'nullable',
             'expected_stable_enrolment_date' => 'nullable',
             'expected_completion_date' => 'nullable',
-            'outcome_effective_date' => 'nullable',
-            'outcome_status' => 'nullable',
+            'outcome_effective_date' => 'nullable|date_format:Y-m-d',
+            'outcome_status' => 'nullable|string',
         ];
 
         // If the status is "Cancelled" or 'Expired', do not validate other fields

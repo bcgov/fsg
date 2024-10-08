@@ -18,6 +18,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Response;
 
@@ -91,7 +92,7 @@ class ClaimController extends Controller
             return Inertia::render('Institution::Student', ['page' => 'claims', 'results' => $student,
                 'countries' => $countries, 'programYears' => $program_years]);
         }
-        return Redirect::route('institution.claims.index');
+        return Redirect::route('institution.claims.index', request()->query());
     }
 
     public function fetchStudentsClaims(Request $request, ?Claim $claim = null)
@@ -185,11 +186,24 @@ class ClaimController extends Controller
             ->with('student', 'program');
 
         if (request()->filter_term !== null && request()->filter_type !== null) {
+            if(request()->filter_type === 'status'){
+
+                // Searching by status should be limited to the statuses visible to the institutions
+                $claim_status = match (Str::lower(request()->filter_term)) {
+                    'submitted' => 'Submitted',
+                    'hold' => 'Hold',
+                    'claimed' => 'Claimed',
+                    'expired' => 'Expired',
+                    'cancelled' => 'Cancelled',
+                };
+            }
+
             $claims = match (request()->filter_type) {
                 'fname' => $claims->where('first_name', 'ILIKE', '%'.request()->filter_term.'%'),
                 'lname' => $claims->where('last_name', 'ILIKE', '%'.request()->filter_term.'%'),
                 'sin' => $claims->where('sin', 'ILIKE', '%'.request()->filter_term.'%'),
                 'email' => $claims->where('email', 'ILIKE', '%'.request()->filter_term.'%'),
+                'status' => $claims->where('claim_status', 'ILIKE', $claim_status),
                 default => $claims, // Default case: return $claims unchanged
             };
         }
