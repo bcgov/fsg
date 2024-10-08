@@ -134,13 +134,14 @@ class ClaimController extends Controller
         $csvData = [];
         $csvDataHeader = ['PROGRAM NAME', 'SIN', 'FIRST NAME', 'LAST NAME', 'DOB', 'EMAIL', 'CITY',
             'POSTAL CODE', 'STATUS', 'REGISTRATION FEE', 'MATERIALS FEE', 'PROGRAM FEE', 'ADMIN %', 'EST. HOLD AMOUNT',
-            'TOTAL CLAIM AMOUNT', 'STABLE ENROL. DATE', 'EXPEC. STABLE ENROL. DATE', 'EXPIRY DATE','CLAIMED BY', 'ISSUE DATE', 'FEEDBACK'];
+            'TOTAL CLAIM AMOUNT', 'STABLE ENROL. DATE', 'EXPEC. STABLE ENROL. DATE', 'EXPIRY DATE','CLAIMED BY', 'ISSUE DATE', 'FEEDBACK',
+            'OUTCOME EFFECT. DATE', 'OUTCOME STATUS'];
 
         foreach ($data as $d) {
             $csvData[] = [$d->program->program_name, $d->sin, $d->first_name, $d->last_name, $d->dob, $d->email, $d->city,
                 $d->zip_code, $d->claim_status, $d->registration_fee, $d->materials_fee, $d->program_fee, $d->claim_percent,
                 $d->estimated_hold_amount, $d->total_claim_amount, $d->stable_enrolment_date, $d->expected_stable_enrolment_date,
-                $d->expiry_date, $d->claimed_by_name, $d->updated_at, $d->process_feedback];
+                $d->expiry_date, $d->claimed_by_name, $d->updated_at, $d->process_feedback, $d->outcome_effective_date, $d->outcome_status];
         }
         $output = fopen('php://temp', 'w');
         // Write CSV headers
