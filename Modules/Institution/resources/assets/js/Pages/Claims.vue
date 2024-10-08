@@ -149,7 +149,7 @@ export default {
         },
         refreshList: function (e) {
             this.claimList = e;
-            console.log(e);
+            //console.log(e);
         }
 
     },

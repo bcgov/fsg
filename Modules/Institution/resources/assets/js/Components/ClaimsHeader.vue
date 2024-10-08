@@ -108,22 +108,26 @@ export default {
                 this.sortClmn = clmn;
                 this.sortType = 'asc';
             }
-
             let data = {
                 'direction': this.sortType,
                 'sort': this.sortClmn
             };
 
-            //if the url has filter_x params then append them all
-            this.url.searchParams.forEach((value, key) => {
-                let filter = key.split('filter_');
-                if (filter.length > 1) {
+            // Create a new URLSearchParams object from the current URL
+            let params = new URLSearchParams(window.location.search);
+
+            // Append all filter_ parameters to the data object
+            params.forEach((value, key) => {
+                if (key.startsWith('filter_')) {
                     data[key] = value;
                 }
             });
 
+            // Use the `data` object to construct the query string for the request
+            let queryString = new URLSearchParams(data).toString();
+
             let vm = this;
-            axios.get('/institution/api/fetch/claims?page=' + this.page + '&direction=' + this.sortType + '&sort=' + this.sortClmn)
+            axios.get('/institution/api/fetch/claims?page=' + this.page + '&direction=' + this.sortType + '&sort=' + this.sortClmn + '&' + queryString)
                 .then(function (response) {
                     // vm.claims = response.data.body;
                     vm.$emit('update', response.data.body.data);
