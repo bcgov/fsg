@@ -246,7 +246,7 @@ export default {
         },
         cleanCellValue: function(value) {
             // Remove HTML tags and entities using regular expression
-            return value.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, '').trim();
+            return value.replace(/<!--|--!?>/g, '').replace(/&nbsp;/g, '').trim();
         },
         downloadCSV: function(csv, filename) {
             const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
