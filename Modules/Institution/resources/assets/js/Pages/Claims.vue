@@ -59,7 +59,7 @@
 
                                 </table>
                                 <small v-if="claimList != ''" class="text-danger">* Includes {{ claimList[0].py_admin_fee }}% Administration Fee</small>
-                                <Pagination :links="results.links" :active-page="results.current_page" />
+                                <Pagination :links="results.links" :active-page="results.current_page" :sort-by="sortBy" :sort-dir="sortDir" />
                             </div>
                             <h1 v-else class="lead">No results</h1>
                         </div>
@@ -117,6 +117,8 @@ export default {
             claimList: '',
             editClaim: '',
             showEditModal: false,
+            sortDir: '',
+            sortBy: '',
         }
     },
 
@@ -148,7 +150,9 @@ export default {
             window.location.reload();
         },
         refreshList: function (e) {
-            this.claimList = e;
+            this.claimList = e.data;
+            this.sortDir = e.sortDir;
+            this.sortBy = e.sortBy;
             //console.log(e);
         }
 

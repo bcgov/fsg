@@ -130,7 +130,7 @@ export default {
             axios.get('/institution/api/fetch/claims?page=' + this.page + '&direction=' + this.sortType + '&sort=' + this.sortClmn + '&' + queryString)
                 .then(function (response) {
                     // vm.claims = response.data.body;
-                    vm.$emit('update', response.data.body.data);
+                    vm.$emit('update', {data: response.data.body.data, sortDir: vm.sortType, sortBy: vm.sortClmn});
                 })
                 .catch(function (error) {
                     // handle error
