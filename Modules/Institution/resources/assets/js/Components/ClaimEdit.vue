@@ -86,9 +86,7 @@
                         </div>
                         <div class="col-md-4">
                             <Label for="inputEstimatedHoldAmount" class="form-label" value="Estimated Hold Amount" />
-<!--                            ${{ editStudentClaimForm.estimated_hold_amount }}-->
                             <Input type="number" step=".01" max="3500" class="form-control" id="inputEstimatedHoldAmount" v-model="editStudentClaimForm.estimated_hold_amount" />
-
                         </div>
                         <div class="col-md-4">
                             <Label for="inputExpStableEnrolDate" class="form-label" value="Expected Stable Enrol. Date" />
@@ -286,6 +284,15 @@ export default {
                     "The fields Registration, Materials, and Program Fee are going to be locked. Proceed?")){
                     return false;
                 }
+
+                // If Input is zero, empty, or contains only spaces
+                if(Number(this.editStudentClaimForm.program_fee) === 0 &&
+                    Number(this.editStudentClaimForm.registration_fee) === 0 &&
+                    Number(this.editStudentClaimForm.materials_fee) === 0){
+                    alert("You must enter at least one of the: Program Fee, Registration Fee and/or Materials Fee.");
+                    return false;
+                }
+
                 this.editStudentClaimForm.claim_status = 'Claimed';
             }
 
