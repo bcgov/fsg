@@ -26,7 +26,7 @@
         </th>
         <th scope="col" class="text-nowrap">
             <a href="#" @click="switchSort('estimated_hold_amount')">
-                <span>* Estimated Hold</span>
+                <span title="Estimated Hold">* Est. Hold</span>
                 <em v-if="sortClmn === 'estimated_hold_amount' && sortType === 'desc'" class="bi bi-sort-numeric-up"></em>
                 <em v-else class="bi bi bi-sort-numeric-down"></em>
             </a>
@@ -43,6 +43,13 @@
             <a href="#" @click="switchSort('claim_status')">
                 <span>Status</span>
                 <em v-if="sortClmn === 'claim_status' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
+                <em v-else class="bi bi-sort-alpha-down"></em>
+            </a>
+        </th>
+        <th scope="col" class="text-nowrap">
+            <a href="#" @click="switchSort('outcome_status')">
+                <span>Outcome</span>
+                <em v-if="sortClmn === 'outcome_status' && sortType === 'desc'" class="bi bi-sort-alpha-up"></em>
                 <em v-else class="bi bi-sort-alpha-down"></em>
             </a>
         </th>
@@ -101,25 +108,29 @@ export default {
                 this.sortClmn = clmn;
                 this.sortType = 'asc';
             }
-
             let data = {
                 'direction': this.sortType,
                 'sort': this.sortClmn
             };
 
-            //if the url has filter_x params then append them all
-            this.url.searchParams.forEach((value, key) => {
-                let filter = key.split('filter_');
-                if (filter.length > 1) {
+            // Create a new URLSearchParams object from the current URL
+            let params = new URLSearchParams(window.location.search);
+
+            // Append all filter_ parameters to the data object
+            params.forEach((value, key) => {
+                if (key.startsWith('filter_')) {
                     data[key] = value;
                 }
             });
 
+            // Use the `data` object to construct the query string for the request
+            let queryString = new URLSearchParams(data).toString();
+
             let vm = this;
-            axios.get('/institution/api/fetch/claims?page=' + this.page + '&direction=' + this.sortType + '&sort=' + this.sortClmn)
+            axios.get('/institution/api/fetch/claims?page=' + this.page + '&direction=' + this.sortType + '&sort=' + this.sortClmn + '&' + queryString)
                 .then(function (response) {
                     // vm.claims = response.data.body;
-                    vm.$emit('update', response.data.body.data);
+                    vm.$emit('update', {data: response.data.body.data, sortDir: vm.sortType, sortBy: vm.sortClmn});
                 })
                 .catch(function (error) {
                     // handle error

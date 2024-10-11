@@ -18,6 +18,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Response;
 
@@ -91,7 +92,7 @@ class ClaimController extends Controller
             return Inertia::render('Institution::Student', ['page' => 'claims', 'results' => $student,
                 'countries' => $countries, 'programYears' => $program_years]);
         }
-        return Redirect::route('institution.claims.index');
+        return Redirect::route('institution.claims.index', request()->query());
     }
 
     public function fetchStudentsClaims(Request $request, ?Claim $claim = null)
@@ -133,13 +134,14 @@ class ClaimController extends Controller
         $csvData = [];
         $csvDataHeader = ['PROGRAM NAME', 'SIN', 'FIRST NAME', 'LAST NAME', 'DOB', 'EMAIL', 'CITY',
             'POSTAL CODE', 'STATUS', 'REGISTRATION FEE', 'MATERIALS FEE', 'PROGRAM FEE', 'ADMIN %', 'EST. HOLD AMOUNT',
-            'TOTAL CLAIM AMOUNT', 'STABLE ENROL. DATE', 'EXPEC. STABLE ENROL. DATE', 'EXPIRY DATE','CLAIMED BY', 'ISSUE DATE', 'FEEDBACK'];
+            'TOTAL CLAIM AMOUNT', 'STABLE ENROL. DATE', 'EXPEC. STABLE ENROL. DATE', 'EXPIRY DATE','CLAIMED BY', 'ISSUE DATE', 'FEEDBACK',
+            'OUTCOME EFFECT. DATE', 'OUTCOME STATUS'];
 
         foreach ($data as $d) {
             $csvData[] = [$d->program->program_name, $d->sin, $d->first_name, $d->last_name, $d->dob, $d->email, $d->city,
                 $d->zip_code, $d->claim_status, $d->registration_fee, $d->materials_fee, $d->program_fee, $d->claim_percent,
                 $d->estimated_hold_amount, $d->total_claim_amount, $d->stable_enrolment_date, $d->expected_stable_enrolment_date,
-                $d->expiry_date, $d->claimed_by_name, $d->updated_at, $d->process_feedback];
+                $d->expiry_date, $d->claimed_by_name, $d->updated_at, $d->process_feedback, $d->outcome_effective_date, $d->outcome_status];
         }
         $output = fopen('php://temp', 'w');
         // Write CSV headers
@@ -185,11 +187,24 @@ class ClaimController extends Controller
             ->with('student', 'program');
 
         if (request()->filter_term !== null && request()->filter_type !== null) {
+            if(request()->filter_type === 'status'){
+
+                // Searching by status should be limited to the statuses visible to the institutions
+                $claim_status = match (Str::lower(request()->filter_term)) {
+                    'submitted' => 'Submitted',
+                    'hold' => 'Hold',
+                    'claimed' => 'Claimed',
+                    'expired' => 'Expired',
+                    'cancelled' => 'Cancelled',
+                };
+            }
+
             $claims = match (request()->filter_type) {
                 'fname' => $claims->where('first_name', 'ILIKE', '%'.request()->filter_term.'%'),
                 'lname' => $claims->where('last_name', 'ILIKE', '%'.request()->filter_term.'%'),
                 'sin' => $claims->where('sin', 'ILIKE', '%'.request()->filter_term.'%'),
                 'email' => $claims->where('email', 'ILIKE', '%'.request()->filter_term.'%'),
+                'status' => $claims->where('claim_status', 'ILIKE', $claim_status),
                 default => $claims, // Default case: return $claims unchanged
             };
         }

@@ -14,14 +14,18 @@
                     <option value="fname">First Name</option>
                     <option value="lname">Last Name</option>
                     <option value="email">Email</option>
+                    <option value="status">Status</option>
                 </BreezeSelect>
             </div>
         </div>
         <div class="row mb-3">
-            <div class="col-auto">
+            <div class="col-12">
                 <BreezeButton class="btn btn-success" :class="{ 'opacity-25': nameForm.processing }" :disabled="nameForm.processing">
                     Search
                 </BreezeButton>
+                <button type="button" @click="clearSearch" v-if="nameForm.form_submitted" class="btn btn-warning float-end text-xs text-white uppercase" :class="{ 'opacity-25': nameForm.processing }" :disabled="nameForm.processing">
+                    Clear
+                </button>
             </div>
         </div>
     </form>
@@ -35,6 +39,15 @@ import BreezeButton from '@/Components/Button.vue';
 import { ref, onMounted } from 'vue'
 import { useForm } from '@inertiajs/vue3';
 
+// Get the query parameters from the URL using window.location
+const getQueryParams = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return {
+        filter_term: urlParams.get('filter_term') || '',
+        filter_type: urlParams.get('filter_type') || 'snumber',
+    };
+};
+
 const props = defineProps({
     ftype: [String, null],
 });
@@ -42,16 +55,34 @@ const props = defineProps({
 
 let searchType = ref('byName');
 
+const blankForm = useForm({});
 const nameFormTemplate = {
     filter_term: '',
     filter_type: 'snumber',
+    form_submitted: false,
 };
 const nameForm = useForm(nameFormTemplate);
 const nameFormSubmit = () => {
     nameForm.get('/institution/claims', {
-        onFinish: () => nameForm.reset('filter_term', 'filter_type'),
+        onFinish: function() {
+            nameForm.reset('filter_term', 'filter_type');
+            nameForm.form_submitted = true;
+        },
     });
 };
+const clearSearch = () => {
+    blankForm.get('/institution/claims');
+};
 
+// Update the form based on the query parameters from the URL
+onMounted(() => {
+    const queryParams = getQueryParams();
+    nameForm.filter_term = queryParams.filter_term;
+    nameForm.filter_type = queryParams.filter_type;
+
+    if(nameForm.filter_term != ''){
+        nameForm.form_submitted = true;
+    }
+});
 
 </script>

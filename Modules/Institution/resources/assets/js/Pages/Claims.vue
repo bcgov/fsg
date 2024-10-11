@@ -38,12 +38,19 @@
                                             <td>${{ $amountPlusPyFee(parseFloat(row.registration_fee) + parseFloat(row.materials_fee) + parseFloat(row.program_fee), row.py_admin_fee) }}</td>
 <!--                                            <td>${{ row.student.total_grant }}</td>-->
                                             <td>
-                                                <span v-if="row.claim_status === 'Draft'" class="badge rounded-pill text-bg-info">Draft</span>
-                                                <span v-else-if="row.claim_status === 'Submitted'" class="badge rounded-pill text-bg-primary">Submitted</span>
-                                                <span v-else-if="row.claim_status === 'Hold'" class="badge rounded-pill text-bg-warning">Hold</span>
-                                                <span v-else-if="row.claim_status === 'Claimed'" class="badge rounded-pill text-bg-success">Claimed</span>
-                                                <span v-else class="badge rounded-pill text-bg-secondary">{{ row.claim_status }}</span>
-                                                <span v-if="row.process_feedback != null" class="badge rounded-pill text-bg-danger ms-1">!</span>
+                                                <p v-if="row.claim_status === 'Draft'" class="badge rounded-pill text-bg-info">Draft<span v-if="row.process_feedback != null" class="badge rounded-pill text-bg-danger ms-1">!</span></p>
+                                                <p v-else-if="row.claim_status === 'Submitted'" class="badge rounded-pill text-bg-primary">Submitted<span v-if="row.process_feedback != null" class="badge rounded-pill text-bg-danger ms-1">!</span></p>
+                                                <p v-else-if="row.claim_status === 'Hold'" class="badge rounded-pill text-bg-warning">Hold<span v-if="row.process_feedback != null" class="badge rounded-pill text-bg-danger ms-1">!</span></p>
+                                                <p v-else-if="row.claim_status === 'Claimed'" class="badge rounded-pill text-bg-success">Claimed<span v-if="row.process_feedback != null" class="badge rounded-pill text-bg-danger ms-1">!</span></p>
+                                                <p v-else class="badge rounded-pill text-bg-secondary">{{ row.claim_status }}<span v-if="row.process_feedback != null" class="badge rounded-pill text-bg-danger ms-1">!</span></p>
+                                            </td>
+                                            <td>
+                                                <span v-if="row.outcome_status != null" class="badge rounded-pill text-bg-success ms-1">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </span>
+                                                <span v-else class="badge rounded-pill text-bg-secondary ms-1">
+                                                    <i class="bi bi-dash"></i>
+                                                </span>
                                             </td>
                                             <td>{{ formatDate(row.created_at) }}</td>
                                         </tr>
@@ -52,7 +59,7 @@
 
                                 </table>
                                 <small v-if="claimList != ''" class="text-danger">* Includes {{ claimList[0].py_admin_fee }}% Administration Fee</small>
-                                <Pagination :links="results.links" :active-page="results.current_page" />
+                                <Pagination :links="results.links" :active-page="results.current_page" :sort-by="sortBy" :sort-dir="sortDir" />
                             </div>
                             <h1 v-else class="lead">No results</h1>
                         </div>
@@ -110,6 +117,8 @@ export default {
             claimList: '',
             editClaim: '',
             showEditModal: false,
+            sortDir: '',
+            sortBy: '',
         }
     },
 
@@ -141,8 +150,10 @@ export default {
             window.location.reload();
         },
         refreshList: function (e) {
-            this.claimList = e;
-            console.log(e);
+            this.claimList = e.data;
+            this.sortDir = e.sortDir;
+            this.sortBy = e.sortBy;
+            //console.log(e);
         }
 
     },
