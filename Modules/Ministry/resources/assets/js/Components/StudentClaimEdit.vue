@@ -6,9 +6,8 @@
                 <div class="col-md-6">
                     <label for="inputSd" class="block font-medium text-sm text-gray-700 form-label">{{ getInactiveProgramName() }}</label>
                     <Select class="form-select" id="inputSd" v-model="editStudentClaimForm.program_guid">
-                        <option></option>
                         <template  v-for="p in programs">
-                            <option v-if="p.active_status === true" :value="p.guid">{{ p.program_name }}</option>
+                            <option :disabled="p.active_status === false" :value="p.guid">{{ p.program_name }}</option>
                         </template>
                     </Select>
                 </div>
