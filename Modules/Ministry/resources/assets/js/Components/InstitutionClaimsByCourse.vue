@@ -119,7 +119,7 @@ export default {
         closeEditForm: function () {
             $("#editClaimModal").modal('hide');
             this.editClaim = '';
-            this.$inertia.visit('/ministry/institutions/' + this.results.id + '/claims-by-student');
+            this.$inertia.visit('/ministry/institutions/' + this.results.id + '/claims-by-course');
 
         },
         formatDate: function (value) {

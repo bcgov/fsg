@@ -20,7 +20,7 @@ class ClaimController extends Controller
         if (! is_null($guid)) {
             $claim = Claim::where('guid', $guid)->with('institution', 'program', 'student', 'allocation')->first();
             if (! is_null($claim)) {
-                $programs = Program::where('institution_guid', $claim->institution_guid)->IsActive()->get();
+                $programs = Program::where('institution_guid', $claim->institution_guid)->get();
             }
 
             return Response::json(['status' => true, 'programs' => $programs, 'claim' => $claim]);
