@@ -14,7 +14,7 @@
                         <Select v-if="editStudentClaimForm.program !== null"
                                 class="form-select" id="inputSd" v-model="editStudentClaimForm.program_guid">
                             <template  v-for="p in programs">
-                                <option v-if="p.active_status === true" :value="p.guid">{{ p.program_name }}</option>
+                                <option :disabled="p.active_status === false" :value="p.guid">{{ p.program_name }}</option>
                             </template>
                         </Select>
                         <p v-else> - </p>
