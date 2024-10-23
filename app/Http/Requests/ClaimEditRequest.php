@@ -193,7 +193,11 @@ class ClaimEditRequest extends FormRequest
                 'zip_code' => Str::upper(str_replace(' ', '', $this->zip_code)),
                 'city' => Str::title($this->city),
             ]);
-        } elseif ($this->claim_status === 'Submitted' || $this->claim_status === 'Hold') {
+        } elseif ($this->claim_status === 'Submitted') {
+            $this->merge([
+                'fifty_two_week_affirmation' => $this->toBoolean($this->fifty_two_week_affirmation),
+            ]);
+        } elseif ($this->claim_status === 'Hold') {
             $this->merge([
                 'fifty_two_week_affirmation' => $this->toBoolean($this->fifty_two_week_affirmation),
             ]);

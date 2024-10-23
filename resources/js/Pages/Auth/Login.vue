@@ -60,6 +60,7 @@ img.bceid_rev{
                 <div class="row">
                     <div class="col-12 mb-3">
                         <p class="text-start fw-bold">Student: Login with your BC Services Card</p>
+                        <p class="text-start">Applying for StrongBC Future Skills Grant? Click here.</p>
                         <a href="/bcsc-login" class="btn btn-bc-gov mb-3 w-100 fw-light">Student Login with BC Services Card</a>
                         <a class="btn btn-link" href="https://id.gov.bc.ca/account/">Learn how to use your BC Services Card to log in</a>
                     </div>
@@ -88,9 +89,9 @@ img.bceid_rev{
             <div class="card-body">
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <p class="text-start fw-bold">Ministry: Login with your IDIR</p>
-                        <p class="text-start">Only available to B.C. government workers.</p>
-                        <a href="/applogin" class="btn btn-bc-gov mb-3 w-100 fw-light">Ministry Staff Login with IDIR</a>
+                        <p class="text-start fw-bold">PSFS Ministry: Admin staff login only</p>
+                        <p class="text-start">Only available to PSFS Ministry admin staff only. Click on Student Login to apply for the grant.</p>
+                        <a href="/applogin" class="btn btn-bc-gov mb-3 w-100 fw-light">PSFS Ministry Staff Login</a>
                     </div>
                 </div>
             </div>
