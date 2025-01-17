@@ -2,10 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Allocation;
 use App\Models\Claim;
+use App\Rules\InstitutionAllocationReached;
 use App\Rules\ValidSin;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ClaimEditRequest extends FormRequest
@@ -138,7 +141,11 @@ class ClaimEditRequest extends FormRequest
 
             ]);
         } elseif ($this->claim_status === 'Claimed') {
+
+            $allocation = Allocation::where('guid', $this->input('allocation_guid'))->with('institution')->first();
+
             $rules = array_merge($rules, [
+                'allocation_limit_reached' => ['required', new InstitutionAllocationReached($allocation)],
                 'registration_fee' => 'required|numeric',
                 'materials_fee' => 'required|numeric',
                 'program_fee' => 'required|numeric',
@@ -212,6 +219,7 @@ class ClaimEditRequest extends FormRequest
                 'total_claim_amount' => $total,
                 'claimed_date' => $today,
                 'claimed_by_user_guid' => $this->user()->guid,
+                'allocation_limit_reached' => true,
             ]);
         }
     }
