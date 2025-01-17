@@ -43,27 +43,33 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = null;
-        $globalProgramYears = ['list' => [], 'default' => null];
+        $globalProgramYears = ['list' => [], 'default' => null, 'programs' => []];
         if (Auth::check()) {
             $user = User::find(Auth::user()->id);
         }
 
         if(!is_null($user) && !is_null($user->institution)){
-            $globalProgramYears = Cache::remember('global_program_years_' . $user->institution->guid, now()->addHours(10), function () {
+            $globalProgramYears = Cache::remember('global_program_years_' . $user->institution->guid, now()->addHours(10), function () use ($user) {
                 $programYears = ProgramYear::orderBy('id')->get();
                 if ($programYears->isEmpty()) {
                     return [
                         'list' => [],
                         'default' => null,
+                        'programs' => [],
                     ];
                 }
 
                 // Find the program year with status 'active'
                 $activeProgramYear = $programYears->firstWhere('status', 'active');
+                $programs = $user->institution->programs
+                    ->sortBy('program_name') // Sort by program_name in ascending order
+                    ->pluck('program_name', 'guid')
+                    ->toArray();
 
                 return [
                     'list' => $programYears,
                     'default' => $activeProgramYear ? $activeProgramYear->guid : $programYears[0]->guid,
+                    'programs' => $programs,
                 ];
             });
         }
@@ -83,6 +89,7 @@ class HandleInertiaRequests extends Middleware
             'programYearsData' => [
                 'list' => $globalProgramYears['list'],
                 'default' => $globalProgramYears['default'],
+                'programs' => $globalProgramYears['programs'],
             ],
 
             'ziggy' => function () {

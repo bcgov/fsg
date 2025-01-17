@@ -1,11 +1,25 @@
 <template>
     <form @submit.prevent="nameFormSubmit" class="m-3">
-        <div class="row mb-3">
+
+        <!-- Dropdown for Programs -->
+        <div v-if="nameForm.filter_type === 'program'" class="row mb-3">
+            <BreezeLabel class="col-auto col-form-label" for="programDropdown" value="Programs" />
+            <div class="col-12">
+                <BreezeSelect id="programDropdown" class="form-control" v-model="nameForm.filter_term">
+                    <option v-for="(programName, programGuid) in programYearsData.programs" :key="programGuid" :value="programGuid">
+                        {{ programName }}
+                    </option>
+                </BreezeSelect>
+            </div>
+        </div>
+
+        <div v-else class="row mb-3">
             <BreezeLabel class="col-auto col-form-label" for="inputFirstName" value="Search term" />
             <div class="col-12">
                 <BreezeInput type="text" id="inputFirstName" class="form-control" v-model="nameForm.filter_term" autocomplete="off" />
             </div>
         </div>
+
         <div class="row mb-3">
             <BreezeLabel class="col-auto col-form-label" for="inputLastName" value="Search type" />
             <div class="col-12">
@@ -15,9 +29,12 @@
                     <option value="lname">Last Name</option>
                     <option value="email">Email</option>
                     <option value="status">Status</option>
+                    <option value="program">Program Name</option>
                 </BreezeSelect>
             </div>
         </div>
+
+
         <div class="row mb-3">
             <div class="col-12">
                 <BreezeButton class="btn btn-success" :class="{ 'opacity-25': nameForm.processing }" :disabled="nameForm.processing">
@@ -36,7 +53,7 @@ import BreezeSelect from '@/Components/Select.vue';
 import BreezeLabel from '@/Components/Label.vue';
 import BreezeButton from '@/Components/Button.vue';
 
-import { ref, onMounted } from 'vue'
+import {ref, onMounted, useAttrs} from 'vue'
 import { useForm } from '@inertiajs/vue3';
 
 // Get the query parameters from the URL using window.location
@@ -50,6 +67,8 @@ const getQueryParams = () => {
 
 const props = defineProps({
     ftype: [String, null],
+    attrs: Object, // Assuming attrs is passed as a prop
+
 });
 
 
@@ -62,6 +81,9 @@ const nameFormTemplate = {
     form_submitted: false,
 };
 const nameForm = useForm(nameFormTemplate);
+// const selectedProgram = ref(null); // Track selected program
+const programYearsData = useAttrs().programYearsData;
+
 const nameFormSubmit = () => {
     nameForm.get('/institution/claims', {
         onFinish: function() {

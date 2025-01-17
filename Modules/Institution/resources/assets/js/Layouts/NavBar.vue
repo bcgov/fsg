@@ -142,6 +142,7 @@ export default {
         if(this.$attrs.programYearsData != undefined) {
             this.programYearsList = this.$attrs.programYearsData.list;
             this.selectedProgramYearGuid = this.$attrs.programYearsData.default;
+            this.programs = this.$attrs.programYearsData.programs;
         }
     },
 
