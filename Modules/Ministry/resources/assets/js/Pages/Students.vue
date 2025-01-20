@@ -44,7 +44,7 @@
                                         </tr>
                                         </tbody>
                                     </table>
-                                    <Pagination :links="results.links" :active-page="results.current_page" />
+                                    <Pagination :links="results.links" :active-page="results.current_page" :sort-by="sortBy" :sort-dir="sortDir" />
                                 </div>
                                 <h1 v-else class="lead">No results</h1>
                             </div>
@@ -70,6 +70,12 @@ export default {
     },
     props: {
         results: Object,
-    }
+    },
+    data() {
+        return {
+            sortDir: '',
+            sortBy: '',
+        }
+    },
 }
 </script>
