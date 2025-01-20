@@ -200,6 +200,7 @@ class ClaimController extends Controller
             }
 
             $claims = match (request()->filter_type) {
+                'program' => $claims->where('program_guid', request()->filter_term),
                 'fname' => $claims->where('first_name', 'ILIKE', '%'.request()->filter_term.'%'),
                 'lname' => $claims->where('last_name', 'ILIKE', '%'.request()->filter_term.'%'),
                 'sin' => $claims->where('sin', 'ILIKE', '%'.request()->filter_term.'%'),
