@@ -225,7 +225,10 @@
 
             </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" :class="claim.claim_status === 'Claimed' && claim.outcome_effective_date != null ? 'd-flex justify-content-between' : ''">
+            <button @click="clearOutcome" v-if="claim.claim_status === 'Claimed' && claim.outcome_effective_date != null" type="button" class="btn btn-sm btn-warning" :disabled="editStudentClaimForm.processing">
+                Clear Claim Outcome
+            </button>
             <button type="submit" class="btn btn-sm btn-success" :disabled="editStudentClaimForm.processing">
                 Update Student Claim
             </button>
@@ -266,10 +269,38 @@ export default {
                 program_year_guid: "",
                 status: "",
             },
-            programs: []
+            programs: [],
+            editStudentClaimOutcomeForm: useForm({
+                id: null,
+            }),
+
         }
     },
     methods: {
+        clearOutcome: function () {
+            if(!confirm("You are about to clear Outcome Effective Date and Status. Proceed?")){
+                return false;
+            }
+
+            console.log('clear outcomes');
+            let vm = this;
+            this.editStudentClaimOutcomeForm.id = this.editStudentClaimFormData.id;
+            this.editStudentClaimOutcomeForm.post('/ministry/clear-claim-outcome', {
+                onSuccess: () => {
+                    $("#editClaimModal").modal('hide')
+                        .on('hidden.bs.modal', function () {
+                            vm.$emit('close');
+                        });
+                },
+                onError: () => {
+                    $("#editClaimModal").modal('hide')
+                        .on('hidden.bs.modal', function () {
+                            vm.$emit('close');
+                        });
+                },
+                preserveState: true
+            });
+        },
         getInactiveProgramName: function () {
             let txt = 'Program Name';
             if(this.editStudentClaimForm.program.active_status === false) {
@@ -299,11 +330,11 @@ export default {
                 onSuccess: (response) => {
                     this.editStudentClaimForm.formState = true;
                     setTimeout(function () {
-                    $("#editClaimModal").modal('hide')
-                        .on('hidden.bs.modal', function () {
-                            vm.editStudentClaimForm.reset();
-                            vm.$emit('close');
-                        });
+                        $("#editClaimModal").modal('hide')
+                            .on('hidden.bs.modal', function () {
+                                vm.editStudentClaimForm.reset();
+                                vm.$emit('close');
+                            });
                     }, 1500);
                 },
                 onError: () => {

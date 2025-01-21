@@ -64,6 +64,17 @@ class ClaimController extends Controller
         return Redirect::route('ministry.institutions.show', [$claim->institution->id, 'claims-by-course']);
     }
 
+    public function clearClaimOutcome(Request $request)
+    {
+        $claim = Claim::find($request->id);
+        $claim->outcome_status = null;
+        $claim->outcome_effective_date = null;
+        $claim->save();
+
+        return Redirect::route('ministry.institutions.show', [$claim->institution->id, 'claims-by-course']);
+
+    }
+
     /**
      * Update the specified resource in storage.
      */
