@@ -45,6 +45,7 @@ Route::prefix('ministry')->group(function () {
 
             Route::put('/claims', [ClaimController::class, 'update'])->name('claims.update');
             Route::post('/claims', [ClaimController::class, 'store'])->name('claims.store');
+            Route::post('/clear-claim-outcome', [ClaimController::class, 'clearClaimOutcome'])->name('claims.clear-claim-outcome');
 
             Route::get('/api/fetch/claims/{guid?}', [ClaimController::class, 'fetchClaims'])->name('institutions.fetchClaims');
             Route::get('/api/fetch/programs', [InstitutionController::class, 'fetchPrograms'])->name('institutions.fetchPrograms');

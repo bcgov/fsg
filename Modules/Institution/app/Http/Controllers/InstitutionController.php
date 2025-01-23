@@ -25,13 +25,19 @@ class InstitutionController extends Controller
         $user = User::find(Auth::user()->id);
         $institution = $user->institution;
 
-        $cacheProgramYear = Cache::remember('global_program_years_' . $user->institution->guid, now()->addHours(1), function () {
+        $cacheProgramYear = Cache::remember('global_program_years_' . $user->institution->guid, now()->addHours(1), function () use ($user){
             $programYears = ProgramYear::orderBy('id')->get();
             $programYear = ProgramYear::where('status', 'active')->first();
+
+            $programs = $user->institution->programs
+                ->sortBy('program_name') // Sort by program_name in ascending order
+                ->pluck('program_name', 'guid')
+                ->toArray();
 
             return [
                 'list' => $programYears,
                 'default' => $programYear->guid,
+                'programs' => $programs,
             ];
         });
 
@@ -40,7 +46,6 @@ class InstitutionController extends Controller
         // Eager load active allocation
         $institution->load(['allocations' => function ($query) use ($programYear) {
             $query->where('program_year_guid', $programYear->guid);
-            //            $query->where('status', 'active')->orderByDesc('created_at');
             $query->orderByDesc('created_at');
         }]);
 
