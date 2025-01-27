@@ -69,11 +69,12 @@ class ClaimController extends Controller
      */
     public function update(ClaimEditRequest $request): \Illuminate\Http\RedirectResponse | \Inertia\Response
     {
+        $oldClaim = Claim::find($request->id);
         $claim = Claim::find($request->id);
         $claim->fill($request->validated());
         $claim->save();
 
-        event(new ClaimSubmitted($claim, $request->claim_status));
+        event(new ClaimSubmitted($oldClaim, $request->claim_status));
 
         $claim = Claim::find($request->id);
         $id = $request->page === 'students' ? $claim->student->id : $claim->institution->id;
