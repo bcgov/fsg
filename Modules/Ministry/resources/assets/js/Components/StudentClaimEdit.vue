@@ -110,17 +110,21 @@
 
                     <hr/>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <Label for="inputProgramFee" class="form-label" value="Program/Tuition Fee" />
                         <Input type="number" step=".01" class="form-control" id="inputProgramFee" v-model="editStudentClaimForm.program_fee" />
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <Label for="inputRegistrationFee" class="form-label" value="Registration Fee" />
                         <Input type="number" step=".01" class="form-control" id="inputRegistrationFee" v-model="editStudentClaimForm.registration_fee" />
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <Label for="inputMaterialsFee" class="form-label" value="Materials Fee" />
                         <Input type="number" step=".01" class="form-control" id="inputMaterialsFee" v-model="editStudentClaimForm.materials_fee" />
+                    </div>
+                    <div class="col-md-3">
+                        <Label for="inputCorrection" class="form-label" value="Correction" />
+                        <Input type="number" step=".01" class="form-control" id="inputCorrection" v-model="editStudentClaimForm.correction" />
                     </div>
 
                     <div class="col-md-3">
@@ -162,17 +166,21 @@
 
                     <hr v-if="claim.claim_status !== 'Draft'"/>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <Label for="inputProgramFee" class="form-label" value="Tuition/Program Fee" />
                         ${{ editStudentClaimForm.program_fee }}
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <Label for="inputRegistrationFee" class="form-label" value="Registration Fee" />
                         ${{ editStudentClaimForm.registration_fee }}
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <Label for="inputMaterialsFee" class="form-label" value="Materials Fee" />
                         ${{ editStudentClaimForm.materials_fee }}
+                    </div>
+                    <div class="col-md-3">
+                        <Label for="inputCorrection" class="form-label" value="Correction" />
+                        <Input type="number" step=".01" class="form-control" id="inputCorrection" v-model="editStudentClaimForm.correction" />
                     </div>
 
                     <div class="col-md-4">
@@ -265,7 +273,6 @@ export default {
                 formSuccessMsg: 'Form was submitted successfully.',
                 formFailMsg: 'There was an error submitting this form.',
                 institution_guid: "",
-                total_amount: "",
                 program_year_guid: "",
                 status: "",
             },
@@ -273,7 +280,6 @@ export default {
             editStudentClaimOutcomeForm: useForm({
                 id: null,
             }),
-
         }
     },
     methods: {
@@ -369,8 +375,9 @@ export default {
             const registrationFee = parseFloat(this.editStudentClaimForm.registration_fee) || 0;
             const materialsFee = parseFloat(this.editStudentClaimForm.materials_fee) || 0;
             const adminFeePercentage = parseInt(this.editStudentClaimForm.allocation.py_admin_fee) || 0;
+            const correction = parseInt(this.editStudentClaimForm.correction) || 0;
 
-            const total = programFee + registrationFee + materialsFee;
+            const total = programFee + registrationFee + materialsFee + correction;
             const adminFee = total * (adminFeePercentage / 100);
 
             return total + adminFee;

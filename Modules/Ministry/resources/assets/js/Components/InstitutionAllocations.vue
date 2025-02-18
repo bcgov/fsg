@@ -2,7 +2,7 @@
     <div class="card">
         <div class="card-header">
             Institution Allocations
-<!--            <template>-->
+            <!--            <template>-->
 <!--                <span class="badge rounded-pill text-bg-primary me-1">Active Allocation Total: {{ results.active_allocation.total_amount_formatted}}</span>-->
 <!--                <span class="badge rounded-pill text-bg-primary me-1">Used Allocation: {{ results.active_allocation.used_amount }}</span>-->
 <!--            </template>-->
