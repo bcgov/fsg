@@ -55,7 +55,7 @@ class InstitutionController extends Controller
             $claimCounts = Claim::where('institution_guid', $institution->guid)
                 ->where('allocation_guid', $instAllocation->guid)
                 ->selectRaw("
-        SUM(CASE WHEN claim_status = 'Claimed' THEN COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) ELSE 0 END) as claimed,
+        SUM(CASE WHEN claim_status = 'Claimed' THEN COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction, 0) ELSE 0 END) as claimed,
         SUM(CASE WHEN claim_status = 'Hold' THEN COALESCE(estimated_hold_amount, 0) ELSE 0 END) as hold
     ")
                 ->first();

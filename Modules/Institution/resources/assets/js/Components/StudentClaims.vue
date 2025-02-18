@@ -124,6 +124,11 @@ export default {
                     total += parseFloat(item.materials_fee);
                 });
             }
+            if(type === 'correction'){
+                this.claims.data.forEach(item => {
+                    total += parseFloat(item.correction);
+                });
+            }
 
             return total;
         },

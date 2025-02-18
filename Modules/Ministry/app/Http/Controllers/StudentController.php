@@ -35,8 +35,8 @@ class StudentController extends Controller
         $countries = Cache::remember('countries', 380, function () {
             return Country::where('active', true)->orderBy('name')->get();
         });
-        $program_years = Cache::remember('program_years', 380, function () {
-            return ProgramYear::where('status', 'active')->orderBy('guid')->get();
+        $program_years = Cache::remember('program_years_ministry', 380, function () {
+            return ProgramYear::orderBy('guid')->get();
         });
 
         return Inertia::render('Ministry::Student', ['page' => $page, 'results' => $student,

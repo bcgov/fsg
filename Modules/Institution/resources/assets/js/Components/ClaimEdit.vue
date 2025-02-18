@@ -121,17 +121,21 @@
                             {{ editStudentClaimForm.expected_stable_enrolment_date }}
                         </div>
 
-                        <div class="col-md-4">
+                        <div :class="editStudentClaimForm.correction !== 0 ? 'col-md-3' : 'col-md-4'">
                             <Label for="inputProgramFee" class="form-label" value="Tuition/Program Fee" />
                             ${{ editStudentClaimForm.program_fee }}
                         </div>
-                        <div class="col-md-4">
+                        <div :class="editStudentClaimForm.correction !== 0 ? 'col-md-3' : 'col-md-4'">
                             <Label for="inputRegistrationFee" class="form-label" value="Registration Fee" />
                             ${{ editStudentClaimForm.registration_fee }}
                         </div>
-                        <div class="col-md-4">
+                        <div :class="editStudentClaimForm.correction !== 0 ? 'col-md-3' : 'col-md-4'">
                             <Label for="inputMaterialsFee" class="form-label" value="Materials Fee" />
                             ${{ editStudentClaimForm.materials_fee }}
+                        </div>
+                        <div v-if="editStudentClaimForm.correction !== 0" class="col-md-3">
+                            <Label for="inputCorrection" class="form-label" value="Correction" />
+                            ${{ editStudentClaimForm.correction }}
                         </div>
                     </template>
 
