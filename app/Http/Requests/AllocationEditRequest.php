@@ -17,7 +17,7 @@ class AllocationEditRequest extends FormRequest
         $allocation = Allocation::find($this->id);
 
         // Only allow editing active allocations
-        if ($allocation->status !== 'active') {
+        if ($allocation->status == 'inactive') {
             return false;
         }
 
@@ -66,13 +66,4 @@ class AllocationEditRequest extends FormRequest
         ]);
     }
 
-    /**
-     * Convert to boolean
-     *
-     * @return bool
-     */
-    private function toBoolean($booleable)
-    {
-        return filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-    }
 }

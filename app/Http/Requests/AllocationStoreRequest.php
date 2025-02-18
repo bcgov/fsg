@@ -56,17 +56,7 @@ class AllocationStoreRequest extends FormRequest
         $this->merge([
             'guid' => Str::orderedUuid()->getHex(),
             'last_touch_by_user_guid' => $this->user()->guid,
-            'status' => 'active',
+            'status' => 'new',
         ]);
-    }
-
-    /**
-     * Convert to boolean
-     *
-     * @return bool
-     */
-    private function toBoolean($booleable)
-    {
-        return filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 }
