@@ -82,7 +82,8 @@ class ClaimEditRequest extends FormRequest
             'expected_completion_date' => 'nullable',
             'outcome_effective_date' => 'nullable|date_format:Y-m-d',
             'outcome_status' => 'nullable|string',
-            'correction' => 'nullable|numeric',
+            'correction_amount' => 'nullable|numeric',
+            'correction_comment' => 'required_if:correction_amount,!null',
 
         ];
 
@@ -188,7 +189,7 @@ class ClaimEditRequest extends FormRequest
         $registrationFee = $this->sanitizeAndConvertToFloat($this->input('registration_fee'));
         $materialsFee = $this->sanitizeAndConvertToFloat($this->input('materials_fee'));
         $programFee = $this->sanitizeAndConvertToFloat($this->input('program_fee'));
-        $correction = $this->sanitizeAndConvertToFloat($this->input('correction'));
+        $correction = $this->sanitizeAndConvertToFloat($this->input('correction_amount'));
 
         $this->merge([
             'agreement_confirmed' => $this->toBoolean($this->agreement_confirmed),

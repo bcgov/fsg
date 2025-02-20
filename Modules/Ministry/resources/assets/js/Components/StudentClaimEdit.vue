@@ -124,7 +124,7 @@
                     </div>
                     <div class="col-md-3">
                         <Label for="inputCorrection" class="form-label" value="Correction" />
-                        <Input type="number" step=".01" class="form-control" id="inputCorrection" v-model="editStudentClaimForm.correction" />
+                        <Input type="number" step=".01" class="form-control" id="inputCorrection" v-model="editStudentClaimForm.correction_amount" />
                     </div>
 
                     <div class="col-md-3">
@@ -180,7 +180,11 @@
                     </div>
                     <div class="col-md-3">
                         <Label for="inputCorrection" class="form-label" value="Correction" />
-                        <Input type="number" step=".01" class="form-control" id="inputCorrection" v-model="editStudentClaimForm.correction" />
+                        <Input type="number" step=".01" class="form-control" id="inputCorrection" v-model="editStudentClaimForm.correction_amount" />
+                    </div>
+                    <div v-if="editStudentClaimForm.correction_amount != null && editStudentClaimForm.correction_amount != 0" class="col-12">
+                        <Label for="inputCorrectionCmnt" class="form-label" value="Correction Comment" />
+                        <textarea class="form-control" id="inputCorrectionCmnt" v-model="editStudentClaimForm.correction_comment" />
                     </div>
 
                     <div class="col-md-4">
@@ -375,7 +379,7 @@ export default {
             const registrationFee = parseFloat(this.editStudentClaimForm.registration_fee) || 0;
             const materialsFee = parseFloat(this.editStudentClaimForm.materials_fee) || 0;
             const adminFeePercentage = parseInt(this.editStudentClaimForm.allocation.py_admin_fee) || 0;
-            const correction = parseInt(this.editStudentClaimForm.correction) || 0;
+            const correction = parseInt(this.editStudentClaimForm.correction_amount) || 0;
 
             const total = programFee + registrationFee + materialsFee + correction;
             const adminFee = total * (adminFeePercentage / 100);

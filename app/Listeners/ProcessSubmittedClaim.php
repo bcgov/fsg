@@ -53,7 +53,7 @@ class ProcessSubmittedClaim
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired, Cancelled
                 $totalActiveClaims = $student->claims()
                     ->where('claim_status', 'Claimed')
-                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction, 0)'));
+                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
 //                Log::info('totalHoldClaims = '.number_format($totalHoldClaims, 0));
 //                Log::info('totalActiveClaims = '.number_format($totalActiveClaims, 0));
@@ -79,7 +79,7 @@ class ProcessSubmittedClaim
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired, Cancelled
                 $totalActiveClaims = $student->claims()
                     ->where('claim_status', 'Claimed')
-                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction, 0)'));
+                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
 //                Log::info('totalHoldClaims = '.number_format($totalHoldClaims, 0));
 //                Log::info('totalActiveClaims = '.number_format($totalActiveClaims, 0));
@@ -108,7 +108,7 @@ class ProcessSubmittedClaim
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired, Cancelled
                 $totalActiveClaims = $student->claims()
                     ->where('claim_status', 'Claimed')
-                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction, 0)'));
+                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
 //                Log::info('totalHoldClaims = '.number_format($totalHoldClaims, 0));
 //                Log::info('totalActiveClaims = '.number_format($totalActiveClaims, 0));
@@ -135,7 +135,7 @@ class ProcessSubmittedClaim
                     where('claim_status', 'Claimed')
                         ->where('institution_guid', $claim->institution_guid)
                         ->where('allocation_guid', $claim->allocation_guid)
-                        ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction, 0)'));
+                        ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
 //                Log::info('claims sum_claims = '.number_format($sum_claims, 0));
 //                Log::info('allocation total_amount = '.number_format($claim->allocation->total_amount, 0));
@@ -152,7 +152,7 @@ class ProcessSubmittedClaim
                     $claim->program_fee = 0;
                     $claim->materials_fee = 0;
                     $claim->registration_fee = 0;
-                    $claim->correction = 0;
+                    $claim->correction_amount = 0;
                 }
 
                 //check student
@@ -166,7 +166,7 @@ class ProcessSubmittedClaim
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired
                 $totalActiveClaims = $student->claims()
                     ->where('claim_status', 'Claimed')
-                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction, 0)'));
+                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
                 // If the student has reached the grant limit, prevent moving it to Submitted
                 if ((float) $totalActiveClaims > (float) env('TOTAL_GRANT')) {
@@ -182,7 +182,7 @@ class ProcessSubmittedClaim
                     $claim->program_fee = 0;
                     $claim->materials_fee = 0;
                     $claim->registration_fee = 0;
-                    $claim->correction = 0;
+                    $claim->correction_amount = 0;
                 }
             }
 
@@ -196,7 +196,7 @@ class ProcessSubmittedClaim
                 $claim->materials_fee = 0;
                 $claim->registration_fee = 0;
                 $claim->claim_percent = 0;
-                $claim->correction = 0;
+                $claim->correction_amount = 0;
             }
         }
 

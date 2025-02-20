@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('claims', function (Blueprint $table) {
-            $table->float('correction', 2)->default(0)->nullable();
+            $table->float('correction_amount', 2)->default(0)->nullable();
+            $table->text('correction_comment')->nullable();
         });
     }
 
@@ -22,7 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('claims', function (Blueprint $table) {
-            $table->dropColumn('correction');
+            $table->dropColumn('correction_comment');
+            $table->dropColumn('correction_amount');
         });
     }
 };
