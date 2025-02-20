@@ -23,8 +23,8 @@
                             <td>{{ row.program.program_name }}</td>
                             <td>${{ $amountPlusPyFee(row.estimated_hold_amount, row.py_admin_fee) }}</td>
                             <td>${{ row.total_claim_amount }}
-                                <span v-if="row.correction > 0"> + ${{ row.correction }}</span>
-                                <span v-if="row.correction < 0"> ${{ row.correction }}</span>
+                                <span v-if="row.correction_amount > 0"> + ${{ row.correction_amount }}</span>
+                                <span v-if="row.correction_amount < 0"> ${{ row.correction_amount }}</span>
                             </td>
 <!--                            <td>${{ row.student.total_grant }}</td>-->
                             <td>

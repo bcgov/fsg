@@ -98,7 +98,7 @@ class Institution extends Model
         $claimedAmount = $this->claims()
             ->where('allocation_guid', $this->activeAllocation->guid)
             ->where('claim_status', 'Claimed')
-            ->sum(\DB::raw('registration_fee + materials_fee + program_fee + correction'));
+            ->sum(\DB::raw('registration_fee + materials_fee + program_fee + correction_amount'));
 
         $this->setClaimedAmountAttribute($claimedAmount);
 

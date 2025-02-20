@@ -26,7 +26,7 @@ class InstitutionAllocationReached implements ValidationRule
         $sum_claims = Claim::whereIn('claim_status', ['Submitted', 'Claimed'])
             ->where('institution_guid', $this->allocation->institution->guid)
             ->where('allocation_guid', $this->allocation->guid)
-            ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction, 0)'));
+            ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
         $sum_hold_claims = Claim::where('claim_status', 'Hold')
             ->where('institution_guid', $this->allocation->institution->guid)
             ->where('allocation_guid', $this->allocation->guid)

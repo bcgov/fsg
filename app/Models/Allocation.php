@@ -48,7 +48,7 @@ class Allocation extends Model
         // Calculate the claimed amount
         $claimedAmount = $this->claims()
             ->where('claim_status', 'Claimed')
-            ->sum(\DB::raw('registration_fee + materials_fee + program_fee + correction'));
+            ->sum(\DB::raw('registration_fee + materials_fee + program_fee + correction_amount'));
 
         //$claimedAmount needs to be a formatted number to avoid = "1.159671e+06" since it is going to too large
         return number_format($claimedAmount, 0, '.', '');
