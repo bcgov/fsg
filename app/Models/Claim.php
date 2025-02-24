@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
 class Claim extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     // Append the computed attribute
     protected $appends = ['py_admin_fee', 'claimed_by_name'];

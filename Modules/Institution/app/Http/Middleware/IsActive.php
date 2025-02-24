@@ -34,14 +34,14 @@ class IsActive
             $role = Role::where('name', Role::Institution_GUEST)->first();
             $user->roles()->attach($role);
 
-            return Inertia::render('Auth/Login', [
+            return redirect()->route('login')->with([
                 'loginAttempt' => true,
                 'hasAccess' => false,
                 'status' => 'Please contact your Institution Admin to grant you access.',
             ]);
         }
         if (! $user->hasRole(Role::SUPER_ADMIN) && ! $user->hasRole(Role::Institution_ADMIN) && ! $user->hasRole(Role::Institution_USER)) {
-            return Inertia::render('Auth/Login', [
+            return redirect()->route('login')->with([
                 'loginAttempt' => true,
                 'hasAccess' => false,
                 'status' => 'Please contact the Institution Admin to verify your access.',

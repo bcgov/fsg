@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Institution extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     // Append the computed attribute
     protected $appends = ['overallocation_flag'];
