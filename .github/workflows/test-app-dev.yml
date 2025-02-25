@@ -20,7 +20,7 @@ jobs:
       - name: Install Composer
         run: curl -sS https://getcomposer.org/installer -o composer-setup.php && php composer-setup.php --install-dir=/usr/local/bin --filename=composer
       - name: Install Dependencies
-        run: /usr/local/bin/composer update --ignore-platform-reqs
+        run: /usr/local/bin/composer update -q --prefer-dist --no-progress --no-interaction
       - name: Generate key
         run: php artisan key:generate
       - name: Directory Permissions
