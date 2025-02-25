@@ -1,4 +1,4 @@
-name: Test FSG in DEV
+name: Test Laravel FSG in DEV
 
 on:
   push:
@@ -13,10 +13,11 @@ jobs:
       - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
         with:
           php-version: '8.1'
-          extensions: mbstring, bcmath, pdo, pdo_pgsql, pdo_mysql, xml
       - uses: actions/checkout@v4
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      - name: Install Composer
+        run: curl -sS https://getcomposer.org/installer -o composer-setup.php && php composer-setup.php --install-dir=/usr/local/bin --filename=composer
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Generate key
