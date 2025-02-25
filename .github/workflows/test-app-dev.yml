@@ -13,7 +13,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
-          extensions: mbstring, bcmath, pdo, pdo_pgsql, pdo_mysql, xml, zip
+          extensions: mbstring, bcmath, pdo, pdo_pgsql, pdo_mysql, xml, zip, unzip, libzip-dev, libxml2-dev, libmcrypt-dev
       - uses: actions/checkout@v4
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"

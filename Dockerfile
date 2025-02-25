@@ -41,7 +41,6 @@ RUN apt-get -yq update --fix-missing \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
         libpng-dev \
-        libmcrypt-dev \
         libpng-dev \
         libaio-dev \
     libonig-dev \
