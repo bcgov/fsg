@@ -10,10 +10,11 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Tests\Traits\CreatesInstitutionUser;
 
 class AuthenticationTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, CreatesInstitutionUser;
 
     public function test_login_screen_can_be_rendered(): void
     {
@@ -44,15 +45,8 @@ class AuthenticationTest extends TestCase
 
     public function test_institution_user_can_access(): void
     {
-        $user = User::factory()->create();
-        $institution = Institution::factory()->create();
-        $institutionStaff = InstitutionStaff::factory()->create(['institution_guid' => $institution->guid, 'user_guid' => $user->guid]);
-        $programYear = ProgramYear::factory()->create();
-        Allocation::factory()->create(['institution_guid' => $institution->guid, 'program_year_guid' => $programYear->guid]);
+        $user = $this->createInstitutionUser();
 
-
-        $role = Role::firstOrCreate(['name' => Role::Institution_USER]);
-        $user->roles()->attach($role->id);
         $this->actingAs($user);
         $this->assertAuthenticatedAs($user);
         $response = $this->get('/institution/dashboard');
