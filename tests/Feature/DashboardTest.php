@@ -2,10 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Allocation;
-use App\Models\Institution;
-use App\Models\InstitutionStaff;
-use App\Models\ProgramYear;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,16 +24,10 @@ class DashboardTest extends TestCase
     public function test_institution_screen_can_be_rendered(): void
     {
         $user = User::factory()->create();
-        $institution = Institution::factory()->create();
-        $institutionStaff = InstitutionStaff::factory()->create(['institution_guid' => $institution->guid, 'user_guid' => $user->guid]);
-        $programYear = ProgramYear::factory()->create();
-        Allocation::factory()->create(['institution_guid' => $institution->guid, 'program_year_guid' => $programYear->guid]);
-
-
         $role = Role::firstOrCreate(['name' => Role::Institution_USER]);
         $user->roles()->attach($role->id);
 
-        $response = $this->actingAs($user)->get('/institution');
+        $response = $this->actingAs($user)->get('/institution/dashboard');
 
         $response->assertStatus(200);
     }
