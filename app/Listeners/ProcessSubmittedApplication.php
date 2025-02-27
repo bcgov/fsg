@@ -15,6 +15,8 @@ class ProcessSubmittedApplication
      */
     public function handle(ApplicationSubmitted $event): void
     {
+        \Log::info('ProcessSubmittedApplication');
+
         // Get the cap, attestation and status from the event
         $claim_before_update = $event->application;
         $status = $event->status;

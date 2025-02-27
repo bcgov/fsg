@@ -18,8 +18,8 @@ createInertiaApp({
         let parts = name.split('::')
         let type = false;
         if (parts.length > 1) type = parts[0]
-        if(type) return require(`../../Modules/${type}/resources/assets/js/Pages/${parts[1]}.vue`).default
-        return require(`./Pages/${name}.vue`).default
+        if(type) return require(`${__dirname}/../../Modules/${type}/resources/assets/js/Pages/${parts[1]}.vue`).default
+        return require(`${__dirname}/./Pages/${name}.vue`).default
     },
     setup({ el, App, props, plugin }) {
         const app = createApp({ render: () => h(App, props) })

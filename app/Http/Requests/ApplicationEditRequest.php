@@ -9,9 +9,25 @@ use App\Rules\InstitutionAllocationReached;
 use App\Rules\ValidSin;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Log;
 
 class ApplicationEditRequest extends FormRequest
 {
+    protected function failedValidation(Validator $validator)
+    {
+        // Log the validation errors
+        Log::error('Validation failed in ' . static::class, $validator->errors()->toArray());
+
+        // Then throw the HttpResponseException as usual
+        throw new HttpResponseException(
+            response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ], 422)
+        );
+    }
     /**
      * Determine if the user is authorized to make this request.
      *

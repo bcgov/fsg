@@ -133,10 +133,10 @@
                             <Label for="inputMaterialsFee" class="form-label" value="Materials Fee" />
                             ${{ editStudentClaimForm.materials_fee }}
                         </div>
-                        <div v-if="editStudentClaimForm.correction_amount !== 0" class="col-md-3">
-                            <Label for="inputCorrection" class="form-label" value="Correction" />
-                            ${{ editStudentClaimForm.correction_amount }}
-                        </div>
+<!--                        <div v-if="editStudentClaimForm.correction_amount !== 0" class="col-md-3">-->
+<!--                            <Label for="inputCorrection" class="form-label" value="Correction" />-->
+<!--                            ${{ editStudentClaimForm.correction_amount }}-->
+<!--                        </div>-->
                     </template>
 
 

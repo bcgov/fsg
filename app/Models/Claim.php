@@ -93,7 +93,10 @@ class Claim extends Model
         }
 
         $user = User::where('guid', $this->claimed_by_user_guid)->first();
+        if (!is_null($user)) {
+            return $user->first_name.' '.$user->last_name;
+        }
+        return null;
 
-        return $user->first_name.' '.$user->last_name;
     }
 }

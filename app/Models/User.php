@@ -26,7 +26,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = ['password'];
-    //    protected $appends = ['institution'];
+
+    protected $casts = ['disabled' => 'boolean',];
 
     /**
      * The roles that belong to the user.
