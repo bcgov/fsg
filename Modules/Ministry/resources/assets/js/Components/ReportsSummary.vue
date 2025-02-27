@@ -1,8 +1,8 @@
 <template>
     <div>
-    <div class="card">
-        <div class="card-header">
-            <div>Reports Summary
+        <div class="card">
+            <div class="card-header">
+                <div>Reports Summary
                 <button @click="exportCsv" class="btn btn-outline-success btn-sm float-end me-1" title="Export Claims"><i class="bi bi-filetype-csv"></i></button>
             </div>
         </div>
@@ -11,12 +11,12 @@
             <div class="row g-3 mb-3">
                 <div class="col-md-4">
                     <label class="form-label">From:</label>
-                    <Input type="date" :min="py.start_date" :max="py.end_date" placeholder="YYYY-MM-DD"
+                    <Input type="date" :min="2022" :max="2030" placeholder="YYYY-MM-DD"
                            class="form-control" v-model="fromDate"/>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">To:</label>
-                    <Input type="date" :min="py.start_date" :max="py.end_date" placeholder="YYYY-MM-DD"
+                    <Input type="date" :min="2022" :max="2030" placeholder="YYYY-MM-DD"
                            class="form-control" v-model="toDate"/>
                 </div>
                 <div class="col-md-2">
@@ -37,6 +37,7 @@
                         <th scope="col">Total Allocation</th>
                         <th scope="col">Total Claimed</th>
                         <th scope="col">Total Hold</th>
+                        <th scope="col">Admin %</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -45,6 +46,7 @@
                             <td>${{ $formatNumberWithCommas(row.total) }}</td>
                             <td>${{ $formatNumberWithCommas(row.Claimed) }}</td>
                             <td>${{ $formatNumberWithCommas(row.Hold) }}</td>
+                            <td>{{ row.adminFee }}</td>
                         </tr>
                     </tbody>
 
@@ -54,6 +56,7 @@
                         <th scope="col">${{ $formatNumberWithCommas(reportData.publicReport.total) }}</th>
                         <th scope="col">${{ $formatNumberWithCommas(reportData.publicReport.Claimed) }}</th>
                         <th scope="col">${{ $formatNumberWithCommas(reportData.publicReport.Hold) }}</th>
+                        <th scope="col"></th>
                     </tr>
                     </tfoot>
                 </table>
