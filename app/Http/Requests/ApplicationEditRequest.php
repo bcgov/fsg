@@ -8,26 +8,9 @@ use App\Models\Student;
 use App\Rules\InstitutionAllocationReached;
 use App\Rules\ValidSin;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Log;
 
 class ApplicationEditRequest extends FormRequest
 {
-    protected function failedValidation(Validator $validator)
-    {
-        // Log the validation errors
-        Log::error('Validation failed in ' . static::class, $validator->errors()->toArray());
-
-        // Then throw the HttpResponseException as usual
-        throw new HttpResponseException(
-            response()->json([
-                'status' => false,
-                'errors' => $validator->errors(),
-            ], 422)
-        );
-    }
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -35,7 +18,6 @@ class ApplicationEditRequest extends FormRequest
      */
     public function authorize()
     {
-
         // Check if the authenticated user has the necessary permissions to edit the institution.
         // You can access the authenticated user using the Auth facade or $this->user() method.
         return $this->user()->can('create', Claim::class);
