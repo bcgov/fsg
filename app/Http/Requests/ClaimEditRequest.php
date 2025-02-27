@@ -77,11 +77,14 @@ class ClaimEditRequest extends FormRequest
             'guid' => 'required',
             'program_guid' => 'required|exists:programs,guid',
             'claim_status' => 'required|string',
-            'stable_enrolment_date' => 'nullable',
-            'expected_stable_enrolment_date' => 'nullable',
-            'expected_completion_date' => 'nullable',
-            'outcome_effective_date' => 'nullable|date_format:Y-m-d',
+            'stable_enrolment_date' => 'nullable|date_format:Y-m-d|after:2020-01-20',
+            'expected_stable_enrolment_date' => 'nullable|date_format:Y-m-d|after:2020-01-20',
+            'expected_completion_date' => 'nullable|date_format:Y-m-d|after:2020-01-20',
+            'outcome_effective_date' => 'nullable|date_format:Y-m-d|after:2020-01-20',
             'outcome_status' => 'nullable|string',
+            'correction_amount' => 'nullable|numeric',
+            'correction_comment' => 'required_if:correction_amount,!null',
+
         ];
 
         // If the status is "Cancelled" or 'Expired', do not validate other fields
@@ -114,9 +117,9 @@ class ClaimEditRequest extends FormRequest
                 'estimated_hold_amount' => 'required|numeric|gte:0',
                 'total_claim_amount' => 'nullable|numeric',
                 'claim_percent' => 'required|numeric',
-                'stable_enrolment_date' => 'nullable|date_format:Y-m-d',
-                'expected_stable_enrolment_date' => 'nullable|date_format:Y-m-d',
-                'expiry_date' => 'nullable|date_format:Y-m-d',
+                'stable_enrolment_date' => 'nullable|date_format:Y-m-d|after:2020-01-20',
+                'expected_stable_enrolment_date' => 'nullable|date_format:Y-m-d|after:2020-01-20',
+                'expiry_date' => 'nullable|date_format:Y-m-d|after:2020-01-20',
 
                 'fifty_two_week_affirmation' => 'required|boolean|in:true,1',
                 'agreement_confirmed' => 'required|boolean|in:true,1',
@@ -131,9 +134,9 @@ class ClaimEditRequest extends FormRequest
                 'estimated_hold_amount' => 'required|numeric|gte:0',
                 'total_claim_amount' => 'nullable|numeric',
                 'claim_percent' => 'required|numeric',
-                'stable_enrolment_date' => 'nullable|date_format:Y-m-d',
-                'expected_stable_enrolment_date' => 'required|date_format:Y-m-d',
-                'expiry_date' => 'required|date_format:Y-m-d',
+                'stable_enrolment_date' => 'nullable|date_format:Y-m-d|after:2020-01-20',
+                'expected_stable_enrolment_date' => 'required|date_format:Y-m-d|after:2020-01-20',
+                'expiry_date' => 'required|date_format:Y-m-d|after:2020-01-20',
 
                 'fifty_two_week_affirmation' => 'required|boolean|in:true,1',
                 'agreement_confirmed' => 'required|boolean|in:true,1',
@@ -152,17 +155,17 @@ class ClaimEditRequest extends FormRequest
                 'estimated_hold_amount' => 'required|numeric',
                 'total_claim_amount' => 'required|numeric',
                 'claim_percent' => 'required|numeric',
-                'stable_enrolment_date' => 'required|date_format:Y-m-d',
-                'expected_stable_enrolment_date' => 'required|date_format:Y-m-d',
-                'expiry_date' => 'required|date_format:Y-m-d',
+                'stable_enrolment_date' => 'required|date_format:Y-m-d|after:2020-01-20',
+                'expected_stable_enrolment_date' => 'required|date_format:Y-m-d|after:2020-01-20',
+                'expiry_date' => 'required|date_format:Y-m-d|after:2020-01-20',
 
                 'fifty_two_week_affirmation' => 'required|boolean|in:true,1',
                 'agreement_confirmed' => 'required|boolean|in:true,1',
                 'registration_confirmed' => 'required|boolean|in:true,1',
 
-                'psi_claim_request_date' => 'nullable|date_format:Y-m-d',
-                'reporting_completed_date' => 'nullable|date_format:Y-m-d',
-                'claimed_date' => 'required|date_format:Y-m-d',
+                'psi_claim_request_date' => 'nullable|date_format:Y-m-d|after:2020-01-20',
+                'reporting_completed_date' => 'nullable|date_format:Y-m-d|after:2020-01-20',
+                'claimed_date' => 'required|date_format:Y-m-d|after:2020-01-20',
                 'claimed_by_user_guid' => 'required|exists:users,guid',
             ]);
         }
@@ -186,6 +189,7 @@ class ClaimEditRequest extends FormRequest
         $registrationFee = $this->sanitizeAndConvertToFloat($this->input('registration_fee'));
         $materialsFee = $this->sanitizeAndConvertToFloat($this->input('materials_fee'));
         $programFee = $this->sanitizeAndConvertToFloat($this->input('program_fee'));
+        $correction = $this->sanitizeAndConvertToFloat($this->input('correction_amount'));
 
         $this->merge([
             'agreement_confirmed' => $this->toBoolean($this->agreement_confirmed),
@@ -213,7 +217,7 @@ class ClaimEditRequest extends FormRequest
             $today = Carbon::now()->startOfDay()->format('Y-m-d');
 
             // Calculate the total
-            $total = $registrationFee + $materialsFee + $programFee;
+            $total = $registrationFee + $materialsFee + $programFee + $correction;
 
             $this->merge([
                 'total_claim_amount' => $total,

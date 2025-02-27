@@ -22,8 +22,11 @@
                             <td><Link :href="'/ministry/students/' + row.student.id">{{ row.last_name }}</Link></td>
                             <td>{{ row.program.program_name }}</td>
                             <td>${{ $amountPlusPyFee(row.estimated_hold_amount, row.py_admin_fee) }}</td>
-                            <td>${{ row.total_claim_amount }}</td>
-                            <td>${{ row.student.total_grant }}</td>
+                            <td>${{ row.total_claim_amount }}
+                                <span v-if="row.correction_amount > 0"> + ${{ row.correction_amount }}</span>
+                                <span v-if="row.correction_amount < 0"> ${{ row.correction_amount }}</span>
+                            </td>
+<!--                            <td>${{ row.student.total_grant }}</td>-->
                             <td>
                                 <span v-if="row.claim_status === 'Draft'" class="badge rounded-pill text-bg-info">Draft</span>
                                 <span v-else-if="row.claim_status === 'Submitted'" class="badge rounded-pill text-bg-primary">Submitted</span>
@@ -71,7 +74,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editClaimModalLabel">Edit Student Claim</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearEditForm"></button>
                 </div>
                 <StudentClaimEdit v-bind="$attrs" @close="closeEditForm"
                                   :claim="editClaim"
@@ -108,6 +111,9 @@ export default {
             setTimeout(function () {
                 $("#newClaimModal").modal('show');
             }, 10);
+        },
+        clearEditForm: function () {
+            this.editClaim = '';
         },
 
         openEditForm: function (claim) {

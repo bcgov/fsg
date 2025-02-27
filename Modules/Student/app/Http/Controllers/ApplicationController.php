@@ -37,7 +37,7 @@ class ApplicationController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Store the specified resource in storage.
      */
     public function store(ApplicationStoreRequest $request): \Illuminate\Http\RedirectResponse
     {

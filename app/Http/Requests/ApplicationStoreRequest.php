@@ -62,6 +62,8 @@ class ApplicationStoreRequest extends FormRequest
             'city' => 'required|string',
             'zip_code' => 'required|string|regex:/^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/',
             'expiry_date' => 'required|date_format:Y-m-d',
+            'correction_amount' => 'nullable|numeric',
+            'correction_comment' => 'required_if:correction_amount,!null',
 
         ];
 

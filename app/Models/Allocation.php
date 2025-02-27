@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Allocation extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     // Append the computed attribute
     protected $appends = ['total_amount_formatted', 'claimed', 'py_admin_fee'];
@@ -48,7 +49,7 @@ class Allocation extends Model
         // Calculate the claimed amount
         $claimedAmount = $this->claims()
             ->where('claim_status', 'Claimed')
-            ->sum(\DB::raw('registration_fee + materials_fee + program_fee'));
+            ->sum(\DB::raw('registration_fee + materials_fee + program_fee + correction_amount'));
 
         //$claimedAmount needs to be a formatted number to avoid = "1.159671e+06" since it is going to too large
         return number_format($claimedAmount, 0, '.', '');

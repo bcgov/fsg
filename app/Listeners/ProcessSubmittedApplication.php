@@ -15,6 +15,8 @@ class ProcessSubmittedApplication
      */
     public function handle(ApplicationSubmitted $event): void
     {
+        \Log::info('ProcessSubmittedApplication');
+
         // Get the cap, attestation and status from the event
         $claim_before_update = $event->application;
         $status = $event->status;
@@ -45,7 +47,7 @@ class ProcessSubmittedApplication
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired, Cancelled
                 $totalActiveClaims = $student->claims()
                     ->where('claim_status', 'Claimed')
-                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
+                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
                 // If the student has reached the grant limit, prevent moving it to Submitted
                 if (((float) $totalHoldClaims + (float) $totalActiveClaims) > (float) env('TOTAL_GRANT')) {
@@ -67,7 +69,7 @@ class ProcessSubmittedApplication
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired, Cancelled
                 $totalActiveClaims = $student->claims()
                     ->where('claim_status', 'Claimed')
-                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
+                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
                 // If the student has reached the grant limit, prevent moving it to Submitted
                 if (((float) $totalHoldClaims + (float) $totalActiveClaims) > (float) env('TOTAL_GRANT')) {
@@ -89,7 +91,7 @@ class ProcessSubmittedApplication
                     whereNotIn('claim_status', ['Draft', 'Expired', 'Cancelled'])
                         ->where('institution_guid', $claim->institution_guid)
                         ->where('allocation_guid', $claim->allocation_guid)
-                        ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
+                        ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
                 Log::info('sum_claims = '.number_format($sum_claims, 0));
                 Log::info('total_amount = '.number_format($claim->allocation->total_amount, 0));
@@ -112,7 +114,7 @@ class ProcessSubmittedApplication
                 // Calculate the total of claims for the student excluding Draft, Hold, Expired
                 $totalActiveClaims = $student->claims()
                     ->where('claim_status', 'Claimed')
-                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0)'));
+                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
                 // If the student has reached the grant limit, prevent moving it to Submitted
                 if (((float) $totalHoldClaims + (float) $totalActiveClaims) > (float) env('TOTAL_GRANT')) {

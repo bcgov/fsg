@@ -423,8 +423,8 @@ class MaintenanceController extends Controller
             $report[$status] += $claim->estimated_hold_amount;
         }
         if($status == 'Claimed'){
-            $report['instList'][$instName][$status] += $claim->registration_fee + $claim->program_fee + $claim->materials_fee;
-            $report[$status] += $claim->registration_fee + $claim->program_fee + $claim->materials_fee;
+            $report['instList'][$instName][$status] += $claim->registration_fee + $claim->program_fee + $claim->materials_fee + $claim->correction_amount;
+            $report[$status] += $claim->registration_fee + $claim->program_fee + $claim->materials_fee + $claim->correction_amount;
         }
 //
 //

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -9,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable, SoftDeletes;
+    use HasApiTokens, Notifiable, SoftDeletes, HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -25,7 +26,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = ['password'];
-    //    protected $appends = ['institution'];
+
+    protected $casts = ['disabled' => 'boolean',];
 
     /**
      * The roles that belong to the user.

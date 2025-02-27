@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
 class Claim extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     // Append the computed attribute
     protected $appends = ['py_admin_fee', 'claimed_by_name'];
@@ -25,7 +26,7 @@ class Claim extends Model
         'stable_enrolment_date', 'expiry_date', 'psi_claim_request_date', 'reporting_completed_date',
         'fifty_two_week_affirmation', 'agreement_confirmed', 'registration_confirmed',
         'guid', 'institution_guid', 'allocation_guid', 'program_guid', 'student_guid', 'expected_stable_enrolment_date',
-        'expected_completion_date', 'outcome_effective_date', 'outcome_status', ];
+        'expected_completion_date', 'outcome_effective_date', 'outcome_status', 'correction_amount', 'correction_comment',];
 
     protected static function boot()
     {
@@ -92,7 +93,10 @@ class Claim extends Model
         }
 
         $user = User::where('guid', $this->claimed_by_user_guid)->first();
+        if (!is_null($user)) {
+            return $user->first_name.' '.$user->last_name;
+        }
+        return null;
 
-        return $user->first_name.' '.$user->last_name;
     }
 }

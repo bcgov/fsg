@@ -3,6 +3,9 @@
         <div class="modal-body">
             <div class="row g-3">
 
+                <div v-if="newAllocation" class="col-12 mb-3">
+                    <div class="alert alert-info">Activating this allocation will deactivate all active allocations permanently. This new allocation will be the only active allocation.</div>
+                </div>
                 <div class="col-md-4">
                     <Label for="inputSd" class="form-label" value="Program Year"/>
                     <Select class="form-select" id="inputSd" v-model="editInstitutionAllocationForm.program_year_guid">
@@ -12,7 +15,7 @@
                 </div>
                 <div class="col-md-4">
                     <Label for="inputStatus" class="form-label" value="Status"/>
-                    <Select class="form-select" id="inputStatus" v-model="editInstitutionAllocationForm.status">
+                    <Select class="form-select" id="inputStatus" v-model="editInstitutionAllocationForm.status" @change="switchStatus">
                         <option value="active">Active</option>
                         <option value="inactive">Inactive</option>
                     </Select>
@@ -79,11 +82,16 @@ export default {
                 status: "",
             },
             selectedFedCap: '',
-            allowProgramCap: false
+            allowProgramCap: false,
+            newAllocation: false
         }
     },
     methods: {
-
+        switchStatus: function () {
+            if(this.editInstitutionAllocationForm.status === 'active'){
+                this.newAllocation = true;
+            }
+        },
         submitForm: function () {
             if(this.editInstitutionAllocationForm.status === 'active'){
                 if(!confirm("By switching this allocation to Active all others are going to be switched to Inactive. Proceed?")){

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Institution extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     // Append the computed attribute
     protected $appends = ['overallocation_flag'];
@@ -98,7 +99,7 @@ class Institution extends Model
         $claimedAmount = $this->claims()
             ->where('allocation_guid', $this->activeAllocation->guid)
             ->where('claim_status', 'Claimed')
-            ->sum(\DB::raw('registration_fee + materials_fee + program_fee'));
+            ->sum(\DB::raw('registration_fee + materials_fee + program_fee + correction_amount'));
 
         $this->setClaimedAmountAttribute($claimedAmount);
 

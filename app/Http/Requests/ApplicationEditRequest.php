@@ -9,9 +9,25 @@ use App\Rules\InstitutionAllocationReached;
 use App\Rules\ValidSin;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Log;
 
 class ApplicationEditRequest extends FormRequest
 {
+    protected function failedValidation(Validator $validator)
+    {
+        // Log the validation errors
+        Log::error('Validation failed in ' . static::class, $validator->errors()->toArray());
+
+        // Then throw the HttpResponseException as usual
+        throw new HttpResponseException(
+            response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ], 422)
+        );
+    }
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -63,6 +79,8 @@ class ApplicationEditRequest extends FormRequest
             'city' => 'required|string',
             'zip_code' => 'required|string|regex:/^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/',
             'expiry_date' => 'required|date_format:Y-m-d',
+            'correction_amount' => 'nullable|numeric',
+            'correction_comment' => 'required_if:correction_amount,!null',
         ];
 
         if ($this->claim_status === 'Draft') {
