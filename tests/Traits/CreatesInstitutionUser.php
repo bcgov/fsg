@@ -17,9 +17,9 @@ trait CreatesInstitutionUser
      * @param  string  $roleName  The role to assign (e.g. Role::Institution_USER or Role::Institution_ADMIN)
      * @return \App\Models\User
      */
-    protected function createInstitutionUser(string $roleName = Role::Institution_USER): User
+    protected function createInstitutionUser(array $userData = [], string $roleName = Role::Institution_USER): User
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create($userData);
 
         $institution = Institution::factory()->create();
         InstitutionStaff::factory()->create([

@@ -56,15 +56,8 @@ class AuthenticationTest extends TestCase
 
     public function test_institution_user_no_bceid_redirect(): void
     {
-        $user = User::factory()->create(['bceid_user_guid' => null]);
-        $institution = Institution::factory()->create();
-        $institutionStaff = InstitutionStaff::factory()->create(['institution_guid' => $institution->guid, 'user_guid' => $user->guid]);
-        $programYear = ProgramYear::factory()->create();
-        Allocation::factory()->create(['institution_guid' => $institution->guid, 'program_year_guid' => $programYear->guid]);
+        $user = $this->createInstitutionUser(['bceid_user_guid' => null]);
 
-
-        $role = Role::firstOrCreate(['name' => Role::Institution_USER]);
-        $user->roles()->attach($role->id);
         $response = $this->actingAs($user)->get('/institution/dashboard');
         $response->assertRedirect('/login');
     }
