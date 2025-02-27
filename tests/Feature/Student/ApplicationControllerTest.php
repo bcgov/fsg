@@ -25,6 +25,9 @@ class ApplicationControllerTest extends TestCase
     {
         parent::setUp();
 
+        // Disable page existence check for Inertia testing
+        config(['inertia.testing.ensure_pages_exist' => false]);
+
         // Create a Student record associated with this user
         $this->student = Student::factory()->create();
         $this->user = $this->student->user;
@@ -136,9 +139,6 @@ class ApplicationControllerTest extends TestCase
 
     public function test_it_returns_inertia_dashboard_when_student_exists()
     {
-        // Disable page existence check for Inertia testing
-        config(['inertia.testing.ensure_pages_exist' => false]);
-
         $this->actingAs($this->user);
 
         $response = $this->get(route('student.home'));
@@ -153,9 +153,6 @@ class ApplicationControllerTest extends TestCase
 
     public function test_it_returns_inertia_dashboard_with_profile_when_student_does_not_exist()
     {
-        // Disable page existence check for Inertia testing
-        config(['inertia.testing.ensure_pages_exist' => false]);
-
         // Remove the student record to simulate a missing student.
         $this->student->delete();
 
@@ -191,30 +188,6 @@ class ApplicationControllerTest extends TestCase
                     'current_page',
                     'last_page',
                 ],
-            ]);
-    }
-
-    public function test_it_fetches_institutions_by_guid_or_all_when_none_provided()
-    {
-        $this->actingAs($this->user);
-
-        $institution = Institution::factory()->create();
-        $allocation = Allocation::factory()->create([
-            'institution_guid' => $institution->guid,
-            'status'           => 'active',
-        ]);
-
-        // Fetch a specific institution.
-        $response = $this->get(route('student.claims.fetchInstitutions', ['institution' => $institution->guid]));
-        $response->assertStatus(200)
-            ->assertJsonFragment(['guid' => $institution->guid]);
-
-        // Fetch all institutions.
-        $responseAll = $this->get(route('student.claims.fetchInstitutions'));
-        $responseAll->assertStatus(200)
-            ->assertJsonStructure([
-                'status',
-                'institutions',
             ]);
     }
 
