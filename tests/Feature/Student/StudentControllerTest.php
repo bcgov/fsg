@@ -35,7 +35,6 @@ class StudentControllerTest extends TestCase
 
         $response = $this->get(route('student.home'));
 
-        // Assuming your index method returns an Inertia component.
         // Adjust the expected component alias if needed.
         $response->assertStatus(200)
             ->assertInertia(fn (Assert $page) => $page
@@ -132,6 +131,102 @@ class StudentControllerTest extends TestCase
         ]);
     }
 
+
+    public function test_cannot_create_new_student_for_matching_sin_lastname_not_dob(): void
+    {
+        $this->actingAs($this->user);
+
+        $studentData = [
+            'guid'                => str_replace('-', '', (string) Str::uuid()),
+            'first_name' => $this->student->first_name,
+            'last_name'  => $this->student->last_name,
+            'dob'        => '1997-07-07',
+            'gender'     => 'Female',
+            'email'      => $this->student->email,
+            'sin'                 => $this->student->sin,
+            'city'                => 'Vancouver',
+            'zip_code'            => 'V0V0V0',
+            'citizenship'         => 'Canadian',
+            'grade12_or_over19'   => 'grade12',
+            'bc_resident'         => true,
+            'info_consent'        => true,
+            'duplicative_funding' => true,
+            'tax_implications'    => true,
+            'lifetime_max'        => true,
+            'fed_prov_benefits'   => true,
+            'workbc_client'       => true,
+            'additional_supports' => true,
+            'total_grant'         => 0,
+            'excel_guid'          => null,
+        ];
+
+        $response = $this->post(route('student.store'), $studentData);
+
+        $response->assertStatus(200)
+            ->assertInertia(fn ($page) => $page
+                ->component('Student::Dashboard')
+                ->where('page', 'profile')
+                ->where('error', 'Failed to connect account')
+            );
+
+        $student = Student::where('sin', $studentData['sin'])->first();
+
+        // Assert that the student record has not changed in the test database.
+        $this->assertDatabaseHas('students', [
+            'user_guid'   => $student->user->guid,
+            'first_name'  => $student->first_name,
+            'last_name'   => $student->last_name,
+            'email'       => $student->email,
+            'zip_code'    => $student->zip_code,
+            'dob'    => $student->dob,
+        ]);
+    }
+
+
+    public function test_can_create_new_student_for_matching_sin_lastname_dob(): void
+    {
+        $this->actingAs($this->user);
+
+        $studentData = [
+            'guid'                => str_replace('-', '', (string) Str::uuid()),
+            'first_name' => $this->student->first_name,
+            'last_name'  => $this->student->last_name,
+            'dob'        => $this->student->dob,
+            'gender'     => 'Male',
+            'email'      => $this->student->email,
+            'sin'                 => $this->student->sin,
+            'city'                => 'Vancouver',
+            'zip_code'            => 'V1V1V1',
+            'citizenship'         => 'Japanese',
+            'grade12_or_over19'   => 'grade12',
+            'bc_resident'         => true,
+            'info_consent'        => true,
+            'duplicative_funding' => true,
+            'tax_implications'    => true,
+            'lifetime_max'        => true,
+            'fed_prov_benefits'   => true,
+            'workbc_client'       => true,
+            'additional_supports' => true,
+            'total_grant'         => 0,
+            'excel_guid'          => null,
+        ];
+
+        $response = $this->post(route('student.store'), $studentData);
+
+        $response->assertRedirect(route('student.home'));
+
+        $student = Student::where('sin', $studentData['sin'])->first();
+
+        // Assert that the student record has not changed in the test database.
+        $this->assertDatabaseHas('students', [
+            'user_guid'   => $student->user->guid,
+            'first_name'  => $student->first_name,
+            'last_name'   => $student->last_name,
+            'email'       => $student->email,
+            'zip_code'    => $student->zip_code,
+            'dob'    => $student->dob,
+        ]);
+    }
 
     public function test_it_fetches_institutions_by_guid_or_all_when_none_provided()
     {
