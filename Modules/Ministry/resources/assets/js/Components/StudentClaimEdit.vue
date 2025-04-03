@@ -110,22 +110,22 @@
 
                     <hr/>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <Label for="inputProgramFee" class="form-label" value="Program/Tuition Fee" />
                         <Input type="number" step=".01" class="form-control" id="inputProgramFee" v-model="editStudentClaimForm.program_fee" />
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <Label for="inputRegistrationFee" class="form-label" value="Registration Fee" />
                         <Input type="number" step=".01" class="form-control" id="inputRegistrationFee" v-model="editStudentClaimForm.registration_fee" />
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <Label for="inputMaterialsFee" class="form-label" value="Materials Fee" />
                         <Input type="number" step=".01" class="form-control" id="inputMaterialsFee" v-model="editStudentClaimForm.materials_fee" />
                     </div>
-<!--                    <div class="col-md-3">-->
-<!--                        <Label for="inputCorrection" class="form-label" value="Correction" />-->
-<!--                        <Input type="number" step=".01" class="form-control" id="inputCorrection" v-model="editStudentClaimForm.correction_amount" />-->
-<!--                    </div>-->
+                    <div class="col-md-3">
+                        <Label for="inputCorrection" class="form-label" value="Correction" />
+                        <Input type="number" step=".01" class="form-control" id="inputCorrection" v-model="editStudentClaimForm.correction_amount" />
+                    </div>
 
                     <div class="col-md-3">
                         <Label for="inputStableDate" class="form-label" value="Admin Fee" />
@@ -166,26 +166,26 @@
 
                     <hr v-if="claim.claim_status !== 'Draft'"/>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <Label for="inputProgramFee" class="form-label" value="Tuition/Program Fee" />
                         ${{ editStudentClaimForm.program_fee }}
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <Label for="inputRegistrationFee" class="form-label" value="Registration Fee" />
                         ${{ editStudentClaimForm.registration_fee }}
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <Label for="inputMaterialsFee" class="form-label" value="Materials Fee" />
                         ${{ editStudentClaimForm.materials_fee }}
                     </div>
-<!--                    <div class="col-md-3">-->
-<!--                        <Label for="inputCorrection" class="form-label" value="Correction" />-->
-<!--                        <Input type="number" step=".01" class="form-control" id="inputCorrection" v-model="editStudentClaimForm.correction_amount" />-->
-<!--                    </div>-->
-<!--                    <div v-if="editStudentClaimForm.correction_amount != null && editStudentClaimForm.correction_amount != 0" class="col-12">-->
-<!--                        <Label for="inputCorrectionCmnt" class="form-label" value="Correction Comment" />-->
-<!--                        <textarea class="form-control" id="inputCorrectionCmnt" v-model="editStudentClaimForm.correction_comment" />-->
-<!--                    </div>-->
+                    <div class="col-md-3">
+                        <Label for="inputCorrection" class="form-label" value="Correction" />
+                        <Input type="number" step=".01" class="form-control" id="inputCorrection" v-model="editStudentClaimForm.correction_amount" />
+                    </div>
+                    <div v-if="editStudentClaimForm.correction_amount != null && editStudentClaimForm.correction_amount != 0" class="col-12">
+                        <Label for="inputCorrectionCmnt" class="form-label" value="Correction Comment" />
+                        <textarea class="form-control" id="inputCorrectionCmnt" v-model="editStudentClaimForm.correction_comment" />
+                    </div>
 
                     <div class="col-md-4">
                         <Label for="inputStableDate" class="form-label" value="Admin Fee" />
