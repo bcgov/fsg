@@ -123,6 +123,9 @@ class UserController extends Controller
                     $request->session()->put('bcsc_logout_uri', env('KEYCLOAK_BCSC_LOGOUT_URL').'?state='.
                         $request->state.'&scope=profile%20email&response_type=code&approval_prompt=auto&client_id=fsg&id_token_hint='.
                         $idToken.'&post_logout_redirect_uri='.env('KEYCLOAK_BCSC_REDIRECT_LOGOUT_URI'));
+
+                    $returnUrl = env('KEYCLOAK_LOGOUT_URL1') . '?retnow=1&returl=' . urlencode(env('KEYCLOAK_LOGOUT_URL2').'?id_token_hint=' . $idToken . '&post_logout_redirect_uri=' . env('KEYCLOAK_LOGOUT_URL3'));
+                    $request->session()->put('kc_logout_uri', $returnUrl);
                 }
                 \Log::info('KC Logout : '.$provider->getLogoutUrl(['access_token' => $token]));
 //                \Log::info('idToken: ');
