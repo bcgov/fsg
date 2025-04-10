@@ -20,7 +20,7 @@
                             <td><a href="#" @click="openEditForm(row)">{{ row.program.program_name }}</a></td>
                             <td>{{ row.institution.name }}</td>
                             <td>${{ row.total_claim_amount }}
-                                <span v-if="row.correction_amount > 0 || row.correction_amount < 0 || row.correction_amount != null" style="color: red;">*</span>
+                                <span v-if="row.correction_amount > 0 || row.correction_amount < 0" style="color: red;">*</span>
                             </td>
 
                             <td>${{ row.student.total_grant }}</td>
