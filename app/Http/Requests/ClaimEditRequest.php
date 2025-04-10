@@ -31,6 +31,11 @@ class ClaimEditRequest extends FormRequest
             return false;
         }
 
+        // Prevent updates if the current claim_status is "Claimed" and already got correction
+        if ($claim->claim_status === 'Claimed' && $claim->correction != null) {
+            return false;
+        }
+
         // Allow switching to Cancelled only if claim is in Hold status and stable enrol. date is yet to come
         //        if ($this->claim_status === 'Cancelled' && $claim->claim_status !== 'Hold') {
         //            return false;
