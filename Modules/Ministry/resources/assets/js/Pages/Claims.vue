@@ -38,7 +38,7 @@
                                             <td>{{ row.allocation.py.start_date }} {{ row.allocation.py.end_date }}</td>
                                             <td>${{ $amountPlusPyFee(row.estimated_hold_amount, row.py_admin_fee) }}</td>
                                             <td>${{ $amountPlusPyFee(parseFloat(row.registration_fee) + parseFloat(row.materials_fee) + parseFloat(row.program_fee) + parseFloat(row.correction_amount), row.py_admin_fee) }}
-                                                <span v-if="row.correction_amount > 0 || row.correction_amount < 0 || row.correction_amount != null" style="color: red;">*</span>
+                                                <span v-if="row.correction_amount > 0 || row.correction_amount < 0" style="color: red;">*</span>
                                             </td>
 
                                                 <!--                                            <td>${{ row.student.total_grant }}</td>-->
