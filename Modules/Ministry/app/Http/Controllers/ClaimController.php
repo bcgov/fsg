@@ -3,6 +3,7 @@
 namespace Modules\Ministry\Http\Controllers;
 
 use App\Events\ClaimSubmitted;
+use App\Events\MinistryClaimSubmitted;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClaimEditRequest;
 use App\Http\Requests\ClaimStoreRequest;
@@ -110,12 +111,12 @@ class ClaimController extends Controller
         $claim->save();
 
 //        $claim_id = Claim::where('id', $request->id)->update($request->validated());
-        event(new ClaimSubmitted($claim, $request->claim_status));
+        event(new MinistryClaimSubmitted($claim, $request->claim_status));
 
         $claim = Claim::find($request->id);
         $id = $request->page === 'students' ? $claim->student->id : $claim->institution->id;
 
-        return Redirect::route('ministry.'.$request->page.'.show', [$id, $request->subpage]);
+        return Redirect::route('ministry.'.$request->page.'.index');
     }
 
     private function paginateClaimsByInstitution($institutionGuid)

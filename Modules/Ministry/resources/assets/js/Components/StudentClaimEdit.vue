@@ -2,7 +2,7 @@
     <form v-if="editStudentClaimForm != null && programs.length > 0" class="card-body" @submit.prevent="submitForm">
         <div class="modal-body">
             <div class="row g-3">
-
+<div class="col-12">PY: {{ editStudentClaimForm.allocation.py.start_date }} to {{ editStudentClaimForm.allocation.py.end_date }}</div>
                 <div class="col-md-6">
                     <label for="inputSd" class="block font-medium text-sm text-gray-700 form-label">{{ getInactiveProgramName() }}</label>
                     <Select class="form-select" id="inputSd" v-model="editStudentClaimForm.program_guid">

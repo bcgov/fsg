@@ -24,6 +24,7 @@
                                 <td>${{ row.program_fee }}</td>
                                 <td>${{ row.registration_fee }}</td>
                                 <td>${{ row.materials_fee }}</td>
+                                <td>${{ row.correction_amount }}</td>
                                 <td>
                                     <span v-if="row.claim_status === 'Draft'" class="badge rounded-pill text-bg-info">Draft</span>
                                     <span v-else-if="row.claim_status === 'Submitted'" class="badge rounded-pill text-bg-primary">Submitted</span>
@@ -44,6 +45,7 @@
                             <th>${{ countTotals('program_fee') }}</th>
                             <th>${{ countTotals('registration_fee') }}</th>
                             <th>${{ countTotals('materials_fee') }}</th>
+                            <th>${{ countTotals('correction_amount') }}</th>
                             <th></th>
                         </tr>
 

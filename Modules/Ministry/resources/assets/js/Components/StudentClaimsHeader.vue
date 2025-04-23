@@ -19,6 +19,9 @@
             <span title="Materials Fee">Mat. Fee</span>
         </th>
         <th scope="col" class="text-nowrap">
+            <span title="Correction">Correction</span>
+        </th>
+        <th scope="col" class="text-nowrap">
             <span>Status</span>
         </th>
     </tr>
