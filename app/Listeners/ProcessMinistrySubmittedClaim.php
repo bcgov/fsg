@@ -16,7 +16,7 @@ class ProcessMinistrySubmittedClaim
      */
     public function handle(MinistryClaimSubmitted $event): void
     {
-//        Log::info('handle claim submitted');
+        Log::info('handle ministry claim submitted');
 
         // Get the cap, attestation and status from the event
         $claim_before_update = $event->claim;
@@ -26,10 +26,12 @@ class ProcessMinistrySubmittedClaim
         $student = Student::where('guid', $claim->student_guid)->first();
         $claim->process_feedback = null;
 
+//        Log::info("Status: $status");
+//        Log::info("Claim Status1: $claim_before_update->claim_status");
+//        Log::info("Claim Status2: $claim->claim_status");
 
-        if ($status != 'Cancelled') {
-            $claim->claim_status = 'Draft';
-        } else {
+
+
             $claim->claim_percent = $claim->allocation->py->claim_percent;
 
             // If the student is moving the claim from Draft to Submitted
@@ -196,7 +198,6 @@ class ProcessMinistrySubmittedClaim
                 $claim->claim_percent = 0;
                 $claim->correction_amount = 0;
             }
-        }
 
         $claim->save();
     }

@@ -22,6 +22,8 @@ class ClaimEditRequest extends FormRequest
     {
         $claim = Claim::find($this->id);
 
+//        Log::info("ClaimEditRequest - Claim Status: $claim->claim_status");
+
         if (! $claim) {
             return false; // Claim not found
         }

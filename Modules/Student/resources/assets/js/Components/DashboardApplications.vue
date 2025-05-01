@@ -16,6 +16,7 @@
                         <tr v-if="row !== null">
                             <td><a href="#" @click="openEditForm(row)">{{ row.program.program_name }}</a></td>
                             <td>{{ row.institution.name }}</td>
+                            <td>{{ showYear(row.allocation.py.start_date) }} - {{ showYear(row.allocation.py.end_date) }}</td>
                             <td>${{ parseFloat(row.estimated_hold_amount) }}</td>
                             <td>${{ parseFloat(row.registration_fee) + parseFloat(row.materials_fee) + parseFloat(row.program_fee) + parseFloat(row.correction_amount) }}</td>
 <!--                            <td>${{ row.student.total_grant }}</td>-->
@@ -115,6 +116,17 @@ export default {
         }
     },
     methods: {
+        /*
+            * Passed argument is a string in the format YYYY-MM-DD
+            * @param {string} value
+            * @returns {number}
+         */
+        showYear: function (value) {
+            if (value !== undefined && value !== '') {
+                return value.split("-")[0];
+            }
+            return value;
+        },
         openNewForm: function () {
             setTimeout(function () {
                 $("#newApplicationModal").modal('show');

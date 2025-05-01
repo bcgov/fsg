@@ -58,8 +58,8 @@ class ClaimController extends Controller
         $user = User::find(Auth::user()->id);
         $allocations = $this->getAllocations($user);
 
-        $allocation = $allocations->where('institution_guid', $user->institution->guid)->first();
-        $body = $this->paginateClaims($allocation);
+        //$allocation = $allocations->where('institution_guid', $user->institution->guid)->first();
+        $body = $this->paginateClaims($allocations);
 
         return Response::json(['status' => true, 'body' => $body]);
     }
@@ -161,11 +161,11 @@ class ClaimController extends Controller
         return $response;
     }
 
-    private function paginateClaims($allocation)
+    private function paginateClaims($allocations)
     {
         $user = Auth::user();
 
-        if (is_null($allocation)) {
+        if (empty($allocations)) {
             // Return empty paginator
             $emptyData = new Collection();
             $emptyPaginator = new LengthAwarePaginator(
@@ -182,8 +182,12 @@ class ClaimController extends Controller
             return $emptyPaginator->onEachSide(1);
         }
 
+        // An institution can have multiple allocations for the same program year
+        // So we need to get the allocation guids
+        $allocationGuids = $allocations->pluck('guid')->toArray();
         $claims = Claim::where('institution_guid', $user->institution->guid)
-            ->where('allocation_guid', $allocation->guid)
+            ->whereIn('allocation_guid', $allocationGuids)
+//            ->where('allocation_guid', $allocation->guid)
             ->whereNotIn('claim_status', ['Draft'])
             ->with('student', 'program');
 

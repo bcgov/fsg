@@ -5,7 +5,10 @@
                 <span>Program Name</span>
         </th>
         <th scope="col" class="text-nowrap">
-                <span>Institution Name</span>
+            <span>Institution Name</span>
+        </th>
+        <th scope="col" class="text-nowrap">
+            <span>Program Year</span>
         </th>
         <th scope="col" class="text-nowrap">
             <span>Estimated Hold</span>
