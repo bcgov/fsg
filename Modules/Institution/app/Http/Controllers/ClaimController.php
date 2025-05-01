@@ -34,14 +34,16 @@ class ClaimController extends Controller
         // This is going to be all attes. under this inst. and are using the same fed cap as this.
         $user = User::find(Auth::user()->id);
         $allocations = $this->getAllocations($user);
-        $allocation = $allocations->where('institution_guid', $user->institution->guid)->first();
+//        $allocation = $allocations->where('institution_guid', $user->institution->guid)->first();
 
-        $claims = $this->paginateClaims($allocation);
+        $claims = $this->paginateClaims($allocations);
+        \Log::info("AllocationGuids 0.1: " . json_encode($allocations->pluck('guid')->toArray()));
 
         return Inertia::render('Institution::Claims', ['error' => null, 'results' => $claims,
             'institution' => $user->institution,
             'countries' => null,
-            'allocation' => $allocation]);
+//            'allocation' => $allocation
+        ]);
     }
 
     public function fetchClaims(Request $request, $guid = null)
@@ -57,6 +59,7 @@ class ClaimController extends Controller
 
         $user = User::find(Auth::user()->id);
         $allocations = $this->getAllocations($user);
+        \Log::info("AllocationGuids 0: " . json_encode($allocations->pluck('guid')->toArray()));
 
         //$allocation = $allocations->where('institution_guid', $user->institution->guid)->first();
         $body = $this->paginateClaims($allocations);
@@ -185,6 +188,8 @@ class ClaimController extends Controller
         // An institution can have multiple allocations for the same program year
         // So we need to get the allocation guids
         $allocationGuids = $allocations->pluck('guid')->toArray();
+        \Log::info("AllocationGuids: " . json_encode($allocationGuids));
+
         $claims = Claim::where('institution_guid', $user->institution->guid)
             ->whereIn('allocation_guid', $allocationGuids)
 //            ->where('allocation_guid', $allocation->guid)
@@ -229,7 +234,13 @@ class ClaimController extends Controller
         $cacheProgramYear = Cache::get('global_program_years_' . $user->institution->guid);
         $programYear = ProgramYear::where('guid', $cacheProgramYear['default'])->first();
 
-        return Allocation::where('program_year_guid', $programYear->guid)
+        $allocations = Allocation::where('institution_guid', $user->institution->guid)
+            ->where('program_year_guid', $programYear->guid)
             ->with('py')->orderByDesc('created_at')->get();
+
+        \Log::info("programYear guid: " . $cacheProgramYear['default']);
+        \Log::info("AllocationGuids 1: " . json_encode($allocations->pluck('guid')->toArray()));
+
+        return $allocations;
     }
 }

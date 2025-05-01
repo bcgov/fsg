@@ -18,6 +18,14 @@ class ApplicationEditRequest extends FormRequest
      */
     public function authorize()
     {
+        $claim = Claim::find($this->id);
+
+        // Prevent updates if the current claim_status is not "Claimed" and the claim allocation is not active
+        // This is to prevent updates to claims that are not in an active allocation
+        // and are not in "Claimed" status
+        if ($claim->claim_status !== 'Claimed' && $claim->allocation->status !== 'active') {
+            return false;
+        }
         // Check if the authenticated user has the necessary permissions to edit the institution.
         // You can access the authenticated user using the Auth facade or $this->user() method.
         return $this->user()->can('create', Claim::class);
