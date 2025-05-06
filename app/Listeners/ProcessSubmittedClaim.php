@@ -15,7 +15,7 @@ class ProcessSubmittedClaim
      */
     public function handle(ClaimSubmitted $event): void
     {
-//        Log::info('handle claim submitted');
+        Log::info('handle institution claim submitted');
 
         // Get the cap, attestation and status from the event
         $claim_before_update = $event->claim;
@@ -28,8 +28,16 @@ class ProcessSubmittedClaim
 
 //        Log::info($claim_before_update->claim_status . ' => ' . $status);
 
-        // If the claim submitted against an inactive allocation stop there.
-        if ($claim->allocation->status != 'active' && $status != 'Cancelled') {
+        $allowedToUpdateClaimFromInactivePy = false;
+        // If the claim is to add outcome_effective_date and outcome_status
+        // Then check $claim_before_update->outcome_effective_date and $claim_before_update->outcome_status
+        // They should be null and $claim->outcome_effective_date and $claim->outcome_status should be set
+        if($claim_before_update->outcome_effective_date === null && $claim_before_update->outcome_status === null
+            && $claim->outcome_effective_date !== null && $claim->outcome_status !== null) {
+            $allowedToUpdateClaimFromInactivePy = true;
+        }
+
+        if (!$allowedToUpdateClaimFromInactivePy && $claim->allocation->status != 'active' && $status != 'Cancelled') {
             $claim->claim_status = 'Draft';
         } else {
             $claim->claim_percent = $claim->allocation->py->claim_percent;
