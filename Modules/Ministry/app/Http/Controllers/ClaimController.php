@@ -106,12 +106,13 @@ class ClaimController extends Controller
      */
     public function update(ClaimEditRequest $request): \Illuminate\Http\RedirectResponse
     {
+        $oldClaim = Claim::find($request->id);
         $claim = Claim::find($request->id);
         $claim->fill($request->validated());
         $claim->save();
 
 //        $claim_id = Claim::where('id', $request->id)->update($request->validated());
-        event(new MinistryClaimSubmitted($claim, $request->claim_status));
+        event(new MinistryClaimSubmitted($oldClaim, $request->claim_status));
 
         $claim = Claim::find($request->id);
         $id = $request->page === 'students' ? $claim->student->id : $claim->institution->id;
