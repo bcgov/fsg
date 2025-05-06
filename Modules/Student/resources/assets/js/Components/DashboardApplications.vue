@@ -123,9 +123,16 @@ export default {
          */
         showYear: function (value) {
             if (value !== undefined && value !== '') {
-                return value.split("-")[0];
+            //     return value.split("-")[0];
+            // }
+            // return value;
+                // Split the string by the "-" character and return the first part (the year)
+                // Example: "2023-10-01" will return "2023"
+                // radix is 10 for decimal meaning
+                // parseInt("2023", 10) will return 2023
+                return parseInt(value.split("-")[0], 10);
             }
-            return value;
+            return NaN; // Return NaN if the input is invalid
         },
         openNewForm: function () {
             setTimeout(function () {
