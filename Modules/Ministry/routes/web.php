@@ -43,7 +43,8 @@ Route::prefix('ministry')->group(function () {
             Route::put('/allocations', [AllocationController::class, 'update'])->name('allocations.update');
             Route::post('/allocations', [AllocationController::class, 'store'])->name('allocations.store');
 
-            Route::put('/claims', [ClaimController::class, 'update'])->name('claims.update');
+        Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
+        Route::put('/claims', [ClaimController::class, 'update'])->name('claims.update');
             Route::post('/claims', [ClaimController::class, 'store'])->name('claims.store');
             Route::post('/clear-claim-outcome', [ClaimController::class, 'clearClaimOutcome'])->name('claims.clear-claim-outcome');
 
@@ -53,7 +54,8 @@ Route::prefix('ministry')->group(function () {
             Route::get('/api/fetch/institutions/claims-by-course', [ClaimController::class, 'fetchClaimsByCourse'])->name('claims.fetchClaimsByCourse');
             Route::get('/api/fetch/institutions/claims-by-student', [ClaimController::class, 'fetchClaimsByStudent'])->name('claims.fetchClaimsByStudent');
 
-            Route::group([
+
+        Route::group([
                 'middleware' => ['ministry_admin'],
             ], function () {
                 Route::group([

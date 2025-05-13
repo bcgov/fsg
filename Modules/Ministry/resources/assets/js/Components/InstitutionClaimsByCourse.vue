@@ -22,9 +22,8 @@
                             <td><Link :href="'/ministry/students/' + row.student.id">{{ row.last_name }}</Link></td>
                             <td>{{ row.program.program_name }}</td>
                             <td>${{ $amountPlusPyFee(row.estimated_hold_amount, row.py_admin_fee) }}</td>
-                            <td>${{ row.total_claim_amount }}
-                                <span v-if="row.correction_amount > 0"> + ${{ row.correction_amount }}</span>
-                                <span v-if="row.correction_amount < 0"> ${{ row.correction_amount }}</span>
+                            <td>${{ totalPlusAdmin(row) }}
+                                <span v-if="row.correction_amount > 0 || row.correction_amount < 0" style="color: red;">*</span>
                             </td>
 <!--                            <td>${{ row.student.total_grant }}</td>-->
                             <td>
@@ -150,7 +149,22 @@ export default {
         },
         updateClaims: function (e) {
             this.claims = e;
+        },
+        totalPlusAdmin(claim) {
+            const programFee = parseFloat(claim.program_fee) || 0;
+            const registrationFee = parseFloat(claim.registration_fee) || 0;
+            const materialsFee = parseFloat(claim.materials_fee) || 0;
+            const adminFeePercentage = parseInt(claim.allocation.py_admin_fee) || 0;
+            const correction = parseInt(claim.correction_amount) || 0;
+
+            const total = programFee + registrationFee + materialsFee + correction;
+            const adminFee = total * (adminFeePercentage / 100);
+
+            return total + adminFee;
         }
+    },
+    computed: {
+
     },
     mounted() {
         this.fetchData();

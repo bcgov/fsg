@@ -19,7 +19,10 @@
                         <tr v-if="row !== null">
                             <td><a href="#" @click="openEditForm(row)">{{ row.program.program_name }}</a></td>
                             <td>{{ row.institution.name }}</td>
-                            <td>${{ row.total_claim_amount }}</td>
+                            <td>${{ row.total_claim_amount }}
+                                <span v-if="row.correction_amount > 0 || row.correction_amount < 0" style="color: red;">*</span>
+                            </td>
+
                             <td>${{ row.student.total_grant }}</td>
                             <td>
                                 <span v-if="row.claim_status === 'Draft'" class="badge rounded-pill text-bg-info">Draft</span>

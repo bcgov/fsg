@@ -22,12 +22,26 @@ class ClaimEditRequest extends FormRequest
     {
         $claim = Claim::find($this->id);
 
+//        Log::info("ClaimEditRequest - Claim Status: $claim->claim_status");
+
         if (! $claim) {
             return false; // Claim not found
         }
 
         // Prevent updates if the current claim_status is "Claimed"
         if ($claim->claim_status === 'Claimed' && $claim->outcome_effective_date != null && $claim->outcome_status != null) {
+            return false;
+        }
+
+        // Prevent updates if the current claim_status is not "Claimed" and the claim allocation is not active
+        // This is to prevent updates to claims that are not in an active allocation
+        // AND are not in "Claimed" status
+        if ($claim->claim_status !== 'Claimed' && $claim->allocation->status !== 'active') {
+            return false;
+        }
+
+        // Prevent updates if the current claim_status is "Claimed" and already got correction
+        if ($claim->claim_status === 'Claimed' && $claim->correction != null) {
             return false;
         }
 

@@ -367,15 +367,15 @@ class MaintenanceController extends Controller
         $fromDate = $request->from_date;
         $toDate = $request->to_date.' 23:59:59';
 
-        $publicReport = ['instList' => [], 'total' => 0, 'Claimed' => 0, 'Hold' => 0];
+        $publicReport = ['instList' => [], 'total' => 0, 'Claimed' => 0, 'Hold' => 0, 'adminFee' => 0];
 
-        foreach ($activePy->allocations as $allocation){
-            $publicReport['instList'][$allocation->institution->name] = [
-                'total' => $allocation->total_amount,
-                'Claimed' => 0, 'Hold' => 0
-            ];
-            $publicReport['total'] += $allocation->total_amount;
-        }
+//        foreach ($activePy->allocations as $allocation){
+//            $publicReport['instList'][$allocation->institution->name] = [
+//                'total' => $allocation->total_amount,
+//                'Claimed' => 0, 'Hold' => 0
+//            ];
+//            $publicReport['total'] += $allocation->total_amount;
+//        }
 
 
         // Fetch attestations within the specified date range
@@ -417,6 +417,11 @@ class MaintenanceController extends Controller
         $inst = $claim->institution;
         $instName = $inst->name;
         $status = $claim->claim_status;
+        if(!array_key_exists($instName, $report['instList']))
+            $report['instList'][$claim->allocation->institution->name] = [
+                'total' => $claim->allocation->total_amount,
+                'Claimed' => 0, 'Hold' => 0, 'adminFee' => $claim->allocation->py->claim_percent,
+            ];
 
         if($status == 'Hold'){
             $report['instList'][$instName][$status] += $claim->estimated_hold_amount;

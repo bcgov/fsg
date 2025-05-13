@@ -8,26 +8,9 @@ use App\Models\Student;
 use App\Rules\InstitutionAllocationReached;
 use App\Rules\ValidSin;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Log;
 
 class ApplicationEditRequest extends FormRequest
 {
-    protected function failedValidation(Validator $validator)
-    {
-        // Log the validation errors
-        Log::error('Validation failed in ' . static::class, $validator->errors()->toArray());
-
-        // Then throw the HttpResponseException as usual
-        throw new HttpResponseException(
-            response()->json([
-                'status' => false,
-                'errors' => $validator->errors(),
-            ], 422)
-        );
-    }
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -35,7 +18,14 @@ class ApplicationEditRequest extends FormRequest
      */
     public function authorize()
     {
+        $claim = Claim::find($this->id);
 
+        // Prevent updates if the current claim_status is not "Claimed" and the claim allocation is not active
+        // This is to prevent updates to claims that are not in an active allocation
+        // and are not in "Claimed" status
+        if ($claim->claim_status !== 'Claimed' && $claim->allocation->status !== 'active') {
+            return false;
+        }
         // Check if the authenticated user has the necessary permissions to edit the institution.
         // You can access the authenticated user using the Auth facade or $this->user() method.
         return $this->user()->can('create', Claim::class);
@@ -169,5 +159,19 @@ class ApplicationEditRequest extends FormRequest
     private function toBoolean($booleable)
     {
         return filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+    }
+
+    /**
+     * Handle a failed authorization attempt.
+     *
+     * @return void
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    protected function failedAuthorization(): void
+    {
+        throw new \Illuminate\Auth\Access\AuthorizationException(
+            'Editing this application is not authorized. Make sure you are submitting an application for the current active year.'
+        );
     }
 }

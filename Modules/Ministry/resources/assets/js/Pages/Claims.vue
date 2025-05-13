@@ -19,7 +19,7 @@
                     <div class="card mb-3">
                         <div class="card-header">
                             Student Claims
-                            <a href="/institution/claims/export" target="_blank" class="btn btn-outline-success btn-sm float-end" title="Export Claims"><i class="bi bi-filetype-csv"></i></a>
+<!--                            <a href="/ministry/claims/export" target="_blank" class="btn btn-outline-success btn-sm float-end" title="Export Claims"><i class="bi bi-filetype-csv"></i></a>-->
                         </div>
                         <div class="card-body">
                             <div v-if="claimList != '' && results.data.length > 0" class="table-responsive pb-3">
@@ -32,14 +32,16 @@
                                         <tr v-if="row !== null">
                                             <td><a href="#" @click="openEditForm(row)">{{ row.sin ?? 0 }}</a></td>
                                             <td>{{ row.first_name }}</td>
-                                            <td><Link :href="'/institution/students/' + row.student.id">{{ row.last_name }}</Link></td>
+                                            <td><Link :href="'/ministry/students/' + row.student.id">{{ row.last_name }}</Link></td>
+                                            <td><Link :href="'/ministry/institutions/' + row.institution.id">{{ row.institution.name }}</Link></td>
                                             <td>{{ row.program.program_name }}</td>
+                                            <td>{{ row.allocation.py.start_date }} {{ row.allocation.py.end_date }}</td>
                                             <td>${{ $amountPlusPyFee(row.estimated_hold_amount, row.py_admin_fee) }}</td>
                                             <td>${{ $amountPlusPyFee(parseFloat(row.registration_fee) + parseFloat(row.materials_fee) + parseFloat(row.program_fee) + parseFloat(row.correction_amount), row.py_admin_fee) }}
                                                 <span v-if="row.correction_amount > 0 || row.correction_amount < 0" style="color: red;">*</span>
                                             </td>
 
-                                            <!--                                            <td>${{ row.student.total_grant }}</td>-->
+                                                <!--                                            <td>${{ row.student.total_grant }}</td>-->
                                             <td>
                                                 <p v-if="row.claim_status === 'Draft'" class="badge rounded-pill text-bg-info">Draft<span v-if="row.process_feedback != null" class="badge rounded-pill text-bg-danger ms-1">!</span></p>
                                                 <p v-else-if="row.claim_status === 'Submitted'" class="badge rounded-pill text-bg-primary">Submitted<span v-if="row.process_feedback != null" class="badge rounded-pill text-bg-danger ms-1">!</span></p>
@@ -55,7 +57,6 @@
                                                     <i class="bi bi-dash"></i>
                                                 </span>
                                             </td>
-                                            <td>{{ formatDate(row.created_at) }}</td>
                                         </tr>
                                     </template>
                                     </tbody>
@@ -99,7 +100,7 @@
 import AuthenticatedLayout from '../Layouts/Authenticated.vue';
 import ClaimSearchBox from '../Components/ClaimSearch.vue';
 import ClaimsHeader from '../Components/ClaimsHeader.vue';
-import ClaimEdit from '../Components/ClaimEdit.vue';
+import ClaimEdit from '../Components/StudentClaimEdit.vue';
 import Pagination from "@/Components/Pagination";
 import {Link, Head, useForm} from '@inertiajs/vue3';
 

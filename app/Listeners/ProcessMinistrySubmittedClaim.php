@@ -3,19 +3,20 @@
 namespace App\Listeners;
 
 use App\Events\ClaimSubmitted;
+use App\Events\MinistryClaimSubmitted;
 use App\Models\Claim;
 use App\Models\Program;
 use App\Models\Student;
 use Illuminate\Support\Facades\Log;
 
-class ProcessSubmittedClaim
+class ProcessMinistrySubmittedClaim
 {
     /**
      * Handle the event.
      */
-    public function handle(ClaimSubmitted $event): void
+    public function handle(MinistryClaimSubmitted $event): void
     {
-        Log::info('handle institution claim submitted');
+        Log::info('handle ministry claim submitted');
 
         // Get the cap, attestation and status from the event
         $claim_before_update = $event->claim;
@@ -25,21 +26,12 @@ class ProcessSubmittedClaim
         $student = Student::where('guid', $claim->student_guid)->first();
         $claim->process_feedback = null;
 
+//        Log::info("Status: $status");
+//        Log::info("Claim Status1: $claim_before_update->claim_status");
+//        Log::info("Claim Status2: $claim->claim_status");
 
-//        Log::info($claim_before_update->claim_status . ' => ' . $status);
 
-        $allowedToUpdateClaimFromInactivePy = false;
-        // If the claim is to add outcome_effective_date and outcome_status
-        // Then check $claim_before_update->outcome_effective_date and $claim_before_update->outcome_status
-        // They should be null and $claim->outcome_effective_date and $claim->outcome_status should be set
-        if($claim_before_update->outcome_effective_date === null && $claim_before_update->outcome_status === null
-            && $claim->outcome_effective_date !== null && $claim->outcome_status !== null) {
-            $allowedToUpdateClaimFromInactivePy = true;
-        }
 
-        if (!$allowedToUpdateClaimFromInactivePy && $claim->allocation->status != 'active' && $status != 'Cancelled') {
-            $claim->claim_status = 'Draft';
-        } else {
             $claim->claim_percent = $claim->allocation->py->claim_percent;
 
             // If the student is moving the claim from Draft to Submitted
@@ -206,7 +198,6 @@ class ProcessSubmittedClaim
                 $claim->claim_percent = 0;
                 $claim->correction_amount = 0;
             }
-        }
 
         $claim->save();
     }
