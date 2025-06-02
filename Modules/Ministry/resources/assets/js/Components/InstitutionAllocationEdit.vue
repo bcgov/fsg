@@ -6,14 +6,14 @@
                 <div v-if="newAllocation" class="col-12 mb-3">
                     <div class="alert alert-info">Activating this allocation will deactivate all active allocations permanently. This new allocation will be the only active allocation.</div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputSd" class="form-label" value="Program Year"/>
                     <Select class="form-select" id="inputSd" v-model="editInstitutionAllocationForm.program_year_guid">
                         <option></option>
                         <option v-for="f in programYears" :value="f.guid">{{ f.start_date }} - {{ f.end_date}}</option>
                     </Select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputStatus" class="form-label" value="Status"/>
                     <Select class="form-select" id="inputStatus" v-model="editInstitutionAllocationForm.status" @change="switchStatus">
                         <option value="active">Active</option>
@@ -21,11 +21,19 @@
                     </Select>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputTotalAllowed" class="form-label" value="Total Allowed"/>
                     <div class="input-group mb-3">
                         <Input type="text" class="form-control" id="inputTotalAllowed"
                                v-model="editInstitutionAllocationForm.total_amount"/>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <Label for="inputTSPercent" class="form-label" value="TS %"/>
+                    <div class="input-group mb-3">
+                        <Input type="number" class="form-control" id="inputTSPercent" min="0" max="100" v-model.number="editInstitutionAllocationForm.ts_percent"/>
+                        <span class="input-group-text">%</span>
                     </div>
                 </div>
 
@@ -80,6 +88,7 @@ export default {
                 total_amount: "",
                 program_year_guid: "",
                 status: "",
+                ts_percent: ""
             },
             selectedFedCap: '',
             allowProgramCap: false,

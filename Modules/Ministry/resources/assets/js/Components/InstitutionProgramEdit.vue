@@ -84,6 +84,14 @@
                     </Select>
                 </div>
 
+                <div class="col-md-3">
+                    <Label for="inputFundingType" class="form-label" value="Funding Type"/>
+                    <Select class="form-select" id="inputFundingType" v-model="editForm.funding_type">
+                        <option value="Gov. Priorities">Gov. Priorities</option>
+                        <option value="Transferable Skill">Transferable Skill</option>
+                    </Select>
+                </div>
+
 
                 <div v-if="editForm.errors != undefined" class="row">
                     <div class="col-12">
@@ -129,7 +137,8 @@ export default {
             editFormData: {
                 formState: true,
                 formSuccessMsg: 'Form was submitted successfully.',
-                formFailMsg: 'There was an error submitting this form.'
+                formFailMsg: 'There was an error submitting this form.',
+                funding_type: '',
             },
         }
     },

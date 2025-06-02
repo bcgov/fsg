@@ -85,6 +85,14 @@
                     </Select>
                 </div>
 
+                <div class="col-md-3">
+                    <Label for="inputFundingType" class="form-label" value="Funding Type"/>
+                    <Select class="form-select" id="inputFundingType" v-model="editForm.funding_type">
+                        <option value="Gov. Priorities">Gov. Priorities</option>
+                        <option value="Transferable Skill">Transferable Skill</option>
+                    </Select>
+                </div>
+
 
                 <div v-if="editForm.errors != undefined" class="row">
                     <div class="col-12">
@@ -144,7 +152,8 @@ export default {
                 diversity_inclusion_related_learning: "",
                 active_status: "",
                 start_date: "",
-                end_date: ""
+                end_date: "",
+                funding_type: '',
             },
         }
     },

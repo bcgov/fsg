@@ -27,32 +27,61 @@
                 </div>
 
             </div>
-            <div v-else class="row">
-                <div class="col-md-4 mb-3">
-                    <div class="card text-center">
-                        <div class="card-header">
-                            Allocation (includes Admin)
+            <div v-else>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card text-center">
+                            <div class="card-header">Allocation (includes Admin)</div>
+                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(activeAllocation ? activeAllocation.total_amount : 0) }}</div>
                         </div>
-                        <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(activeAllocation ? activeAllocation.total_amount : 0) }}</div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card text-center">
+                            <div class="card-header">Transferable Skill %</div>
+                            <div class="card-body display-5 m-4">{{ activeAllocation && activeAllocation.ts_percent !== undefined ? activeAllocation.ts_percent : 20 }}%</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card text-center">
+                            <div class="card-header">Transferable Skill Allocation</div>
+                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(((activeAllocation && activeAllocation.ts_percent !== undefined ? activeAllocation.ts_percent : 20) / 100 * (activeAllocation ? activeAllocation.total_amount : 0)).toFixed(2)) }}</div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card text-center">
-                        <div class="card-header">
-                            Hold Amount (includes Admin)
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card text-center">
+                            <div class="card-header">Hold Amount (includes Admin)</div>
+                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(holdApps) }}</div>
                         </div>
-                        <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(holdApps) }}</div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card text-center">
+                            <div class="card-header">Claimed Amount (includes Admin)</div>
+                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(claimedApps) }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card text-center">
+                            <div class="card-header">Committed Amount (Claimed + Total)</div>
+                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas((Number(claimedApps) + Number(holdApps)).toFixed(2)) }}</div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card text-center">
-                        <div class="card-header">
-                            Claimed Amount (includes Admin)
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card text-center">
+                            <div class="card-header">Transferable Skill Hold Amount</div>
+                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(activeAllocation && activeAllocation.ts_hold_amount !== undefined ? activeAllocation.ts_hold_amount : 0) }}</div>
                         </div>
-                        <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(claimedApps) }}</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card text-center">
+                            <div class="card-header">Transferable Skill Claimed Amount</div>
+                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(activeAllocation && activeAllocation.ts_claimed_amount !== undefined ? activeAllocation.ts_claimed_amount : 0) }}</div>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
 
