@@ -19,7 +19,7 @@ class Allocation extends Model
      * @var array<int, string>
      */
     protected $fillable = ['guid', 'institution_guid', 'program_year_guid', 'total_amount',
-        'on_hold_amount', 'status', 'claimed_amount', ];
+        'on_hold_amount', 'status', 'claimed_amount', 'ts_percent'];
 
     /**
      * The attributes that should be hidden for serialization.

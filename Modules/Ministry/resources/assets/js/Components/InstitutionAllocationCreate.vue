@@ -6,7 +6,7 @@
 <!--                <div class="col-12 mb-3">-->
 <!--                    <div class="alert alert-info">Creating a new allocation will deactivate all active allocations permanently. This new allocation will be the only active allocation.</div>-->
 <!--                </div>-->
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <Label for="inputSd" class="form-label" value="Program Year"/>
                     <Select class="form-select" id="inputSd" v-model="newInstitutionAllocationForm.program_year_guid">
                         <option></option>
@@ -14,10 +14,18 @@
                     </Select>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <Label for="inputTotalAtte" class="form-label" value="Total Allowed"/>
                     <div class="input-group mb-3">
                         <Input type="number" class="form-control" id="inputTotalAllowed" aria-describedby="basic-inputTotalAtte" v-model="newInstitutionAllocationForm.total_amount"/>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <Label for="inputTSPercent" class="form-label" value="TS %"/>
+                    <div class="input-group mb-3">
+                        <Input type="number" class="form-control" id="inputTSPercent" min="0" max="100" v-model.number="newInstitutionAllocationForm.ts_percent"/>
+                        <span class="input-group-text">%</span>
                     </div>
                 </div>
 
@@ -72,6 +80,7 @@ export default {
                 allocation_guid: "",
                 program_year_guid: "",
                 total_amount: "",
+                ts_percent: 20,
             },
         }
     },

@@ -21,6 +21,7 @@
                             <td v-else>{{ row.py.start_date }}</td>
                             <td>{{ row.py.end_date }}</td>
                             <td>${{ $formatNumberWithCommas(row.total_amount_formatted) }}</td>
+                            <td>${{ $formatNumberWithCommas(((row.ts_percent ?? 20) / 100 * row.total_amount).toFixed(2)) }}</td>
                             <td>${{ $formatNumberWithCommas(row.claimed) }}</td>
                             <td>
                                 <span v-if="row.status === 'new'" class="badge rounded-pill text-bg-info">New</span>
