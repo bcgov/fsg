@@ -9,11 +9,14 @@
         <th scope="col" style="min-width: 80px;">
             <span>Total Allocation</span>
         </th>
+        <th scope="col" style="min-width: 80px;">
+            <span>Used Allocation</span>
+        </th>
         <th scope="col" style="min-width: 100px;">
             <span>TS Allocation</span>
         </th>
-        <th scope="col" style="min-width: 80px;">
-            <span>Used Allocation</span>
+        <th scope="col" style="min-width: 100px;">
+            <span>TS %</span>
         </th>
         <th scope="col">
             <span>Status</span>

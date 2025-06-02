@@ -59,6 +59,23 @@ class InstitutionController extends Controller
         SUM(CASE WHEN claim_status = 'Hold' THEN COALESCE(estimated_hold_amount, 0) ELSE 0 END) as hold
     ")
                 ->first();
+
+            $ts_hold = Claim::where('institution_guid', $institution->guid)
+                ->where('allocation_guid', $instAllocation->guid)
+                ->where('claim_status', 'Hold')
+                ->whereHas('program', function($q) {
+                    $q->where('program_type', 'Transferable Skills');
+                })
+                ->sum(\DB::raw('COALESCE(estimated_hold_amount, 0)'));
+
+            $ts_claimed = Claim::where('institution_guid', $institution->guid)
+                ->where('allocation_guid', $instAllocation->guid)
+                ->where('claim_status', 'Claimed')
+                ->whereHas('program', function($q) {
+                    $q->where('program_type', 'Transferable Skills');
+                })
+                ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
+
             if ($programYear->claim_percent == 0) {
                 return Inertia::render('Institution::Dashboard', [
                     'results' => $institution,
@@ -66,6 +83,8 @@ class InstitutionController extends Controller
                     'programYear' => $programYear,
                     'holdApps' => $claimCounts->hold,
                     'claimedApps' => $claimCounts->claimed,
+                    'ts_hold_amount' => $ts_hold,
+                    'ts_claimed_amount' => $ts_claimed,
                 ]);
 
             }
@@ -76,6 +95,8 @@ class InstitutionController extends Controller
                 'programYear' => $programYear,
                 'holdApps' => $claimCounts->hold ? (float) $claimCounts->hold + ((float) $claimCounts->hold / (float) $programYear->claim_percent) : 0,
                 'claimedApps' => $claimCounts->claimed ? (float) $claimCounts->claimed + ((float) $claimCounts->claimed / (float) $programYear->claim_percent) : 0,
+                'ts_hold_amount' => $ts_hold,
+                'ts_claimed_amount' => $ts_claimed,
             ]);
         }
 

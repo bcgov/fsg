@@ -21,8 +21,9 @@
                             <td v-else>{{ row.py.start_date }}</td>
                             <td>{{ row.py.end_date }}</td>
                             <td>${{ $formatNumberWithCommas(row.total_amount_formatted) }}</td>
-                            <td>${{ $formatNumberWithCommas(((row.ts_percent ?? 20) / 100 * row.total_amount).toFixed(2)) }}</td>
                             <td>${{ $formatNumberWithCommas(row.claimed) }}</td>
+                            <td>${{ $formatNumberWithCommas(((row.ts_percent ?? 20) / 100 * row.total_amount).toFixed(2)) }}</td>
+                            <td>{{ row.ts_percent ?? 20 }}%</td>
                             <td>
                                 <span v-if="row.status === 'new'" class="badge rounded-pill text-bg-info">New</span>
                                 <span v-else-if="row.status === 'active'" class="badge rounded-pill text-bg-success">Active</span>
@@ -104,7 +105,10 @@ export default {
         },
         closeEditForm: function () {
             $("#editInstAllocationModal").modal('hide');
-            this.editAllocation = '';
+            let vm = this;
+            setTimeout(function() {
+                vm.editAllocation = '';
+            }, 1000); // Wait for modal animation to finish
         },
         formatDate: function (value) {
             if (value !== undefined && value !== '') {
