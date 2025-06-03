@@ -42,7 +42,7 @@ class ProgramEditRequest extends FormRequest
             'indigenous_related_learning' => 'required|boolean',
             'diversity_inclusion_related_learning' => 'required|boolean',
             'active_status' => 'required|boolean',
-            'funding_type' => 'required|in:Gov. Priorities,Transferable Skill',
+            'funding_type' => 'required|in:Gov. Priorities,Transferable Skills',
 
             'last_touch_by_user_guid' => 'required|exists:users,guid',
         ];
