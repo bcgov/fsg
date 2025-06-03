@@ -156,7 +156,7 @@ class ProcessMinistrySubmittedClaim
                 }
 
                 // if the program of the claim is of type Transferable Skills, then we need to check the ts_percent
-                if ($program->program_type === 'Transferable Skills') {
+                if ($program->funding_type === 'Transferable Skills') {
                     // Calculate sum claims of the institution that are not Draft, Cancelled or Expired
                     // We need the sum of claims that are Claimed and claim.program are of type Transferable Skills
                     $sum_ts_claims = Claim::
