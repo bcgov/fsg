@@ -113,8 +113,8 @@ class InstitutionController extends Controller
                 'programYear' => $programYear,
                 'holdApps' => $gov_hold ? (float) $gov_hold + ((float) $gov_hold / (float) $programYear->claim_percent) : 0,
                 'claimedApps' => $gov_claimed ? (float) $gov_claimed + ((float) $gov_claimed / (float) $programYear->claim_percent) : 0,
-                'ts_hold_amount' => $ts_hold,
-                'ts_claimed_amount' => $ts_claimed,
+                'tsHoldAmount' => $ts_hold,
+                'tsClaimedAmount' => $ts_claimed,
             ]);
         }
 
