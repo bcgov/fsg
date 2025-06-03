@@ -66,13 +66,13 @@
                     <div class="col-md-6 mb-3">
                         <div class="card text-center">
                             <div class="card-header">Transferable Skills Hold (includes Admin)</div>
-                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(ts_hold_amount) }}</div>
+                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(tsHoldAmount) }}</div>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <div class="card text-center">
                             <div class="card-header">Transferable Skills Claimed (includes Admin)</div>
-                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(ts_hold_claimed) }}</div>
+                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(tsClaimedAmount) }}</div>
                         </div>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
                     <div class="col-md-12 mb-3">
                         <div class="card text-center">
                             <div class="card-header">Committed Amount (Claimed + Total)</div>
-                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas((Number(claimedApps) + Number(holdApps) + Number(ts_hold_amount) + Number(ts_hold_claimed)).toFixed(2)) }}</div>
+                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas((Number(claimedApps) + Number(holdApps) + Number(tsHoldAmount) + Number(tsClaimedAmount)).toFixed(2)) }}</div>
                         </div>
                     </div>
                 </div>
