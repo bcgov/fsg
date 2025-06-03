@@ -7,7 +7,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('allocations', function (Blueprint $table) {
-            $table->float('ts_percent', 4, 2)->default(20)->after('claim_percent');
+            $table->float('ts_percent', 4, 2)->default(20)
+                ->comment('Transferable Skills Percent, default is 20%');
         });
     }
     public function down(): void
