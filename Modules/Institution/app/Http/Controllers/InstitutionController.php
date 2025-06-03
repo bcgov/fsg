@@ -65,7 +65,7 @@ class InstitutionController extends Controller
                 ->where('allocation_guid', $instAllocation->guid)
                 ->where('claim_status', 'Hold')
                 ->whereHas('program', function($q) {
-                    $q->whereNot('program_type', 'Transferable Skills');
+                    $q->whereNot('funding_type', 'Transferable Skills');
                 })
                 ->sum(\DB::raw('COALESCE(estimated_hold_amount, 0)'));
 
@@ -73,7 +73,7 @@ class InstitutionController extends Controller
                 ->where('allocation_guid', $instAllocation->guid)
                 ->where('claim_status', 'Claimed')
                 ->whereHas('program', function($q) {
-                    $q->whereNot('program_type', 'Transferable Skills');
+                    $q->whereNot('funding_type', 'Transferable Skills');
                 })
                 ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
@@ -82,7 +82,7 @@ class InstitutionController extends Controller
                 ->where('allocation_guid', $instAllocation->guid)
                 ->where('claim_status', 'Hold')
                 ->whereHas('program', function($q) {
-                    $q->where('program_type', 'Transferable Skills');
+                    $q->where('funding_type', 'Transferable Skills');
                 })
                 ->sum(\DB::raw('COALESCE(estimated_hold_amount, 0)'));
 
@@ -90,7 +90,7 @@ class InstitutionController extends Controller
                 ->where('allocation_guid', $instAllocation->guid)
                 ->where('claim_status', 'Claimed')
                 ->whereHas('program', function($q) {
-                    $q->where('program_type', 'Transferable Skills');
+                    $q->where('funding_type', 'Transferable Skills');
                 })
                 ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
@@ -124,6 +124,8 @@ class InstitutionController extends Controller
             'programYear' => $programYear,
             'holdApps' => 0,
             'claimedApps' => 0,
+            'tsHoldAmount' => 0,
+            'tsClaimedAmount' => 0,
         ]);
     }
 
