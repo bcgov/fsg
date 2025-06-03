@@ -101,8 +101,8 @@ class InstitutionController extends Controller
                     'programYear' => $programYear,
                     'holdApps' => $gov_hold,
                     'claimedApps' => $gov_claimed,
-                    'ts_hold_amount' => $ts_hold,
-                    'ts_claimed_amount' => $ts_claimed,
+                    'tsHoldAmount' => $ts_hold,
+                    'tsClaimedAmount' => $ts_claimed,
                 ]);
 
             }
