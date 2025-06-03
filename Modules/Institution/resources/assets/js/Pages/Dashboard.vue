@@ -32,7 +32,7 @@
                     <div class="col-md-4 mb-3">
                         <div class="card text-center">
                             <div class="card-header">Total Gov Allocation (includes Admin)</div>
-                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(((activeAllocation && activeAllocation.ts_percent !== undefined ? (100 - activeAllocation.ts_percent) : 20) / 100 * (activeAllocation ? activeAllocation.total_amount : 0)).toFixed(2)) }}</div>
+                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(((activeAllocation && activeAllocation.ts_percent !== undefined ? (100 - activeAllocation.ts_percent) : 80) / 100 * (activeAllocation ? activeAllocation.total_amount : 0)).toFixed(2)) }}</div>
                         </div>
                     </div>
                     <div class="col-md-4 mb-3">
