@@ -8,24 +8,32 @@
                     <Input type="text" class="form-control" id="inputProgramName" v-model="editForm.program_name" />
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputPriority" class="form-label" value="High Priority Industry"/>
                     <Select class="form-select" id="inputPriority" v-model="editForm.high_priority_industry">
                         <option v-for="stat in $attrs.utils['High Priority Industry']" :value="stat.field_name">{{ stat.field_name }}</option>
                     </Select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputIndiLearning" class="form-label" value="Indigenous Related Learning ?"/>
                     <Select class="form-select" id="inputIndiLearning" v-model="editForm.indigenous_related_learning">
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </Select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <Label for="inputDiversInc" class="form-label" value="Diversity Inclusion Related Learning?"/>
                     <Select class="form-select" id="inputDiversInc" v-model="editForm.diversity_inclusion_related_learning">
                         <option value="true">Yes</option>
                         <option value="false">No</option>
+                    </Select>
+                </div>
+
+                <div class="col-md-3">
+                    <Label for="inputFundingType" class="form-label" value="Funding Type"/>
+                    <Select class="form-select" id="inputFundingType" v-model="editForm.funding_type">
+                        <option value="Gov. Priorities">Gov. Priorities</option>
+                        <option value="Transferable Skills">Transferable Skills</option>
                     </Select>
                 </div>
 
@@ -81,14 +89,6 @@
                     <Select class="form-select" id="inputActive" v-model="editForm.active_status">
                         <option value="true">Yes</option>
                         <option value="false">No</option>
-                    </Select>
-                </div>
-
-                <div class="col-md-3">
-                    <Label for="inputFundingType" class="form-label" value="Funding Type"/>
-                    <Select class="form-select" id="inputFundingType" v-model="editForm.funding_type">
-                        <option value="Gov. Priorities">Gov. Priorities</option>
-                        <option value="Transferable Skill">Transferable Skill</option>
                     </Select>
                 </div>
 
