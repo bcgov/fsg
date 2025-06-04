@@ -19,7 +19,13 @@
                         </Select>
                         <p v-else> - </p>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
+                        <Label for="inputFundingType" class="form-label" value="Funding Type" />
+                        <span v-if="editStudentClaimForm.program !== null">{{ editStudentClaimForm.program.funding_type }}</span>
+                        <span v-else> - </span>
+                    </div>
+
+                    <!-- <div class="col-md-3">
                         <Label for="inputAgreeConfirmed" class="form-label" value="Consent Confirmed?" />
                         <span v-if="editStudentClaimForm.agreement_confirmed == true" class="badge rounded-pill text-bg-success">True</span>
                         <span v-else class="badge rounded-pill text-bg-danger">False</span>
@@ -28,7 +34,7 @@
                         <Label for="inputRegisterConfirmed" class="form-label" value="Registration Confirmed?" />
                         <span v-if="editStudentClaimForm.registration_confirmed == true" class="badge rounded-pill text-bg-success">True</span>
                         <span v-else class="badge rounded-pill text-bg-danger">False</span>
-                    </div>
+                    </div> -->
 
                     <div class="col-md-4">
                         <Label for="inputFirstName" class="form-label" value="First Name" />
