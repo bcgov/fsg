@@ -136,6 +136,7 @@ class ProcessSubmittedClaim
 
 //                Log::info('claim is moving from Hold to Claimed');
 
+                $checkStatus = true;
                 // Calculate sum claims of the institution that are not Draft, Cancelled or Expired
                 $sum_claims = Claim::
 
@@ -161,10 +162,11 @@ class ProcessSubmittedClaim
                     $claim->materials_fee = 0;
                     $claim->registration_fee = 0;
                     $claim->correction_amount = 0;
+                    $checkStatus = false;
                 }
 
                 // if the program of the claim is of type Transferable Skills, then we need to check the ts_percent
-                if ($program->funding_type === 'Transferable Skills') {
+                if ($checkStatus && $program->funding_type === 'Transferable Skills') {
                     // Calculate sum claims of the institution that are not Draft, Cancelled or Expired
                     // We need the sum of claims that are Claimed and claim.program are of type Transferable Skills
                     $sum_ts_claims = Claim::
@@ -205,7 +207,7 @@ class ProcessSubmittedClaim
                     ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
                 // If the student has reached the grant limit, prevent moving it to Submitted
-                if ((float) $totalActiveClaims > (float) env('TOTAL_GRANT')) {
+                if ($checkStatus && (float) $totalActiveClaims > (float) env('TOTAL_GRANT')) {
 
 //                    Log::info('totalActiveClaims = '.(float) $totalActiveClaims);
 //                    Log::info('$claim->total_claim_amount = '.(float) $claim->total_claim_amount);
