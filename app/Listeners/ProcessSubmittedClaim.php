@@ -169,9 +169,11 @@ class ProcessSubmittedClaim
                     Log::info('claim is of type Transferable Skills');
                     // Calculate sum claims of the institution that are not Draft, Cancelled or Expired
                     // We need the sum of claims that are Claimed and claim.program are of type Transferable Skills
+                    // exclude the current claim
                     $sum_ts_claims = Claim::where('claim_status', 'Claimed')
                             ->where('institution_guid', $claim->institution_guid)
                             ->where('allocation_guid', $claim->allocation_guid)
+                            ->where('id', '!=', $claim->id)
                             ->whereHas('program', function($q) {
                                 $q->where('funding_type', 'Transferable Skills');
                             })
