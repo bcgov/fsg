@@ -3,7 +3,7 @@
         <div class="modal-body">
             <div class="row g-3">
 <div class="col-12">PY: {{ editStudentClaimForm.allocation.py.start_date }} to {{ editStudentClaimForm.allocation.py.end_date }}</div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <label for="inputSd" class="block font-medium text-sm text-gray-700 form-label">{{ getInactiveProgramName() }}</label>
                     <Select class="form-select" id="inputSd" v-model="editStudentClaimForm.program_guid">
                         <template  v-for="p in programs">
@@ -11,6 +11,12 @@
                         </template>
                     </Select>
                 </div>
+                <div class="col-md-3">
+                    <Label for="inputFundingType" class="form-label" value="Funding Type" />
+                    <span v-if="editStudentClaimForm.program !== null">{{ editStudentClaimForm.program.funding_type }}</span>
+                    <span v-else> - </span>
+                </div>
+
                 <div class="col-md-3">
                     <Label for="inputAgreeConfirmed" class="form-label" value="Consent Confirmed?" />
                     <Select class="form-select" id="inputAgreeConfirmed" v-model="editStudentClaimForm.agreement_confirmed">

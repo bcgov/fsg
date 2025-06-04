@@ -43,6 +43,7 @@ class AllocationStoreRequest extends FormRequest
             'program_year_guid' => 'required|exists:program_years,guid',
             'total_amount' => 'required|numeric',
             'status' => 'required',
+            'ts_percent' => 'required|numeric|min:0|max:100',
         ];
     }
 

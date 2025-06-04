@@ -32,6 +32,7 @@ class ProgramStoreRequest extends FormRequest
             'credential_type' => 'required',
             'micro_credential_type' => 'nullable',
             'high_priority_industry' => 'required',
+            'funding_type' => 'required|in:Gov. Priorities,Transferable Skills',
 
             'creditable' => 'required|boolean',
             'full_time' => 'required|boolean',

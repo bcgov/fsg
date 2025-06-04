@@ -45,27 +45,64 @@ class InstitutionController extends Controller
 
         // Eager load active allocation
         $institution->load(['allocations' => function ($query) use ($programYear) {
-            $query->where('program_year_guid', $programYear->guid);
+            $query->where('program_year_guid', $programYear->guid)->where('status', 'active');
             $query->orderByDesc('created_at');
         }]);
 
         $instAllocation = $institution->allocations->first();
         if (! is_null($instAllocation)) {
 
-            $claimCounts = Claim::where('institution_guid', $institution->guid)
+    //         $claimCounts = Claim::where('institution_guid', $institution->guid)
+    //             ->where('allocation_guid', $instAllocation->guid)
+    //             ->selectRaw("
+    //     SUM(CASE WHEN claim_status = 'Claimed' THEN COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0) ELSE 0 END) as claimed,
+    //     SUM(CASE WHEN claim_status = 'Hold' THEN COALESCE(estimated_hold_amount, 0) ELSE 0 END) as hold
+    // ")
+    //             ->first();
+
+            
+            $gov_hold = Claim::where('institution_guid', $institution->guid)
                 ->where('allocation_guid', $instAllocation->guid)
-                ->selectRaw("
-        SUM(CASE WHEN claim_status = 'Claimed' THEN COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0) ELSE 0 END) as claimed,
-        SUM(CASE WHEN claim_status = 'Hold' THEN COALESCE(estimated_hold_amount, 0) ELSE 0 END) as hold
-    ")
-                ->first();
+                ->where('claim_status', 'Hold')
+                ->whereHas('program', function($q) {
+                    $q->whereNull('funding_type')->orWhere('funding_type', '!=', 'Transferable Skills');
+                })
+                ->sum(\DB::raw('COALESCE(estimated_hold_amount, 0)'));
+
+            $gov_claimed = Claim::where('institution_guid', $institution->guid)
+                ->where('allocation_guid', $instAllocation->guid)
+                ->where('claim_status', 'Claimed')
+                ->whereHas('program', function($q) {
+                    $q->whereNull('funding_type')->orWhere('funding_type', '!=', 'Transferable Skills');
+                })
+                ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
+
+
+            $ts_hold = Claim::where('institution_guid', $institution->guid)
+                ->where('allocation_guid', $instAllocation->guid)
+                ->where('claim_status', 'Hold')
+                ->whereHas('program', function($q) {
+                    $q->where('funding_type', 'Transferable Skills');
+                })
+                ->sum(\DB::raw('COALESCE(estimated_hold_amount, 0)'));
+
+            $ts_claimed = Claim::where('institution_guid', $institution->guid)
+                ->where('allocation_guid', $instAllocation->guid)
+                ->where('claim_status', 'Claimed')
+                ->whereHas('program', function($q) {
+                    $q->where('funding_type', 'Transferable Skills');
+                })
+                ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
+
             if ($programYear->claim_percent == 0) {
                 return Inertia::render('Institution::Dashboard', [
                     'results' => $institution,
                     'activeAllocation' => $instAllocation,
                     'programYear' => $programYear,
-                    'holdApps' => $claimCounts->hold,
-                    'claimedApps' => $claimCounts->claimed,
+                    'holdApps' => $gov_hold,
+                    'claimedApps' => $gov_claimed,
+                    'tsHoldAmount' => $ts_hold,
+                    'tsClaimedAmount' => $ts_claimed,
                 ]);
 
             }
@@ -74,8 +111,10 @@ class InstitutionController extends Controller
                 'results' => $institution,
                 'activeAllocation' => $instAllocation,
                 'programYear' => $programYear,
-                'holdApps' => $claimCounts->hold ? (float) $claimCounts->hold + ((float) $claimCounts->hold / (float) $programYear->claim_percent) : 0,
-                'claimedApps' => $claimCounts->claimed ? (float) $claimCounts->claimed + ((float) $claimCounts->claimed / (float) $programYear->claim_percent) : 0,
+                'holdApps' => $gov_hold ? (float) $gov_hold + ((float) $gov_hold / (float) $programYear->claim_percent) : 0,
+                'claimedApps' => $gov_claimed ? (float) $gov_claimed + ((float) $gov_claimed / (float) $programYear->claim_percent) : 0,
+                'tsHoldAmount' => $ts_hold ? (float) $ts_hold + ((float) $ts_hold / (float) $programYear->claim_percent) : 0,
+                'tsClaimedAmount' => $ts_claimed ? (float) $ts_claimed + ((float) $ts_claimed / (float) $programYear->claim_percent) : 0,
             ]);
         }
 
@@ -85,6 +124,8 @@ class InstitutionController extends Controller
             'programYear' => $programYear,
             'holdApps' => 0,
             'claimedApps' => 0,
+            'tsHoldAmount' => 0,
+            'tsClaimedAmount' => 0,
         ]);
     }
 

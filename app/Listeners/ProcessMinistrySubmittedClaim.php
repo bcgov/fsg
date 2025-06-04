@@ -155,6 +155,33 @@ class ProcessMinistrySubmittedClaim
                     $claim->correction_amount = 0;
                 }
 
+                // if the program of the claim is of type Transferable Skills, then we need to check the ts_percent
+                if ($program->funding_type === 'Transferable Skills') {
+                    // Calculate sum claims of the institution that are not Draft, Cancelled or Expired
+                    // We need the sum of claims that are Claimed and claim.program are of type Transferable Skills
+                    $sum_ts_claims = Claim::
+
+                        where('claim_status', 'Claimed')
+                            ->where('institution_guid', $claim->institution_guid)
+                            ->where('allocation_guid', $claim->allocation_guid)
+                            ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
+
+                    $ts_claims_total = (float) $sum_ts_claims + ((float) $sum_ts_claims / (float) $claim->py_admin_fee);
+
+                    // Check if the total of the claim is greater than the ts_percent of the allocation
+                    $tsPercent = (float) $claim->allocation->ts_percent;
+
+                    // If the total claim amount is greater than the ts_percent, then we need to set it to Hold
+                    if ($ts_claims_total > ((float) $claim->allocation->total_amount * ($tsPercent / 100))) {
+                        $claim->process_feedback = 'Claim exceeds the Transferable Skills percentage limit';
+                        $claim->claim_status = 'Hold';
+                        $claim->total_claim_amount = 0;
+                        $claim->program_fee = 0;
+                        $claim->materials_fee = 0;
+                        $claim->registration_fee = 0;
+                        $claim->correction_amount = 0;
+                    }
+                }
                 //check student
                 // Calculate the total of claims for the student that are in Hold
 //                $totalHoldClaims = $student->claims()
