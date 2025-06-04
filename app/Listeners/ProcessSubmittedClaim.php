@@ -183,7 +183,7 @@ class ProcessSubmittedClaim
 
                     // If the total claim amount is greater than the ts_percent, then we need to set it to Hold
                     if ($ts_claims_total > ((float) $claim->allocation->total_amount * ($tsPercent / 100))) {
-                        $claim->process_feedback = 'Claim exceeds the Transferable Skills percentage limit';
+                        $claim->process_feedback = 'Claim exceeds the Transferable Skills percentage limit.';
                         $claim->claim_status = 'Hold';
                         $claim->total_claim_amount = 0;
                         $claim->program_fee = 0;

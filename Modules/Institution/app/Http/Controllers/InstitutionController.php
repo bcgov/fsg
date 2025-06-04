@@ -45,7 +45,7 @@ class InstitutionController extends Controller
 
         // Eager load active allocation
         $institution->load(['allocations' => function ($query) use ($programYear) {
-            $query->where('program_year_guid', $programYear->guid);
+            $query->where('program_year_guid', $programYear->guid)->where('status', 'active');
             $query->orderByDesc('created_at');
         }]);
 
