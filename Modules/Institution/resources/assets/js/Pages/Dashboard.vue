@@ -79,7 +79,7 @@
                 <div class="row">
                     <div class="col-md-12 mb-3">
                         <div class="card text-center">
-                            <div class="card-header">Committed Amount (Claimed + Total)</div>
+                            <div class="card-header">Committed Amount (Claimed + Hold)</div>
                             <div class="card-body display-5 m-4">${{ $formatNumberWithCommas((Number(claimedApps) + Number(holdApps) + Number(tsHoldAmount) + Number(tsClaimedAmount)).toFixed(2)) }}</div>
                         </div>
                     </div>
