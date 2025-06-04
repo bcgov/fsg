@@ -12,7 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('programs', function (Blueprint $table) {
-            $table->string('funding_type')->nullable()->comment('Gov. Priorities|Transferable Skill');
+            // Adding funding_type column, nullable with default Gov. Priorities, comment, and index
+            $table->string('funding_type')
+                ->nullable()
+                ->default('Gov. Priorities')
+                ->comment('Gov. Priorities|Transferable Skills')
+                ->index();
         });
     }
 
