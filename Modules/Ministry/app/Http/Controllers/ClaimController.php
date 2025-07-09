@@ -6,6 +6,7 @@ use App\Events\ClaimSubmitted;
 use App\Events\MinistryClaimSubmitted;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClaimEditRequest;
+use App\Http\Requests\MinistryClaimEditRequest;
 use App\Http\Requests\ClaimStoreRequest;
 use App\Models\Allocation;
 use App\Models\Claim;
@@ -104,7 +105,7 @@ class ClaimController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ClaimEditRequest $request): \Illuminate\Http\RedirectResponse
+    public function update(MinistryClaimEditRequest $request): \Illuminate\Http\RedirectResponse
     {
         $oldClaim = Claim::find($request->id);
         $claim = Claim::find($request->id);
