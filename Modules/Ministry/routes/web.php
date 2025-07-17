@@ -80,6 +80,14 @@ Route::prefix('ministry')->group(function () {
                     Route::get('/faqs', [MaintenanceController::class, 'faqList'])->name('faqs.list');
                     Route::put('/faqs/{faq}', [MaintenanceController::class, 'faqUpdate'])->name('faqs.update');
                     Route::post('/faqs', [MaintenanceController::class, 'faqStore'])->name('faqs.store');
+
+                    Route::get('/demographics', [MaintenanceController::class, 'demographicsList'])->name('demographics.list');
+                    Route::post('/demographics', [MaintenanceController::class, 'demographicStore'])->name('demographics.store');
+                    Route::put('/demographics/{demographic}', [MaintenanceController::class, 'demographicUpdate'])->name('demographics.update');
+                    Route::delete('/demographics/{demographic}', [MaintenanceController::class, 'demographicDestroy'])->name('demographics.destroy');
+                    Route::post('/demographics/{demographic}/options', [MaintenanceController::class, 'demographicOptionStore'])->name('demographics.options.store');
+                    Route::put('/demographics/options/{option}', [MaintenanceController::class, 'demographicOptionUpdate'])->name('demographics.options.update');
+                    Route::delete('/demographics/options/{option}', [MaintenanceController::class, 'demographicOptionDestroy'])->name('demographics.options.destroy');
                 });
 
                 Route::put('/institution_staff', [InstitutionStaffController::class, 'update'])->name('institution_staff.update');

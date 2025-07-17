@@ -53,6 +53,15 @@
                         </template>
                     </Select>
                 </div>
+                
+                <!-- Demographics Section -->
+                <StudentDemographics 
+                    v-if="$attrs.demographics"
+                    :demographics="$attrs.demographics"
+                    :existing-demographics="$attrs.existingDemographics || {}"
+                    v-model="newApplicationForm.demographics"
+                />
+                
                 <div v-if="newApplicationForm.program_guid != ''" class="col-12">
                     <div class="form-check">
                         <label for="flexCheckChecked1" class="form-check-label">
@@ -106,12 +115,13 @@ import Select from '@/Components/Select.vue';
 import Input from '@/Components/Input.vue';
 import Label from '@/Components/Label.vue';
 import FormSubmitAlert from '@/Components/FormSubmitAlert.vue';
+import StudentDemographics from './StudentDemographics.vue';
 import {Link, useForm} from '@inertiajs/vue3';
 
 export default {
     name: 'StudentApplicationCreate',
     components: {
-        Input, Label, Select, Link, useForm, FormSubmitAlert
+        Input, Label, Select, Link, useForm, FormSubmitAlert, StudentDemographics
     },
     props: {
         institutions: Object,
@@ -129,7 +139,8 @@ export default {
                 program_guid: "",
                 agreement_confirmed: false,
                 registration_confirmed: false,
-                claim_status: "Submitted"
+                claim_status: "Submitted",
+                demographics: {}
             },
         }
     },

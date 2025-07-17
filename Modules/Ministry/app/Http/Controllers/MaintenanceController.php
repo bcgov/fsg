@@ -4,6 +4,10 @@ namespace Modules\Ministry\Http\Controllers;
 
 use App\Events\ProgramYearUpdated;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DemographicEditRequest;
+use App\Http\Requests\DemographicOptionEditRequest;
+use App\Http\Requests\DemographicOptionStoreRequest;
+use App\Http\Requests\DemographicStoreRequest;
 use App\Http\Requests\FaqEditRequest;
 use App\Http\Requests\FaqStoreRequest;
 use App\Http\Requests\ProgramYearEditRequest;
@@ -11,6 +15,8 @@ use App\Http\Requests\ProgramYearStoreRequest;
 use App\Http\Requests\UtilEditRequest;
 use App\Http\Requests\UtilStoreRequest;
 use App\Models\Claim;
+use App\Models\Demographic;
+use App\Models\DemographicOption;
 use App\Models\Faq;
 use App\Models\Institution;
 use App\Models\InstitutionStaff;
@@ -490,5 +496,95 @@ class MaintenanceController extends Controller
                 'privateReport' => $privateReport,
             ],
         ]);
+    }
+
+    /**
+     * Display a listing of demographics.
+     *
+     * @return \Inertia\Response
+     */
+    public function demographicsList(Request $request): \Inertia\Response
+    {
+        $demographics = Demographic::with('options')
+            ->orderBy('question', 'asc')
+            ->get();
+
+        return Inertia::render('Ministry::Maintenance', [
+            'status' => true,
+            'results' => $demographics,
+            'page' => 'demographics'
+        ]);
+    }
+
+    /**
+     * Store a new demographic.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function demographicStore(DemographicStoreRequest $request): \Illuminate\Http\RedirectResponse
+    {
+        Demographic::create($request->validated());
+
+        return Redirect::route('ministry.maintenance.demographics.list');
+    }
+
+    /**
+     * Update a demographic.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function demographicUpdate(DemographicEditRequest $request, Demographic $demographic): \Illuminate\Http\RedirectResponse
+    {
+        $demographic->update($request->validated());
+
+        return Redirect::route('ministry.maintenance.demographics.list');
+    }
+
+    /**
+     * Soft delete a demographic.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function demographicDestroy(Demographic $demographic): \Illuminate\Http\RedirectResponse
+    {
+        $demographic->delete();
+
+        return Redirect::route('ministry.maintenance.demographics.list');
+    }
+
+    /**
+     * Store a new demographic option.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function demographicOptionStore(DemographicOptionStoreRequest $request): \Illuminate\Http\RedirectResponse
+    {
+        DemographicOption::create($request->validated());
+
+        return Redirect::route('ministry.maintenance.demographics.list');
+    }
+
+    /**
+     * Update a demographic option.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function demographicOptionUpdate(DemographicOptionEditRequest $request, DemographicOption $option): \Illuminate\Http\RedirectResponse
+    {
+        $option->update($request->validated());
+
+        return Redirect::route('ministry.maintenance.demographics.list');
+    }
+
+    /**
+     * Delete a demographic option.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function demographicOptionDestroy(DemographicOption $option): \Illuminate\Http\RedirectResponse
+    {
+        $option->delete();
+
+        return Redirect::route('ministry.maintenance.demographics.list');
     }
 }

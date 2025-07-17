@@ -26,6 +26,7 @@
                         <MaintenanceUtils v-if="page === 'utils'" :results="results" :categories="categories"></MaintenanceUtils>
                         <MaintenanceProgramYears v-if="page === 'program_years'" :results="results"></MaintenanceProgramYears>
                         <MaintenanceFaq v-if="page === 'faqs'" :results="results"></MaintenanceFaq>
+                        <MaintenanceDemographics v-if="page === 'demographics'" :results="results"></MaintenanceDemographics>
                     </div>
                 </div>
             </div>
@@ -41,6 +42,7 @@ import MaintenanceStaffEdit from "../Components/MaintenanceStaffEdit";
 import MaintenanceUtils from "../Components/MaintenanceUtils";
 import MaintenanceProgramYears from "../Components/MaintenanceProgramYears";
 import MaintenanceFaq from "../Components/MaintenanceFaq";
+import MaintenanceDemographics from "../Components/MaintenanceDemographics";
 
 export default {
     name: 'Maintenance',
@@ -48,6 +50,7 @@ export default {
         MaintenanceFaq,
         MaintenanceUtils,
         MaintenanceMenu,
+        MaintenanceDemographics,
         BreezeAuthenticatedLayout, Head, Link, MaintenanceStaff, MaintenanceStaffEdit, MaintenanceProgramYears
     },
     props: {

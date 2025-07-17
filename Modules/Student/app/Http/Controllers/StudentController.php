@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StudentEditRequest;
 use App\Http\Requests\StudentStoreRequest;
 use App\Models\Claim;
+use App\Models\Demographic;
 use App\Models\Faq;
 use App\Models\Institution;
 use App\Models\Student;
@@ -20,8 +21,24 @@ class StudentController extends Controller
     public function index($page = 'profile', $error = null)
     {
         $student = Student::where('user_guid', Auth::user()->guid)->first();
+        
+        // Load active demographics with their options
+        $demographics = Demographic::with('options')
+            ->where('active', true)
+            ->orderBy('question', 'asc')
+            ->get();
 
-        return Inertia::render('Student::Dashboard', ['status' => true, 'results' => $student, 'page' => $page, 'error' => $error]);
+        // Get existing demographic answers for this student
+        $existingDemographics = $student ? $student->getFormattedDemographics() : [];
+
+        return Inertia::render('Student::Dashboard', [
+            'status' => true, 
+            'results' => $student, 
+            'page' => $page, 
+            'error' => $error,
+            'demographics' => $demographics,
+            'existingDemographics' => $existingDemographics
+        ]);
     }
 
     /**
@@ -74,8 +91,23 @@ class StudentController extends Controller
     public function applications($page = 'applications')
     {
         $student = Student::with('applications')->where('user_guid', Auth::user()->guid)->first();
+        
+        // Load active demographics with their options
+        $demographics = Demographic::with('options')
+            ->where('active', true)
+            ->orderBy('question', 'asc')
+            ->get();
 
-        return Inertia::render('Student::Dashboard', ['status' => true, 'results' => $student, 'page' => $page]);
+        // Get existing demographic answers for this student
+        $existingDemographics = $student ? $student->getFormattedDemographics() : [];
+
+        return Inertia::render('Student::Dashboard', [
+            'status' => true, 
+            'results' => $student, 
+            'page' => $page,
+            'demographics' => $demographics,
+            'existingDemographics' => $existingDemographics
+        ]);
     }
 
     public function fetchApplications(Request $request)
