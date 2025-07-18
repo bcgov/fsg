@@ -2,7 +2,7 @@
     <div v-if="demographics && demographics.length > 0" class="col-12">
         <hr />
         <h5 class="mb-3">Demographics Information:</h5>
-        <p><i>The information provided below is collected exclusively for reporting and evaluation purposes to help the Province better understand where funding is most needed. It will not impact your eligibility for grant funding. Participation is entirely voluntary, and you may choose not to answer any questions that you find uncomfortable.</i></p>
+        <p><i>The information provided below is collected exclusively for reporting and evaluation purposes to help the Province better understand where funding is most needed. It will not impact your eligibility for grant funding. Participation is entirely voluntary, and you may choose not to answer any questions that you find uncomfortable. Please refer to the FAQ section for demographic information definitions.</i></p>
         
         <div v-for="demographic in demographics" :key="demographic.id" class="mb-3">
             <Label :for="'demographic_' + demographic.id" class="form-label">
