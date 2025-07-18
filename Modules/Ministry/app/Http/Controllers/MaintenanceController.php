@@ -507,7 +507,7 @@ class MaintenanceController extends Controller
     public function demographicsList(Request $request): \Inertia\Response
     {
         $demographics = Demographic::with('options')
-            ->orderBy('question', 'asc')
+            ->ordered()
             ->get();
 
         return Inertia::render('Ministry::Maintenance', [

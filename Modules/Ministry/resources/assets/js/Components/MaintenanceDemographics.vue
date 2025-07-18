@@ -91,6 +91,7 @@
                                         <p><strong>Type:</strong> {{ demographic.type }}</p>
                                         <p><strong>Required:</strong> {{ demographic.required ? 'Yes' : 'No' }}</p>
                                         <p><strong>Active:</strong> {{ demographic.active ? 'Yes' : 'No' }}</p>
+                                        <p><strong>Order:</strong> {{ demographic.order || 0 }}</p>
                                         <p v-if="demographic.description"><strong>Description:</strong> {{ demographic.description }}</p>
                                         <div class="mt-3">
                                             <button @click="editDemographic(demographic)" type="button" 
@@ -148,6 +149,10 @@
                                         <option value="false">No</option>
                                         <option value="true">Yes</option>
                                     </BreezeSelect>
+                                </div>
+                                <div class="col-md-3">
+                                    <BreezeLabel for="newDemographicOrder" class="form-label" value="Order" />
+                                    <BreezeInput type="number" class="form-control" id="newDemographicOrder" v-model="newDemographicForm.order" min="0" />
                                 </div>
                                 <div class="col-12">
                                     <BreezeLabel for="newDemographicDescription" class="form-label" value="Description" />
@@ -212,6 +217,10 @@
                                         <option value="false">No</option>
                                         <option value="true">Yes</option>
                                     </BreezeSelect>
+                                </div>
+                                <div class="col-md-3">
+                                    <BreezeLabel for="editDemographicOrder" class="form-label" value="Order" />
+                                    <BreezeInput type="number" class="form-control" id="editDemographicOrder" v-model="editDemographicForm.order" min="0" />
                                 </div>
                                 <div class="col-12">
                                     <BreezeLabel for="editDemographicDescription" class="form-label" value="Description" />
@@ -358,7 +367,8 @@ export default {
                 description: '',
                 type: '',
                 required: false,
-                active: true
+                active: true,
+                order: 0
             },
             newOptionFormData: {
                 demographic_id: '',

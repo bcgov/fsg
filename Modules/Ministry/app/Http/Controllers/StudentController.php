@@ -46,8 +46,8 @@ class StudentController extends Controller
         
         // Load active demographics with their options
         $demographics = Demographic::with('options')
-            ->where('active', true)
-            ->orderBy('question', 'asc')
+            ->active()
+            ->ordered()
             ->get();
 
         // Get existing demographic answers for this student
