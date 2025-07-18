@@ -64,6 +64,7 @@ class ApplicationStoreRequest extends FormRequest
             'expiry_date' => 'required|date_format:Y-m-d',
             'correction_amount' => 'nullable|numeric',
             'correction_comment' => 'required_if:correction_amount,!null',
+            'demographics' => 'nullable|array',
 
         ];
 

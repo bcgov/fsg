@@ -53,6 +53,7 @@
                         </template>
                     </Select>
                 </div>
+                
                 <div v-if="newApplicationForm.program_guid != ''" class="col-12">
                     <div class="form-check">
                         <label for="flexCheckChecked1" class="form-check-label">

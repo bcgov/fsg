@@ -21,6 +21,7 @@
                             </template>
                         </Select>
                     </div>
+                    
                     <div v-if="newApplicationForm.program_guid != ''" class="col-12">
                         <div class="form-check">
                             <label for="flexCheckChecked1" class="form-check-label">
@@ -165,6 +166,7 @@ export default {
     mounted() {
         this.newApplicationForm = useForm(this.application);
         this.newApplicationForm.claim_status = 'Submitted';
+        
         this.fetchPrograms(this.application.institution_guid);
         // this.newApplicationForm.institution_guid = this.results.guid;
     }

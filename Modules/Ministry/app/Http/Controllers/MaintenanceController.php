@@ -4,6 +4,10 @@ namespace Modules\Ministry\Http\Controllers;
 
 use App\Events\ProgramYearUpdated;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DemographicEditRequest;
+use App\Http\Requests\DemographicOptionEditRequest;
+use App\Http\Requests\DemographicOptionStoreRequest;
+use App\Http\Requests\DemographicStoreRequest;
 use App\Http\Requests\FaqEditRequest;
 use App\Http\Requests\FaqStoreRequest;
 use App\Http\Requests\ProgramYearEditRequest;
@@ -11,11 +15,14 @@ use App\Http\Requests\ProgramYearStoreRequest;
 use App\Http\Requests\UtilEditRequest;
 use App\Http\Requests\UtilStoreRequest;
 use App\Models\Claim;
+use App\Models\Demographic;
+use App\Models\DemographicOption;
 use App\Models\Faq;
 use App\Models\Institution;
 use App\Models\InstitutionStaff;
 use App\Models\ProgramYear;
 use App\Models\Role;
+use App\Models\ShareableEntity;
 use App\Models\User;
 use App\Models\Util;
 use Illuminate\Http\Request;
@@ -490,5 +497,165 @@ class MaintenanceController extends Controller
                 'privateReport' => $privateReport,
             ],
         ]);
+    }
+
+    /**
+     * Display a listing of demographics.
+     *
+     * @return \Inertia\Response
+     */
+    public function demographicsList(Request $request): \Inertia\Response
+    {
+        $demographics = Demographic::with('options')
+            ->orderBy('question', 'asc')
+            ->get();
+
+        return Inertia::render('Ministry::Maintenance', [
+            'status' => true,
+            'results' => $demographics,
+            'page' => 'demographics'
+        ]);
+    }
+
+    /**
+     * Store a new demographic.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function demographicStore(DemographicStoreRequest $request): \Illuminate\Http\RedirectResponse
+    {
+        Demographic::create($request->validated());
+
+        return Redirect::route('ministry.maintenance.demographics.list');
+    }
+
+    /**
+     * Update a demographic.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function demographicUpdate(DemographicEditRequest $request, Demographic $demographic): \Illuminate\Http\RedirectResponse
+    {
+        $demographic->update($request->validated());
+
+        return Redirect::route('ministry.maintenance.demographics.list');
+    }
+
+    /**
+     * Soft delete a demographic.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function demographicDestroy(Demographic $demographic): \Illuminate\Http\RedirectResponse
+    {
+        $demographic->delete();
+
+        return Redirect::route('ministry.maintenance.demographics.list');
+    }
+
+    /**
+     * Store a new demographic option.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function demographicOptionStore(DemographicOptionStoreRequest $request): \Illuminate\Http\RedirectResponse
+    {
+        DemographicOption::create($request->validated());
+
+        return Redirect::route('ministry.maintenance.demographics.list');
+    }
+
+    /**
+     * Update a demographic option.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function demographicOptionUpdate(DemographicOptionEditRequest $request, DemographicOption $option): \Illuminate\Http\RedirectResponse
+    {
+        $option->update($request->validated());
+
+        return Redirect::route('ministry.maintenance.demographics.list');
+    }
+
+    /**
+     * Delete a demographic option.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function demographicOptionDestroy(DemographicOption $option): \Illuminate\Http\RedirectResponse
+    {
+        $option->delete();
+
+        return Redirect::route('ministry.maintenance.demographics.list');
+    }
+
+    /**
+     * Display a listing of shareable entities.
+     *
+     * @return \Inertia\Response
+     */
+    public function shareableEntitiesList(Request $request): \Inertia\Response
+    {
+        $entities = ShareableEntity::orderBy('name')->get();
+
+        return Inertia::render('Ministry::Maintenance', [
+            'status' => true,
+            'results' => $entities,
+            'page' => 'shareable_entities'
+        ]);
+    }
+
+    /**
+     * Store a newly created shareable entity.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function shareableEntityStore(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:shareable_entities,name',
+            'description' => 'nullable|string',
+            'contact_email' => 'nullable|email',
+            'contact_phone' => 'nullable|string|max:20',
+            'privacy_policy_url' => 'nullable|url',
+            'active' => 'boolean',
+        ]);
+
+        ShareableEntity::create($validated);
+
+        return Redirect::route('ministry.maintenance.shareable_entities.list');
+    }
+
+    /**
+     * Update a shareable entity.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function shareableEntityUpdate(Request $request, ShareableEntity $entity): \Illuminate\Http\RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:shareable_entities,name,' . $entity->id,
+            'description' => 'nullable|string',
+            'contact_email' => 'nullable|email',
+            'contact_phone' => 'nullable|string|max:20',
+            'privacy_policy_url' => 'nullable|url',
+            'active' => 'boolean',
+        ]);
+
+        $entity->update($validated);
+
+        return Redirect::route('ministry.maintenance.shareable_entities.list');
+    }
+
+    /**
+     * Delete a shareable entity.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function shareableEntityDestroy(ShareableEntity $entity): \Illuminate\Http\RedirectResponse
+    {
+        $entity->delete();
+
+        return Redirect::route('ministry.maintenance.shareable_entities.list');
     }
 }

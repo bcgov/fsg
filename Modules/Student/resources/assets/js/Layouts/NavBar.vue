@@ -40,6 +40,13 @@ nav.navbar .form-select {
                             FAQ
                         </NavLink>
                     </li>
+                    <!-- <li class="nav-item">
+                        <NavLink class="nav-link" href="/demographic-sharing"
+                                 :class="{ 'active': $page.url.indexOf('/demographic-sharing') > -1 }">
+                            <i class="fas fa-share-alt me-1"></i>
+                            Data Sharing
+                        </NavLink>
+                    </li> -->
 
 
                     <li class="nav-item dropdown">
