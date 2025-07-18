@@ -70,6 +70,9 @@
                 />
 
                 <div class="col-12">
+                    <hr />
+                    <h5 class="mb-3">Declarations:</h5>
+
                     <div class="form-check">
                         <label for="flexCheckChecked1" class="form-check-label">
                             {{ $attrs.utils['BC_Resident Decl'][0].field_name }}
