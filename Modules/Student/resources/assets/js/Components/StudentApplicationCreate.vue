@@ -53,6 +53,7 @@
                         </template>
                     </Select>
                 </div>
+                
                 <div v-if="newApplicationForm.program_guid != ''" class="col-12">
                     <div class="form-check">
                         <label for="flexCheckChecked1" class="form-check-label">
@@ -80,7 +81,7 @@
                     <div class="col-12">
                         <div v-if="newApplicationForm.hasErrors == true" class="alert alert-danger mt-3">
                             <ul>
-                                <li v-for="err in newApplicationForm.errors">{{ err }}</li>
+                                <li v-for="err in newApplicationForm.errors" v-html="err"></li>
                             </ul>
                         </div>
                     </div>

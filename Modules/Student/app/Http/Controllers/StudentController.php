@@ -6,11 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StudentEditRequest;
 use App\Http\Requests\StudentStoreRequest;
 use App\Models\Claim;
+use App\Models\Demographic;
+use App\Models\StudentDemographicAnswer;
 use App\Models\Faq;
 use App\Models\Institution;
 use App\Models\Student;
+use App\Models\StudentDemographic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Response;
@@ -20,8 +24,24 @@ class StudentController extends Controller
     public function index($page = 'profile', $error = null)
     {
         $student = Student::where('user_guid', Auth::user()->guid)->first();
+        
+        // Load active demographics with their options
+        $demographics = Demographic::with('options')
+            ->active()
+            ->ordered()
+            ->get();
 
-        return Inertia::render('Student::Dashboard', ['status' => true, 'results' => $student, 'page' => $page, 'error' => $error]);
+        // Get existing demographic answers for this student
+        $existingDemographics = $student ? $student->getFormattedDemographics() : [];
+
+        return Inertia::render('Student::Dashboard', [
+            'status' => true, 
+            'results' => $student, 
+            'page' => $page, 
+            'error' => $error,
+            'demographics' => $demographics,
+            'existingDemographics' => $existingDemographics
+        ]);
     }
 
     /**
@@ -29,8 +49,17 @@ class StudentController extends Controller
      */
     public function update(StudentEditRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $student_id = Student::where('id', $request->id)->update($request->validated());
+        $validated = $request->validated();
+        $demographics = $validated['demographics'] ?? [];
+        unset($validated['demographics']);
+        
+        $student_id = Student::where('id', $request->id)->update($validated);
         $student = Student::find($request->id);
+        
+        // Handle demographics saving
+        if (!empty($demographics) && $student) {
+            $this->saveDemographics($student, $demographics);
+        }
 
         return Redirect::route('student.home');
     }
@@ -40,6 +69,10 @@ class StudentController extends Controller
      */
     public function store(StudentStoreRequest $request): \Illuminate\Http\RedirectResponse|\Inertia\Response
     {
+        $validated = $request->validated();
+        $demographics = $validated['demographics'] ?? [];
+        unset($validated['demographics']);
+        
         // Check if a student with the given SIN already exists
         $existingStudent = Student::where('sin', $request->sin)->first();
 
@@ -47,26 +80,29 @@ class StudentController extends Controller
             // If dob matches as well, update the existing student record
             if ($request->dob === $existingStudent->dob) {
 
-                // Validate the request
-                $validatedData = $request->validated();
-
                 // Remove 'guid' from validated data
-                unset($validatedData['guid']);
+                unset($validated['guid']);
 
                 // Update the existing student record with all request data plus user_guid
                 $existingStudent->update(array_merge(
-                    $validatedData, // Merge validated request data
+                    $validated, // Merge validated request data
                     ['user_guid' => Auth::user()->guid] // Add user_guid
                 ));
+                
+                $student = $existingStudent;
 
             } else {
                 return $this->index('profile', 'Failed to connect account');
             }
         } else {
             // Create a new student record
-            $student_id = Student::create($request->validated());
+            $student = Student::create($validated);
         }
-        $student = Student::find($request->id);
+        
+        // Handle demographics saving
+        if (!empty($demographics) && $student) {
+            $this->saveDemographics($student, $demographics);
+        }
 
         return Redirect::route('student.home');
     }
@@ -74,8 +110,23 @@ class StudentController extends Controller
     public function applications($page = 'applications')
     {
         $student = Student::with('applications')->where('user_guid', Auth::user()->guid)->first();
+        
+        // Load active demographics with their options
+        $demographics = Demographic::with('options')
+            ->active()
+            ->ordered()
+            ->get();
 
-        return Inertia::render('Student::Dashboard', ['status' => true, 'results' => $student, 'page' => $page]);
+        // Get existing demographic answers for this student
+        $existingDemographics = $student ? $student->getFormattedDemographics() : [];
+
+        return Inertia::render('Student::Dashboard', [
+            'status' => true, 
+            'results' => $student, 
+            'page' => $page,
+            'demographics' => $demographics,
+            'existingDemographics' => $existingDemographics
+        ]);
     }
 
     public function fetchApplications(Request $request)
@@ -159,5 +210,85 @@ class StudentController extends Controller
         $faqs = Faq::where('active_status', true)->orderBy('order', 'asc')->get();
 
         return Inertia::render('Student::Faq', ['status' => true, 'results' => $faqs,]);
+    }
+    
+    /**
+     * Save demographics for a student
+     */
+    private function saveDemographics(Student $student, array $demographics)
+    {
+        DB::transaction(function () use ($student, $demographics) {
+            foreach ($demographics as $demographicData) {
+                if (!isset($demographicData['demographic_id']) || !isset($demographicData['answers'])) {
+                    continue;
+                }
+                
+                $demographicId = $demographicData['demographic_id'];
+                $answers = $demographicData['answers'];
+                
+                // Get the demographic question for the snapshot
+                $demographic = Demographic::find($demographicId);
+                if (!$demographic) {
+                    continue;
+                }
+                
+                // Create question snapshot
+                $questionSnapshot = [
+                    'id' => $demographic->id,
+                    'question' => $demographic->question,
+                    'type' => $demographic->type,
+                    'required' => $demographic->required,
+                    'description' => $demographic->description,
+                    'options' => $demographic->options,
+                    'captured_at' => now()->toISOString()
+                ];
+                
+                // Find or create student demographic record
+                $studentDemographic = StudentDemographic::firstOrCreate([
+                    'student_guid' => $student->guid,
+                    'demographic_id' => $demographicId,
+                ], [
+                    'question_snapshot' => json_encode($questionSnapshot),
+                    'type' => $demographic->type,
+                    'answered_at' => now(),
+                ]);
+                
+                // Update the record if it already existed (in case question changed)
+                if ($studentDemographic->wasRecentlyCreated === false) {
+                    $studentDemographic->update([
+                        'question_snapshot' => json_encode($questionSnapshot),
+                        'type' => $demographic->type,
+                        'answered_at' => now(),
+                    ]);
+                }
+                
+                // Delete existing answers for this demographic
+                StudentDemographicAnswer::where('student_demographic_id', $studentDemographic->id)->delete();
+                
+                // Create new answers
+                foreach ($answers as $answerValue) {
+                    if (!empty($answerValue)) {
+                        // For select/radio/checkbox types, find the corresponding option label
+                        $labelSnapshot = $answerValue; // Default to the value itself
+                        
+                        if (in_array($demographic->type, ['select', 'radio', 'checkbox', 'multi-select'])) {
+                            // Try to find the option that matches this value
+                            $matchingOption = $demographic->options->firstWhere('value', $answerValue) 
+                                           ?? $demographic->options->firstWhere('label', $answerValue);
+                            
+                            if ($matchingOption) {
+                                $labelSnapshot = $matchingOption->label;
+                            }
+                        }
+                        
+                        StudentDemographicAnswer::create([
+                            'student_demographic_id' => $studentDemographic->id,
+                            'value' => $answerValue,
+                            'label_snapshot' => $labelSnapshot,
+                        ]);
+                    }
+                }
+            }
+        });
     }
 }

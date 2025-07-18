@@ -104,6 +104,13 @@ class StudentEditRequest extends FormRequest
             'workbc_client' => 'boolean|accepted:true',
             'additional_supports' => 'boolean|accepted:true',
             'bc_resident' => 'boolean|accepted:true',
+            
+            // Demographics validation
+            'demographics' => 'array',
+            'demographics.*' => 'array',
+            'demographics.*.demographic_id' => 'required|exists:demographics,id',
+            'demographics.*.answers' => 'required|array',
+            'demographics.*.answers.*' => 'required|string',
         ];
     }
 

@@ -36,11 +36,11 @@ nav.navbar{
             </Link>
         </div>
     </nav>
-	<div class="min-h-screen bg-gray-100 text-center flex flex-col sm:justify-center items-center sm:pt-0">
-		<div class="w-full sm:max-w-md py-4 overflow-hidden sm:rounded-lg">
-			<div class="inline-flex mb-5">
+	<div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light text-center">
+		<div class="w-100 overflow-hidden p-4 rounded shadow-sm" style="max-width: 31rem;">
+			<div class="mb-5">
 				<a href="/login">
-					<ApplicationLoginLogo class="inline-flex" />
+					<ApplicationLoginLogo class="w-100" />
 				</a>
 			</div>
             <slot />

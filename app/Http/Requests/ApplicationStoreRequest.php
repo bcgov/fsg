@@ -6,6 +6,7 @@ use App\Models\Allocation;
 use App\Models\Claim;
 use App\Models\Student;
 use App\Rules\InstitutionAllocationReached;
+use App\Rules\RequiredDemographicsCompleted;
 use App\Rules\ValidSin;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
@@ -64,6 +65,7 @@ class ApplicationStoreRequest extends FormRequest
             'expiry_date' => 'required|date_format:Y-m-d',
             'correction_amount' => 'nullable|numeric',
             'correction_comment' => 'required_if:correction_amount,!null',
+            'demographics' => 'nullable|array',
 
         ];
 
@@ -77,6 +79,7 @@ class ApplicationStoreRequest extends FormRequest
             $rules = array_merge($rules, [
 
                 'allocation_limit_reached' => new InstitutionAllocationReached($allocation),
+                'student_guid' => ['required', 'exists:students,guid', new RequiredDemographicsCompleted($this->input('student_guid'))],
                 'agreement_confirmed' => 'required|boolean|accepted:true',
                 'registration_confirmed' => 'required|boolean|accepted:true',
 
