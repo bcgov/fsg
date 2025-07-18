@@ -58,6 +58,17 @@
                     </Select>
                 </div>
 
+                
+                <!-- Demographics Section -->
+                <StudentDemographics 
+                    v-if="$attrs.demographics"
+                    :demographics="$attrs.demographics"
+                    :existing-demographics="$attrs.existingDemographics || {}"
+                    :model-value="editForm.demographics"
+                    @update:model-value="updateDemographics"
+                />
+                <!-- End of Demographics Section -->
+
                 <div class="col-12">
                     <div class="form-check">
                         <label for="flexCheckChecked1" class="form-check-label">
@@ -144,11 +155,12 @@ import Input from '@/Components/Input.vue';
 import Label from '@/Components/Label.vue';
 import FormSubmitAlert from '@/Components/FormSubmitAlert.vue';
 import { Link, useForm } from '@inertiajs/vue3';
+import StudentDemographics from '@/Components/StudentDemographics.vue';
 
 export default {
     name: 'StudentDetails',
     components: {
-        Input, Label, Select, Link, useForm, FormSubmitAlert
+        Input, Label, Select, Link, useForm, FormSubmitAlert, StudentDemographics
     },
     props: {
         results: Object,

@@ -39,8 +39,33 @@ class StudentController extends Controller
             return ProgramYear::orderBy('guid')->get();
         });
 
-        return Inertia::render('Ministry::Student', ['page' => $page, 'results' => $student,
-            'countries' => $countries, 'programYears' => $program_years]);
+        
+        // Load active demographics with their options
+        $demographics = Demographic::with('options')
+            ->where('active', true)
+            ->orderBy('question', 'asc')
+            ->get();
+
+        // Get existing demographic answers for this student
+        $existingDemographics = $student ? $student->getFormattedDemographics() : [];
+
+        // return Inertia::render('Student::Dashboard', [
+        //     'status' => true, 
+        //     'results' => $student, 
+        //     'page' => $page, 
+        //     'error' => $error,
+        //     'demographics' => $demographics,
+        //     'existingDemographics' => $existingDemographics
+        // ]);
+
+        return Inertia::render('Ministry::Student', [
+            'page' => $page, 
+            'results' => $student,
+            'countries' => $countries, 
+            'programYears' => $program_years,
+            'demographics' => $demographics,
+            'existingDemographics' => $existingDemographics,
+        ]);
     }
 
     /**
@@ -48,8 +73,17 @@ class StudentController extends Controller
      */
     public function update(StudentEditRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $student_id = Student::where('id', $request->id)->update($request->validated());
+        $validated = $request->validated();
+        $demographics = $validated['demographics'] ?? [];
+        unset($validated['demographics']);
+
+        $student_id = Student::where('id', $request->id)->update($validated);
         $student = Student::find($request->id);
+
+        // Handle demographics saving
+        if (!empty($demographics) && $student) {
+            $this->saveDemographics($student, $demographics);
+        }
 
         return Redirect::route('ministry.students.show', [$student->id]);
     }
@@ -82,5 +116,86 @@ class StudentController extends Controller
         }
 
         return $students->paginate(25)->onEachSide(1)->appends(request()->query());
+    }
+
+    
+    /**
+     * Save demographics for a student
+     */
+    private function saveDemographics(Student $student, array $demographics)
+    {
+        DB::transaction(function () use ($student, $demographics) {
+            foreach ($demographics as $demographicData) {
+                if (!isset($demographicData['demographic_id']) || !isset($demographicData['answers'])) {
+                    continue;
+                }
+                
+                $demographicId = $demographicData['demographic_id'];
+                $answers = $demographicData['answers'];
+                
+                // Get the demographic question for the snapshot
+                $demographic = Demographic::find($demographicId);
+                if (!$demographic) {
+                    continue;
+                }
+                
+                // Create question snapshot
+                $questionSnapshot = [
+                    'id' => $demographic->id,
+                    'question' => $demographic->question,
+                    'type' => $demographic->type,
+                    'required' => $demographic->required,
+                    'description' => $demographic->description,
+                    'options' => $demographic->options,
+                    'captured_at' => now()->toISOString()
+                ];
+                
+                // Find or create student demographic record
+                $studentDemographic = StudentDemographic::firstOrCreate([
+                    'student_guid' => $student->guid,
+                    'demographic_id' => $demographicId,
+                ], [
+                    'question_snapshot' => json_encode($questionSnapshot),
+                    'type' => $demographic->type,
+                    'answered_at' => now(),
+                ]);
+                
+                // Update the record if it already existed (in case question changed)
+                if ($studentDemographic->wasRecentlyCreated === false) {
+                    $studentDemographic->update([
+                        'question_snapshot' => json_encode($questionSnapshot),
+                        'type' => $demographic->type,
+                        'answered_at' => now(),
+                    ]);
+                }
+                
+                // Delete existing answers for this demographic
+                StudentDemographicAnswer::where('student_demographic_id', $studentDemographic->id)->delete();
+                
+                // Create new answers
+                foreach ($answers as $answerValue) {
+                    if (!empty($answerValue)) {
+                        // For select/radio/checkbox types, find the corresponding option label
+                        $labelSnapshot = $answerValue; // Default to the value itself
+                        
+                        if (in_array($demographic->type, ['select', 'radio', 'checkbox', 'multi-select'])) {
+                            // Try to find the option that matches this value
+                            $matchingOption = $demographic->options->firstWhere('value', $answerValue) 
+                                           ?? $demographic->options->firstWhere('label', $answerValue);
+                            
+                            if ($matchingOption) {
+                                $labelSnapshot = $matchingOption->label;
+                            }
+                        }
+                        
+                        StudentDemographicAnswer::create([
+                            'student_demographic_id' => $studentDemographic->id,
+                            'value' => $answerValue,
+                            'label_snapshot' => $labelSnapshot,
+                        ]);
+                    }
+                }
+            }
+        });
     }
 }
