@@ -33,7 +33,7 @@ class DemographicSharingController extends Controller
                         ->with('answers');
                 }
             ])
-            ->orderBy('question')
+            ->ordered()
             ->get();
 
         // Get all active shareable entities

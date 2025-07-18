@@ -29,6 +29,7 @@ class DemographicEditRequest extends FormRequest
             'type.*' => 'Type is not valid.',
             'required.*' => 'Required field is not valid.',
             'active.*' => 'Active field is not valid.',
+            'order.*' => 'Order field is not valid.',
         ];
     }
 
@@ -45,6 +46,7 @@ class DemographicEditRequest extends FormRequest
             'type' => 'required|in:text,select,multi-select,radio,checkbox',
             'required' => 'required|boolean',
             'active' => 'required|boolean',
+            'order' => 'nullable|integer|min:0',
         ];
     }
 

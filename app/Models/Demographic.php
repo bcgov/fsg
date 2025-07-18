@@ -16,7 +16,7 @@ class Demographic extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['question', 'description', 'type', 'required', 'active'];
+    protected $fillable = ['question', 'description', 'type', 'required', 'active', 'order'];
 
     /**
      * The attributes that should be cast.
@@ -50,5 +50,13 @@ class Demographic extends Model
     public function scopeActive($query)
     {
         return $query->where('active', true);
+    }
+
+    /**
+     * Scope a query to order demographics by their order field.
+     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('order')->orderBy('question');
     }
 }
