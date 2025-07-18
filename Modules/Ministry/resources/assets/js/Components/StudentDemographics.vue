@@ -197,7 +197,7 @@ export default {
                     return;
                 }
                 
-                console.log('Demographics answers watcher fired:', newVal);
+                // console.log('Demographics answers watcher fired:', newVal);
                 // Transform to the format expected by the controller
                 const formattedData = Object.keys(newVal).map(demographicId => {
                     const answerValue = newVal[demographicId];

@@ -197,10 +197,10 @@ export default {
     watch: {
         'editForm.demographics': {
             handler(newVal) {
-                console.log('Demographics updated in DashboardProfile:', newVal);
-                console.log('Type of newVal:', typeof newVal);
-                console.log('Is array:', Array.isArray(newVal));
-                console.log('Keys if object:', newVal && typeof newVal === 'object' ? Object.keys(newVal) : 'N/A');
+                // console.log('Demographics updated in DashboardProfile:', newVal);
+                // console.log('Type of newVal:', typeof newVal);
+                // console.log('Is array:', Array.isArray(newVal));
+                // console.log('Keys if object:', newVal && typeof newVal === 'object' ? Object.keys(newVal) : 'N/A');
                 
                 // Force update of editFormData
                 this.editFormData.demographics = newVal;
@@ -245,8 +245,8 @@ export default {
             this.editForm.hasErrors = false;
             this.editForm.errors = {};
 
-            console.log('Form data before submit:', this.editForm);
-            console.log('Demographics data:', this.editForm.demographics);
+            // console.log('Form data before submit:', this.editForm);
+            // console.log('Demographics data:', this.editForm.demographics);
 
             if (!this.validateForm()) {
                 // Handle validation errors
@@ -267,8 +267,8 @@ export default {
             // Manually set the demographics before submission
             this.editForm.demographics = this.editFormData.demographics;
             
-            console.log('Update form before submit - editForm.demographics:', this.editForm.demographics);
-            console.log('Update form before submit - full form:', Object.keys(this.editForm));
+            // console.log('Update form before submit - editForm.demographics:', this.editForm.demographics);
+            // console.log('Update form before submit - full form:', Object.keys(this.editForm));
             
             this.editForm.put('/profile', {
                 onSuccess: () => {
@@ -287,8 +287,8 @@ export default {
             // Manually set the demographics before submission
             this.editForm.demographics = this.editFormData.demographics;
             
-            console.log('Create form before submit - editForm.demographics:', this.editForm.demographics);
-            console.log('Create form before submit - full form:', Object.keys(this.editForm));
+            // console.log('Create form before submit - editForm.demographics:', this.editForm.demographics);
+            // console.log('Create form before submit - full form:', Object.keys(this.editForm));
             
             this.editForm.post('/profile', {
                 onSuccess: () => {
@@ -302,9 +302,9 @@ export default {
         },
         
         updateDemographics(newDemographics) {
-            console.log('updateDemographics called with:', newDemographics);
-            console.log('Type:', typeof newDemographics);
-            console.log('Is array:', Array.isArray(newDemographics));
+            // console.log('updateDemographics called with:', newDemographics);
+            // console.log('Type:', typeof newDemographics);
+            // console.log('Is array:', Array.isArray(newDemographics));
             
             // Update both the form data and the editForm
             this.editFormData.demographics = newDemographics;
@@ -333,9 +333,9 @@ export default {
             this.editForm.hasErrors = hasErrors;
             this.editForm.errors = errors;
             
-            console.log('After update - editForm.demographics:', this.editForm.demographics);
-            console.log('After update - editFormData.demographics:', this.editFormData.demographics);
-            console.log('editForm keys:', Object.keys(this.editForm));
+            // console.log('After update - editForm.demographics:', this.editForm.demographics);
+            // console.log('After update - editFormData.demographics:', this.editFormData.demographics);
+            // console.log('editForm keys:', Object.keys(this.editForm));
         }
     },
 
@@ -356,8 +356,8 @@ export default {
             this.editForm.demographics = {};
         }
         
-        console.log('After mounted - editForm keys:', Object.keys(this.editForm));
-        console.log('After mounted - editForm.demographics:', this.editForm.demographics);
+        // console.log('After mounted - editForm keys:', Object.keys(this.editForm));
+        // console.log('After mounted - editForm.demographics:', this.editForm.demographics);
     }
 }
 </script>

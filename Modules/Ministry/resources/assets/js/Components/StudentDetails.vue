@@ -155,7 +155,7 @@ import Input from '@/Components/Input.vue';
 import Label from '@/Components/Label.vue';
 import FormSubmitAlert from '@/Components/FormSubmitAlert.vue';
 import { Link, useForm } from '@inertiajs/vue3';
-import StudentDemographics from '@/Components/StudentDemographics.vue';
+import StudentDemographics from './StudentDemographics.vue';
 
 export default {
     name: 'StudentDetails',
@@ -188,10 +188,47 @@ export default {
                 preserveState: true
             });
         },
+        
+        updateDemographics(newDemographics) {
+            // console.log('updateDemographics called with:', newDemographics);
+            // console.log('Type:', typeof newDemographics);
+            // console.log('Is array:', Array.isArray(newDemographics));
+            
+            // Direct assignment should work in Vue 3
+            this.editForm.demographics = newDemographics;
+            
+            // Alternative approach: recreate the form with updated data
+            const currentFormData = {
+                ...this.editForm.data(),
+                demographics: newDemographics
+            };
+            
+            // Preserve form state
+            const wasProcessing = this.editForm.processing;
+            const formState = this.editForm.formState;
+            const hasErrors = this.editForm.hasErrors;
+            const errors = this.editForm.errors;
+            
+            // Recreate form with updated data
+            this.editForm = useForm(currentFormData);
+            
+            // Restore form state
+            this.editForm.processing = wasProcessing;
+            this.editForm.formState = formState;
+            this.editForm.hasErrors = hasErrors;
+            this.editForm.errors = errors;
+            
+            // console.log('After update - editForm.demographics:', this.editForm.demographics);
+            // console.log('editForm keys:', Object.keys(this.editForm));
+        }
     },
 
     mounted() {
         this.editForm = useForm(this.results);
+                // Initialize demographics if not present - ensure it's reactive
+        if (!this.editForm.demographics) {
+            this.editForm.demographics = {};
+        }
     }
 }
 </script>

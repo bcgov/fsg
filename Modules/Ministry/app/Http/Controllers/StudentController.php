@@ -10,6 +10,10 @@ use App\Models\Student;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use App\Models\Demographic;
+use App\Models\StudentDemographic;
+use App\Models\StudentDemographicAnswer;
+use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
