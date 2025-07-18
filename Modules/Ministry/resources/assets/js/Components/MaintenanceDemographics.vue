@@ -125,7 +125,7 @@
                                     <BreezeLabel for="newDemographicQuestion" class="form-label" value="Question" />
                                     <BreezeInput type="text" class="form-control" id="newDemographicQuestion" v-model="newDemographicForm.question" />
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-3">
                                     <BreezeLabel for="newDemographicType" class="form-label" value="Type" />
                                     <BreezeSelect class="form-select" id="newDemographicType" v-model="newDemographicForm.type">
                                         <option value="">Select Type</option>
@@ -193,7 +193,7 @@
                                     <BreezeLabel for="editDemographicQuestion" class="form-label" value="Question" />
                                     <BreezeInput type="text" class="form-control" id="editDemographicQuestion" v-model="editDemographicForm.question" />
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-3">
                                     <BreezeLabel for="editDemographicType" class="form-label" value="Type" />
                                     <BreezeSelect class="form-select" id="editDemographicType" v-model="editDemographicForm.type">
                                         <option value="">Select Type</option>
