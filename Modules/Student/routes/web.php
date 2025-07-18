@@ -3,6 +3,7 @@
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
 use Modules\Student\Http\Controllers\ApplicationController;
+use Modules\Student\Http\Controllers\DemographicSharingController;
 use Modules\Student\Http\Controllers\StudentController;
 
 /*
@@ -32,6 +33,12 @@ Route::group(
         Route::get('/student/api/fetch/students/applications', [ApplicationController::class, 'fetchApplications'])->name('claims.fetchApplications');
         Route::get('/student/api/fetch/institutions/{institution?}', [StudentController::class, 'fetchInstitutions'])->name('claims.fetchInstitutions');
 
-    Route::get('/faqs', [StudentController::class, 'faqList'])->name('faqs.index');
+        Route::get('/faqs', [StudentController::class, 'faqList'])->name('faqs.index');
+
+        // Demographic sharing routes
+        Route::get('/demographic-sharing', [DemographicSharingController::class, 'index'])->name('demographic_sharing.index');
+        Route::post('/demographic-sharing/update', [DemographicSharingController::class, 'updateSharing'])->name('demographic_sharing.update');
+        Route::get('/demographic-sharing/summary', [DemographicSharingController::class, 'getSharingSummary'])->name('demographic_sharing.summary');
+        Route::post('/demographic-sharing/revoke-all', [DemographicSharingController::class, 'revokeAllSharing'])->name('demographic_sharing.revoke_all');
 
     });

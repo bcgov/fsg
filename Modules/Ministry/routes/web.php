@@ -88,6 +88,11 @@ Route::prefix('ministry')->group(function () {
                     Route::post('/demographics/{demographic}/options', [MaintenanceController::class, 'demographicOptionStore'])->name('demographics.options.store');
                     Route::put('/demographics/options/{option}', [MaintenanceController::class, 'demographicOptionUpdate'])->name('demographics.options.update');
                     Route::delete('/demographics/options/{option}', [MaintenanceController::class, 'demographicOptionDestroy'])->name('demographics.options.destroy');
+
+                    Route::get('/shareable_entities', [MaintenanceController::class, 'shareableEntitiesList'])->name('shareable_entities.list');
+                    Route::post('/shareable_entities', [MaintenanceController::class, 'shareableEntityStore'])->name('shareable_entities.store');
+                    Route::put('/shareable_entities/{entity}', [MaintenanceController::class, 'shareableEntityUpdate'])->name('shareable_entities.update');
+                    Route::delete('/shareable_entities/{entity}', [MaintenanceController::class, 'shareableEntityDestroy'])->name('shareable_entities.destroy');
                 });
 
                 Route::put('/institution_staff', [InstitutionStaffController::class, 'update'])->name('institution_staff.update');

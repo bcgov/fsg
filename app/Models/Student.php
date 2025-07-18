@@ -73,6 +73,29 @@ class Student extends Model
     }
 
     /**
+     * Get the demographic shares for this student.
+     */
+    public function demographicShares()
+    {
+        return $this->hasMany(StudentDemographicShare::class, 'student_guid', 'guid');
+    }
+
+    /**
+     * Get entities that this student has shared demographics with.
+     */
+    public function sharedEntities()
+    {
+        return $this->hasManyThrough(
+            ShareableEntity::class,
+            StudentDemographicShare::class,
+            'student_guid',
+            'id',
+            'guid',
+            'shareable_entity_id'
+        )->where('student_demographic_shares.is_shared', true);
+    }
+
+    /**
      * Get formatted demographic data for forms
      */
     public function getFormattedDemographics()
@@ -95,5 +118,35 @@ class Student extends Model
         }
         
         return $demographics;
+    }
+
+    /**
+     * Get formatted demographic sharing data for forms
+     */
+    public function getFormattedDemographicShares()
+    {
+        $shares = [];
+        
+        $studentShares = $this->demographicShares()->with(['demographic', 'shareableEntity'])->get();
+        
+        foreach ($studentShares as $share) {
+            $demographicId = $share->demographic_id;
+            
+            if (!isset($shares[$demographicId])) {
+                $shares[$demographicId] = [
+                    'demographic' => $share->demographic,
+                    'entities' => []
+                ];
+            }
+            
+            $shares[$demographicId]['entities'][] = [
+                'entity' => $share->shareableEntity,
+                'is_shared' => $share->is_shared,
+                'shared_at' => $share->shared_at,
+                'revoked_at' => $share->revoked_at
+            ];
+        }
+        
+        return $shares;
     }
 }

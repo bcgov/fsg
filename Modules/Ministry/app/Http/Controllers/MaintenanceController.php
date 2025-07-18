@@ -22,6 +22,7 @@ use App\Models\Institution;
 use App\Models\InstitutionStaff;
 use App\Models\ProgramYear;
 use App\Models\Role;
+use App\Models\ShareableEntity;
 use App\Models\User;
 use App\Models\Util;
 use Illuminate\Http\Request;
@@ -586,5 +587,75 @@ class MaintenanceController extends Controller
         $option->delete();
 
         return Redirect::route('ministry.maintenance.demographics.list');
+    }
+
+    /**
+     * Display a listing of shareable entities.
+     *
+     * @return \Inertia\Response
+     */
+    public function shareableEntitiesList(Request $request): \Inertia\Response
+    {
+        $entities = ShareableEntity::orderBy('name')->get();
+
+        return Inertia::render('Ministry::Maintenance', [
+            'status' => true,
+            'results' => $entities,
+            'page' => 'shareable_entities'
+        ]);
+    }
+
+    /**
+     * Store a newly created shareable entity.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function shareableEntityStore(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:shareable_entities,name',
+            'description' => 'nullable|string',
+            'contact_email' => 'nullable|email',
+            'contact_phone' => 'nullable|string|max:20',
+            'privacy_policy_url' => 'nullable|url',
+            'active' => 'boolean',
+        ]);
+
+        ShareableEntity::create($validated);
+
+        return Redirect::route('ministry.maintenance.shareable_entities.list');
+    }
+
+    /**
+     * Update a shareable entity.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function shareableEntityUpdate(Request $request, ShareableEntity $entity): \Illuminate\Http\RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:shareable_entities,name,' . $entity->id,
+            'description' => 'nullable|string',
+            'contact_email' => 'nullable|email',
+            'contact_phone' => 'nullable|string|max:20',
+            'privacy_policy_url' => 'nullable|url',
+            'active' => 'boolean',
+        ]);
+
+        $entity->update($validated);
+
+        return Redirect::route('ministry.maintenance.shareable_entities.list');
+    }
+
+    /**
+     * Delete a shareable entity.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function shareableEntityDestroy(ShareableEntity $entity): \Illuminate\Http\RedirectResponse
+    {
+        $entity->delete();
+
+        return Redirect::route('ministry.maintenance.shareable_entities.list');
     }
 }

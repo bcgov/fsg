@@ -145,20 +145,84 @@ export default {
     },
     emits: ['update:modelValue'],
     data() {
+        const initialData = {};
+        
+        // Transform modelValue if it's in the formatted array format
+        if (Array.isArray(this.modelValue)) {
+            this.modelValue.forEach(item => {
+                if (item.demographic_id && item.answers) {
+                    initialData[item.demographic_id] = item.answers.join(',');
+                }
+            });
+        } else if (this.modelValue && typeof this.modelValue === 'object') {
+            Object.assign(initialData, this.modelValue);
+        }
+        
         return {
-            demographicAnswers: { ...this.existingDemographics, ...this.modelValue }
+            demographicAnswers: { ...this.existingDemographics, ...initialData },
+            isUpdatingFromParent: false
         }
     },
     watch: {
         modelValue: {
             handler(newVal) {
-                this.demographicAnswers = { ...newVal };
+                this.isUpdatingFromParent = true;
+                
+                // Transform formatted data back to internal format
+                const internalFormat = {};
+                
+                if (Array.isArray(newVal)) {
+                    newVal.forEach(item => {
+                        if (item.demographic_id && item.answers) {
+                            internalFormat[item.demographic_id] = item.answers.join(',');
+                        }
+                    });
+                } else if (newVal && typeof newVal === 'object') {
+                    // Handle the old format for backwards compatibility
+                    Object.assign(internalFormat, newVal);
+                }
+                
+                this.demographicAnswers = { ...this.existingDemographics, ...internalFormat };
+                
+                this.$nextTick(() => {
+                    this.isUpdatingFromParent = false;
+                });
             },
             deep: true
         },
         demographicAnswers: {
             handler(newVal) {
-                this.$emit('update:modelValue', newVal);
+                // Don't emit if we're updating from parent to prevent recursion
+                if (this.isUpdatingFromParent) {
+                    return;
+                }
+                
+                console.log('Demographics answers watcher fired:', newVal);
+                // Transform to the format expected by the controller
+                const formattedData = Object.keys(newVal).map(demographicId => {
+                    const answerValue = newVal[demographicId];
+                    let answers = [];
+                    
+                    if (answerValue) {
+                        // Handle comma-separated values (from checkboxes)
+                        answers = answerValue.split(',').map(v => v.trim()).filter(v => v !== '');
+                        
+                        // If it's a single value, make it an array
+                        if (answers.length === 0 && answerValue.trim() !== '') {
+                            answers = [answerValue.trim()];
+                        }
+                    }
+                    
+                    return {
+                        demographic_id: parseInt(demographicId),
+                        answers: answers
+                    };
+                }).filter(item => item.answers.length > 0); // Only include demographics with answers
+                
+                console.log('Emitting formatted data:', formattedData);
+                console.log('Type of formattedData:', typeof formattedData);
+                console.log('Is array:', Array.isArray(formattedData));
+                this.$emit('update:modelValue', formattedData);
             },
             deep: true
         }
@@ -178,12 +242,17 @@ export default {
         
         updateDemographicAnswer(demographicId, value) {
             if (this.readonly) return;
+            console.log('Updating demographic answer:', demographicId, value);
+            console.log('Before update:', this.demographicAnswers);
+            console.log('isUpdatingFromParent:', this.isUpdatingFromParent);
             this.demographicAnswers[demographicId] = value;
+            console.log('After update:', this.demographicAnswers);
         },
         
         updateMultiSelectAnswer(demographicId, event) {
             if (this.readonly) return;
             const selectedOptions = Array.from(event.target.selectedOptions, option => option.value);
+            console.log('Updating multi-select answer:', demographicId, selectedOptions);
             this.demographicAnswers[demographicId] = selectedOptions.join(',');
         },
         
@@ -210,6 +279,7 @@ export default {
                 selectedValues = selectedValues.filter(v => v !== optionValue);
             }
             
+            console.log('Updating checkbox answer:', demographicId, selectedValues);
             this.demographicAnswers[demographicId] = selectedValues.join(',');
         }
     }

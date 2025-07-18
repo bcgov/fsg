@@ -22,14 +22,6 @@
                         </Select>
                     </div>
                     
-                    <!-- Demographics Section -->
-                    <StudentDemographics 
-                        v-if="$attrs.demographics"
-                        :demographics="$attrs.demographics"
-                        :existing-demographics="$attrs.existingDemographics || {}"
-                        v-model="newApplicationForm.demographics"
-                    />
-                    
                     <div v-if="newApplicationForm.program_guid != ''" class="col-12">
                         <div class="form-check">
                             <label for="flexCheckChecked1" class="form-check-label">
@@ -91,13 +83,12 @@ import Select from '@/Components/Select.vue';
 import Input from '@/Components/Input.vue';
 import Label from '@/Components/Label.vue';
 import FormSubmitAlert from '@/Components/FormSubmitAlert.vue';
-import StudentDemographics from './StudentDemographics.vue';
 import {Link, useForm} from '@inertiajs/vue3';
 
 export default {
     name: 'StudentApplicationEdit',
     components: {
-        Input, Label, Select, Link, useForm, FormSubmitAlert, StudentDemographics
+        Input, Label, Select, Link, useForm, FormSubmitAlert
     },
     props: {
         results: Object,
@@ -175,11 +166,6 @@ export default {
     mounted() {
         this.newApplicationForm = useForm(this.application);
         this.newApplicationForm.claim_status = 'Submitted';
-        
-        // Initialize demographics if not present
-        if (!this.newApplicationForm.demographics) {
-            this.newApplicationForm.demographics = {};
-        }
         
         this.fetchPrograms(this.application.institution_guid);
         // this.newApplicationForm.institution_guid = this.results.guid;

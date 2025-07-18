@@ -27,6 +27,7 @@
                         <MaintenanceProgramYears v-if="page === 'program_years'" :results="results"></MaintenanceProgramYears>
                         <MaintenanceFaq v-if="page === 'faqs'" :results="results"></MaintenanceFaq>
                         <MaintenanceDemographics v-if="page === 'demographics'" :results="results"></MaintenanceDemographics>
+                        <MaintenanceShareableEntities v-if="page === 'shareable_entities'" :results="results"></MaintenanceShareableEntities>
                     </div>
                 </div>
             </div>
@@ -43,6 +44,7 @@ import MaintenanceUtils from "../Components/MaintenanceUtils";
 import MaintenanceProgramYears from "../Components/MaintenanceProgramYears";
 import MaintenanceFaq from "../Components/MaintenanceFaq";
 import MaintenanceDemographics from "../Components/MaintenanceDemographics";
+import MaintenanceShareableEntities from "../Components/MaintenanceShareableEntities";
 
 export default {
     name: 'Maintenance',
@@ -51,7 +53,13 @@ export default {
         MaintenanceUtils,
         MaintenanceMenu,
         MaintenanceDemographics,
-        BreezeAuthenticatedLayout, Head, Link, MaintenanceStaff, MaintenanceStaffEdit, MaintenanceProgramYears
+        MaintenanceShareableEntities,
+        BreezeAuthenticatedLayout, 
+        Head, 
+        Link, 
+        MaintenanceStaff, 
+        MaintenanceStaffEdit, 
+        MaintenanceProgramYears
     },
     props: {
         results: Object,
