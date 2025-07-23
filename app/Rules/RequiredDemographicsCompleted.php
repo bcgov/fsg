@@ -7,21 +7,23 @@ use App\Models\Student;
 use App\Models\StudentDemographic;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Facades\Auth;
 
 class RequiredDemographicsCompleted implements ValidationRule
 {
-    private $studentGuid;
-
-    public function __construct($studentGuid)
-    {
-        $this->studentGuid = $studentGuid;
-    }
-
     /**
      * Run the validation rule.
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        // Get the student from the authenticated user
+        $student = Student::where('user_guid', Auth::user()->guid)->first();
+        
+        if (!$student) {
+            $fail('Student not found.');
+            return;
+        }
+
         // Get all required and active demographics
         $requiredDemographics = Demographic::where('required', true)
             ->where('active', true)
@@ -33,7 +35,7 @@ class RequiredDemographicsCompleted implements ValidationRule
         }
 
         // Get student's answered demographics
-        $answeredDemographicIds = StudentDemographic::where('student_guid', $this->studentGuid)
+        $answeredDemographicIds = StudentDemographic::where('student_guid', $student->guid)
             ->whereHas('answers') // Only demographics with actual answers
             ->pluck('demographic_id')
             ->toArray();
