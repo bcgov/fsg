@@ -84,7 +84,7 @@ class ApplicationEditRequest extends FormRequest
         } elseif ($this->claim_status === 'Submitted') {
             $rules = array_merge($rules, [
                 'allocation_limit_reached' => new InstitutionAllocationReached($allocation),
-                'student_guid' => ['required', 'exists:students,guid', new RequiredDemographicsCompleted($this->input('student_guid'))],
+                'student_guid' => ['required', 'exists:students,guid', new RequiredDemographicsCompleted()],
 
                 'agreement_confirmed' => 'required|boolean|accepted:true',
                 'registration_confirmed' => 'required|boolean|accepted:true',
