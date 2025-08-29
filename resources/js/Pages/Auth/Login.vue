@@ -60,7 +60,7 @@ img.bceid_rev{
                 <div class="row">
                     <div class="col-12 mb-3">
                         <p class="text-start fw-bold">Student: Login with your BC Services Card</p>
-                        <p class="text-start">Applying for StrongBC Future Skills Grant? Click here.</p>
+                        <p class="text-start">Applying for StrongerBC Future Skills Grant? Click here.</p>
                         <a href="/bcsc-login" class="btn btn-bc-gov mb-3 w-100 fw-light">Student Login with BC Services Card</a>
                         <a class="btn btn-link" href="https://id.gov.bc.ca/account/">Learn how to use your BC Services Card to log in</a>
                     </div>
