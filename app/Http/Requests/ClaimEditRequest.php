@@ -181,6 +181,8 @@ class ClaimEditRequest extends FormRequest
                 'reporting_completed_date' => 'nullable|date_format:Y-m-d|after:2020-01-20',
                 'claimed_date' => 'required|date_format:Y-m-d|after:2020-01-20',
                 'claimed_by_user_guid' => 'required|exists:users,guid',
+
+                'expected_completion_date' => 'required|date_format:Y-m-d|after:2020-01-20',
             ]);
         }
 
