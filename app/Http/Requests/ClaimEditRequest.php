@@ -76,6 +76,7 @@ class ClaimEditRequest extends FormRequest
             'estimated_hold_amount.*' => 'The Est. Hold Amount field is invalid.',
             'stable_enrolment_date.*' => 'The Actual Stable Enrol. Date field is invalid.',
             'expected_stable_enrolment_date.*' => 'The Expected Stable Enrol. Date field is invalid.',
+            'expected_completion_date.required' => 'The Expected Completion Date field is required when claiming a held application.',
         ];
     }
 
@@ -160,6 +161,10 @@ class ClaimEditRequest extends FormRequest
         } elseif ($this->claim_status === 'Claimed') {
 
             $allocation = Allocation::where('guid', $this->input('allocation_guid'))->with('institution')->first();
+            
+            // Get the current claim to check its current status
+            $currentClaim = Claim::find($this->id);
+            $isTransitioningFromHold = $currentClaim && $currentClaim->claim_status === 'Hold';
 
             $rules = array_merge($rules, [
                 'allocation_limit_reached' => ['required', new InstitutionAllocationReached($allocation)],
@@ -182,7 +187,10 @@ class ClaimEditRequest extends FormRequest
                 'claimed_date' => 'required|date_format:Y-m-d|after:2020-01-20',
                 'claimed_by_user_guid' => 'required|exists:users,guid',
 
-                'expected_completion_date' => 'required|date_format:Y-m-d|after:2020-01-20',
+                // Only require expected_completion_date when transitioning from Hold to Claimed
+                'expected_completion_date' => $isTransitioningFromHold 
+                    ? 'required|date_format:Y-m-d|after:2020-01-20' 
+                    : 'nullable|date_format:Y-m-d|after:2020-01-20',
             ]);
         }
 
