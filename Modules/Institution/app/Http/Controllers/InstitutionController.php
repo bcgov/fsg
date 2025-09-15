@@ -97,8 +97,8 @@ class InstitutionController extends Controller
             $waiting_outcome = Claim::where('institution_guid', $institution->guid)
                 ->where('allocation_guid', $instAllocation->guid)
                 ->where('claim_status', 'Claimed')
-                ->whereIsNull('outcome_effective_date') //outcome_effective_date', 'outcome_status are not set
-                ->whereIsNull('outcome_status')
+                ->whereNull('outcome_effective_date') //outcome_effective_date', 'outcome_status are not set
+                ->whereNull('outcome_status')
                 ->count();
 
             if ($programYear->claim_percent == 0) {
