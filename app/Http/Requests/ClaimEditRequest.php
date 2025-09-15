@@ -59,6 +59,11 @@ class ClaimEditRequest extends FormRequest
             return false;
         }
 
+        // Prevent updates to the program_guid field when the claim is in Claimed status
+        if ($claim->claim_status === 'Claimed' && $this->has('program_guid')) {
+            return false;
+        }
+
         // Check if the authenticated user has the necessary permissions to edit the institution.
         // You can access the authenticated user using the Auth facade or $this->user() method.
         return $this->user()->can('update', $claim);
@@ -192,6 +197,11 @@ class ClaimEditRequest extends FormRequest
                     ? 'required|date_format:Y-m-d|after:2020-01-20' 
                     : 'nullable|date_format:Y-m-d|after:2020-01-20',
             ]);
+
+            // Disallow updates to program_guid when the claim is in Claimed status
+            if ($this->claim_status === 'Claimed') {
+                unset($rules['program_guid']);
+            }
         }
 
         return $rules;

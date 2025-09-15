@@ -11,30 +11,26 @@
 
                     <div class="col-md-6">
                         <label for="inputSd" class="block font-medium text-sm text-gray-700 form-label">{{ getInactiveProgramName() }}</label>
-                        <Select v-if="editStudentClaimForm.program !== null"
-                                class="form-select" id="inputSd" v-model="editStudentClaimForm.program_guid">
-                            <template  v-for="p in programs">
-                                <option :disabled="p.active_status === false" :value="p.guid">{{ p.program_name }}</option>
-                            </template>
-                        </Select>
-                        <p v-else> - </p>
+                         <p v-if="claim.claim_status === 'Claimed' || claim.claim_status === 'Expired' || claim.claim_status === 'Cancelled'">
+                            {{ programs.find(p => p.guid === editStudentClaimForm.program_guid) ? 
+                            programs.find(p => p.guid === editStudentClaimForm.program_guid).program_name : 
+                            ' - ' }}
+                         </p>
+                         <template v-else>
+                            <Select v-if="editStudentClaimForm.program !== null"
+                                    class="form-select" id="inputSd" v-model="editStudentClaimForm.program_guid">
+                                <template  v-for="p in programs">
+                                    <option :disabled="p.active_status === false" :value="p.guid">{{ p.program_name }}</option>
+                                </template>
+                            </Select>
+                            <p v-else> - </p>
+                        </template>
                     </div>
                     <div class="col-md-6">
                         <Label for="inputFundingType" class="form-label" value="Funding Type" />
                         <span v-if="editStudentClaimForm.program !== null">{{ editStudentClaimForm.program.funding_type }}</span>
                         <span v-else> - </span>
                     </div>
-
-                    <!-- <div class="col-md-3">
-                        <Label for="inputAgreeConfirmed" class="form-label" value="Consent Confirmed?" />
-                        <span v-if="editStudentClaimForm.agreement_confirmed == true" class="badge rounded-pill text-bg-success">True</span>
-                        <span v-else class="badge rounded-pill text-bg-danger">False</span>
-                    </div>
-                    <div class="col-md-3">
-                        <Label for="inputRegisterConfirmed" class="form-label" value="Registration Confirmed?" />
-                        <span v-if="editStudentClaimForm.registration_confirmed == true" class="badge rounded-pill text-bg-success">True</span>
-                        <span v-else class="badge rounded-pill text-bg-danger">False</span>
-                    </div> -->
 
                     <div class="col-md-4">
                         <Label for="inputFirstName" class="form-label" value="First Name" />
