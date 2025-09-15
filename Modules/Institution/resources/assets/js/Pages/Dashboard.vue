@@ -86,7 +86,7 @@
                     <div class="col-md-6 mb-3">
                         <div class="card text-center">
                             <div class="card-header">Claims Waiting for Outcome Reporting</div>
-                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas((Number(waitingOutcome)).toFixed(2)) }}</div>
+                            <div class="card-body display-5 m-4">{{ $formatNumberWithCommas((Number(waitingOutcome)).toFixed(2)) }}</div>
                         </div>
                     </div>
                 </div>
