@@ -94,6 +94,13 @@ class InstitutionController extends Controller
                 })
                 ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
+            $waiting_outcome = Claim::where('institution_guid', $institution->guid)
+                ->where('allocation_guid', $instAllocation->guid)
+                ->where('claim_status', 'Claimed')
+                ->whereNull('outcome_effective_date') //outcome_effective_date', 'outcome_status are not set
+                ->whereNull('outcome_status')
+                ->count();
+
             if ($programYear->claim_percent == 0) {
                 return Inertia::render('Institution::Dashboard', [
                     'results' => $institution,
@@ -115,6 +122,7 @@ class InstitutionController extends Controller
                 'claimedApps' => $gov_claimed ? (float) $gov_claimed + ((float) $gov_claimed / (float) $programYear->claim_percent) : 0,
                 'tsHoldAmount' => $ts_hold ? (float) $ts_hold + ((float) $ts_hold / (float) $programYear->claim_percent) : 0,
                 'tsClaimedAmount' => $ts_claimed ? (float) $ts_claimed + ((float) $ts_claimed / (float) $programYear->claim_percent) : 0,
+                'waitingOutcome' => $waiting_outcome,
             ]);
         }
 
@@ -126,6 +134,7 @@ class InstitutionController extends Controller
             'claimedApps' => 0,
             'tsHoldAmount' => 0,
             'tsClaimedAmount' => 0,
+            'waitingOutcome' => 0,
         ]);
     }
 

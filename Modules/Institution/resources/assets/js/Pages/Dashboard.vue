@@ -77,10 +77,16 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12 mb-3">
+                    <div class="col-md-6 mb-3">
                         <div class="card text-center">
                             <div class="card-header">Committed Amount (Claimed + Hold)</div>
                             <div class="card-body display-5 m-4">${{ $formatNumberWithCommas((Number(claimedApps) + Number(holdApps) + Number(tsHoldAmount) + Number(tsClaimedAmount)).toFixed(2)) }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card text-center">
+                            <div class="card-header">Claims Waiting for Outcome Reporting</div>
+                            <div class="card-body display-5 m-4">{{ $formatNumberWithCommas((Number(waitingOutcome)).toFixed(2)) }}</div>
                         </div>
                     </div>
                 </div>
@@ -111,7 +117,8 @@ export default {
         holdApps: Number,
         claimedApps: Number,
         tsHoldAmount: Number,
-        tsClaimedAmount: Number
+        tsClaimedAmount: Number,
+        waitingOutcome: Number
     }
 }
 </script>
