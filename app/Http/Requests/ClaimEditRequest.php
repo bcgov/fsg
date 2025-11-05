@@ -22,14 +22,21 @@ class ClaimEditRequest extends FormRequest
     {
         $claim = Claim::find($this->id);
 
-//        Log::info("ClaimEditRequest - Claim Status: $claim->claim_status");
-
         if (! $claim) {
-            return false; // Claim not found
+            Log::warning('ClaimEditRequest authorization failed: Claim not found', [
+                'claim_id' => $this->id,
+                'user_id' => $this->user()?->id,
+            ]);
+            return false;
         }
 
         // Prevent updates if the current claim_status is "Claimed"
         if ($claim->claim_status === 'Claimed' && $claim->outcome_effective_date != null && $claim->outcome_status != null) {
+            Log::warning('ClaimEditRequest authorization failed: Claim already claimed with outcome', [
+                'claim_id' => $claim->id,
+                'claim_status' => $claim->claim_status,
+                'user_id' => $this->user()?->id,
+            ]);
             return false;
         }
 
@@ -37,11 +44,22 @@ class ClaimEditRequest extends FormRequest
         // This is to prevent updates to claims that are not in an active allocation
         // AND are not in "Claimed" status
         if ($claim->claim_status !== 'Claimed' && $claim->allocation->status !== 'active') {
+            Log::warning('ClaimEditRequest authorization failed: Allocation not active', [
+                'claim_id' => $claim->id,
+                'claim_status' => $claim->claim_status,
+                'allocation_status' => $claim->allocation->status,
+                'user_id' => $this->user()?->id,
+            ]);
             return false;
         }
 
         // Prevent updates if the current claim_status is "Claimed" and already got correction
         if ($claim->claim_status === 'Claimed' && $claim->correction != null) {
+            Log::warning('ClaimEditRequest authorization failed: Claim already has correction', [
+                'claim_id' => $claim->id,
+                'claim_status' => $claim->claim_status,
+                'user_id' => $this->user()?->id,
+            ]);
             return false;
         }
 
@@ -56,17 +74,37 @@ class ClaimEditRequest extends FormRequest
         //            }
         //        }
         if ($this->claim_status === 'Cancelled' && ($claim->claim_status == 'Draft' || $claim->claim_status == 'Expired')) {
+            Log::warning('ClaimEditRequest authorization failed: Cannot cancel draft or expired claim', [
+                'claim_id' => $claim->id,
+                'claim_status' => $claim->claim_status,
+                'requested_status' => $this->claim_status,
+                'user_id' => $this->user()?->id,
+            ]);
             return false;
         }
 
         // Prevent updates to the program_guid field when the claim is in Claimed status
         if ($claim->claim_status === 'Claimed' && $this->has('program_guid')) {
+            Log::warning('ClaimEditRequest authorization failed: Cannot update program_guid for claimed claim', [
+                'claim_id' => $claim->id,
+                'claim_status' => $claim->claim_status,
+                'user_id' => $this->user()?->id,
+            ]);
             return false;
         }
 
         // Check if the authenticated user has the necessary permissions to edit the institution.
         // You can access the authenticated user using the Auth facade or $this->user() method.
-        return $this->user()->can('update', $claim);
+        $canUpdate = $this->user()->can('update', $claim);
+        
+        if (!$canUpdate) {
+            Log::warning('ClaimEditRequest authorization failed: User lacks update permission', [
+                'claim_id' => $claim->id,
+                'user_id' => $this->user()?->id,
+            ]);
+        }
+        
+        return $canUpdate;
     }
 
     /**
