@@ -7,6 +7,7 @@ use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Response;
 
 class ApiAuth
@@ -24,6 +25,12 @@ class ApiAuth
 
         // Prevent access to the API except via the gateway
         if ($forwardedHost !== env('KEYCLOAK_APS_URL')) {
+            Log::warning('403 API access denied: Invalid forwarded host', [
+                'forwarded_host' => $forwardedHost,
+                'expected_host' => env('KEYCLOAK_APS_URL'),
+                'ip' => $request->ip(),
+                'url' => $request->fullUrl(),
+            ]);
             return Response::json(['error' => 'Unauthorized.' . $forwardedHost . ',,,' . env('KEYCLOAK_APS_URL')], 403);
         }
 
@@ -62,6 +69,13 @@ class ApiAuth
             }
         }
 
+        Log::warning('403 API access denied: Invalid token issuer', [
+            'issuer' => $decoded->iss ?? 'unknown',
+            'expected_issuer' => env('KEYCLOAK_APS_ISS'),
+            'ip' => $request->ip(),
+            'url' => $request->fullUrl(),
+        ]);
+        
         return Response::json(['status' => false, 'error' => "Generic error."], 403);
     }
 }

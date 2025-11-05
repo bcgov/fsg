@@ -28,6 +28,7 @@ use App\Models\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Response;
@@ -67,6 +68,11 @@ class MaintenanceController extends Controller
     public function updateStatus(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
         if (Gate::denies('update', $user)) {
+            Log::warning('403 Access denied in MaintenanceController::updateStatus', [
+                'target_user_id' => $user->id,
+                'user_id' => $request->user()?->id,
+                'route' => $request->path(),
+            ]);
             abort(403);
         }
         $user->disabled = $request->input('disabled');
@@ -83,6 +89,11 @@ class MaintenanceController extends Controller
     public function updateRole(Request $request, User $user): \Illuminate\Http\RedirectResponse
     {
         if (Gate::denies('update', $user)) {
+            Log::warning('403 Access denied in MaintenanceController::updateRole', [
+                'target_user_id' => $user->id,
+                'user_id' => $request->user()?->id,
+                'route' => $request->path(),
+            ]);
             abort(403);
         }
         $newRole = Role::where('name', Role::Ministry_GUEST)->first();
