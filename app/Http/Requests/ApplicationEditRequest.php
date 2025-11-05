@@ -9,6 +9,7 @@ use App\Rules\InstitutionAllocationReached;
 use App\Rules\RequiredDemographicsCompleted;
 use App\Rules\ValidSin;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class ApplicationEditRequest extends FormRequest
 {
@@ -25,11 +26,27 @@ class ApplicationEditRequest extends FormRequest
         // This is to prevent updates to claims that are not in an active allocation
         // and are not in "Claimed" status
         if ($claim->claim_status !== 'Claimed' && $claim->allocation->status !== 'active') {
+            Log::warning('ApplicationEditRequest authorization failed: Allocation not active', [
+                'claim_id' => $claim->id,
+                'claim_status' => $claim->claim_status,
+                'allocation_status' => $claim->allocation->status,
+                'user_id' => $this->user()?->id,
+            ]);
             return false;
         }
+        
         // Check if the authenticated user has the necessary permissions to edit the institution.
         // You can access the authenticated user using the Auth facade or $this->user() method.
-        return $this->user()->can('create', Claim::class);
+        $canCreate = $this->user()->can('create', Claim::class);
+        
+        if (!$canCreate) {
+            Log::warning('ApplicationEditRequest authorization failed: User lacks create permission', [
+                'claim_id' => $claim->id,
+                'user_id' => $this->user()?->id,
+            ]);
+        }
+        
+        return $canCreate;
     }
 
     /**
