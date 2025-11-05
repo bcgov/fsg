@@ -84,7 +84,7 @@ class ClaimEditRequest extends FormRequest
         }
 
         // Prevent updates to the program_guid field when the claim is in Claimed status
-        if ($claim->claim_status === 'Claimed' && $this->has('program_guid')) {
+        if ($claim->claim_status === 'Claimed' && $this->has('program_guid') != false && $this->input('program_guid') != $claim->program_guid) {
             Log::warning('ClaimEditRequest authorization failed: Cannot update program_guid for claimed claim', [
                 'claim_id' => $claim->id,
                 'claim_status' => $claim->claim_status,
