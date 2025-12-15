@@ -160,10 +160,12 @@ class ProcessMinistrySubmittedClaim
                     // Calculate sum claims of the institution that are not Draft, Cancelled or Expired
                     // We need the sum of claims that are Claimed and claim.program are of type Transferable Skills
                     $sum_ts_claims = Claim::
-
                         where('claim_status', 'Claimed')
                             ->where('institution_guid', $claim->institution_guid)
                             ->where('allocation_guid', $claim->allocation_guid)
+                            ->whereHas('program', function($q) {
+                                $q->where('funding_type', 'Transferable Skills');
+                            })
                             ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
                     $ts_claims_total = (float) $sum_ts_claims + ((float) $sum_ts_claims / (float) $claim->py_admin_fee);
