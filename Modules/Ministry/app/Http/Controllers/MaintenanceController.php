@@ -254,7 +254,14 @@ class MaintenanceController extends Controller
     public function reportsSummary(Request $request): \Inertia\Response
     {
         $activePy = ProgramYear::active()->first();
-        return Inertia::render('Ministry::Reports', ['results' => null, 'page' => 'summary', 'py' => $activePy]);
+        $programYears = ProgramYear::orderBy('start_date', 'desc')->get();
+        
+        return Inertia::render('Ministry::Reports', [
+            'results' => null, 
+            'page' => 'summary', 
+            'py' => $activePy,
+            'programYears' => $programYears
+        ]);
     }
 
     /**
@@ -380,26 +387,35 @@ class MaintenanceController extends Controller
      */
     public function reportsSummaryFetch(Request $request)
     {
-        $activePy = ProgramYear::active()->with('allocations.institution')->first();
+        $programYearGuid = $request->program_year_guid;
 
-        $fromDate = $request->from_date;
-        $toDate = $request->to_date.' 23:59:59';
+        $activePy = ProgramYear::where('guid', $programYearGuid)
+            ->with('allocations.institution')
+            ->first();
 
         $publicReport = ['instList' => [], 'total' => 0, 'Claimed' => 0, 'Hold' => 0, 'adminFee' => 0];
 
-//        foreach ($activePy->allocations as $allocation){
-//            $publicReport['instList'][$allocation->institution->name] = [
-//                'total' => $allocation->total_amount,
-//                'Claimed' => 0, 'Hold' => 0
-//            ];
-//            $publicReport['total'] += $allocation->total_amount;
-//        }
+        // Calculate initial totals from allocations
+        foreach ($activePy->allocations as $allocation) {
+            $instName = $allocation->institution->name;
+            if (!isset($publicReport['instList'][$instName])) {
+                $publicReport['instList'][$instName] = [
+                    'total' => 0,
+                    'Claimed' => 0,
+                    'Hold' => 0,
+                    'adminFee' => $activePy->claim_percent,
+                ];
+            }
+
+            $publicReport['instList'][$instName]['total'] += $allocation->total_amount;
+            $publicReport['total'] += $allocation->total_amount;
+        }
 
 
-        // Fetch attestations within the specified date range
-        $results = Claim::with('institution')->whereBetween('created_at', [$fromDate, $toDate])
-            ->whereIn('claim_status', ['Submitted', 'Hold', 'Claimed'])
-            ->get();
+        // Fetch attestations under the specified program year
+        $results = Claim::with('institution')->whereHas('allocation', function ($q) use ($activePy) {
+            $q->where('program_year_guid', $activePy->guid);
+        })->whereIn('claim_status', ['Submitted', 'Hold', 'Claimed'])->get();
 
         foreach ($results as $claim) {
             $this->updateReport($claim, $publicReport);
@@ -435,11 +451,14 @@ class MaintenanceController extends Controller
         $inst = $claim->institution;
         $instName = $inst->name;
         $status = $claim->claim_status;
-        if(!array_key_exists($instName, $report['instList']))
-            $report['instList'][$claim->allocation->institution->name] = [
-                'total' => $claim->allocation->total_amount,
-                'Claimed' => 0, 'Hold' => 0, 'adminFee' => $claim->allocation->py->claim_percent,
-            ];
+        if (!array_key_exists($instName, $report['instList'])) {
+            Log::info('Institution not found in report instList', [
+                'institution_name' => $instName,
+                'claim_guid' => $claim->guid,
+                'allocation_guid' => $claim->allocation_guid,
+            ]);
+            return;
+        }
 
         if($status == 'Hold'){
             $report['instList'][$instName][$status] += $claim->estimated_hold_amount;
@@ -449,11 +468,6 @@ class MaintenanceController extends Controller
             $report['instList'][$instName][$status] += $claim->registration_fee + $claim->program_fee + $claim->materials_fee + $claim->correction_amount;
             $report[$status] += $claim->registration_fee + $claim->program_fee + $claim->materials_fee + $claim->correction_amount;
         }
-//
-//
-//        $report['public']['instList'][$instName][$status] += $claim->total_amount;
-//        $report['public'][$status] += $claim->total_amount;
-//        $report[$status] += $claim->total_amount;
     }
 
     private function getReportType($category)

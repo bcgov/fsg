@@ -16,7 +16,7 @@
                         </div>
                     </div>
                     <div class="col-md-9 mb-3">
-                        <ReportsSummary v-if="page === 'summary'" :py="py"></ReportsSummary>
+                        <ReportsSummary v-if="page === 'summary'" :py="py" :programYears="programYears"></ReportsSummary>
                         <ReportSources v-if="page === 'sources'" :py="py"></ReportSources>
                     </div>
                 </div>
@@ -42,6 +42,7 @@ export default {
         results: Object,
         py: Object|null,
         page: String,
+        programYears: Array,
     },
     data() {
         return {

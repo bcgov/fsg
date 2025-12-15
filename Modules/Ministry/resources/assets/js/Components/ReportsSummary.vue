@@ -8,25 +8,17 @@
         </div>
 
         <div class="card-body">
-            <div class="row g-3 mb-3">
-                <div class="col-md-4">
-                    <label class="form-label">From:</label>
-                    <Input type="date" :min="2022" :max="2030" placeholder="YYYY-MM-DD"
-                           class="form-control" v-model="fromDate"/>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">To:</label>
-                    <Input type="date" :min="2022" :max="2030" placeholder="YYYY-MM-DD"
-                           class="form-control" v-model="toDate"/>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">&nbsp;</label>
-                    <button type="button" class="btn btn-success w-100" @click="submitForm">Refresh</button>
-                </div>
-                <div v-if="toDate !== $getFormattedDate() || fromDate !== $getFormattedDate()" class="col-md-2">
-                    <label class="form-label">&nbsp;</label>
-                    <button type="button" class="btn btn-success w-100" @click="clearForm">Clear</button>
-                </div>
+            <div class="mb-4 w-50">
+                <label class="form-label fw-bold">
+                    Program Year:
+                </label>
+                <select class="form-select form-select-md" v-model="selectedPyGuid" @change="submitForm">
+                    <option v-for="programYear in programYears"
+                            :key="programYear.guid"
+                            :value="programYear.guid">
+                        {{ programYear.start_date }} - {{ programYear.end_date }}
+                    </option>
+                </select>
             </div>
 
             <div v-if="reportData != null && reportData.publicReport != null" class="table-responsive pb-3">
@@ -79,11 +71,11 @@ export default {
     },
     props: {
         py: Object|null,
+        programYears: Array,
     },
     data() {
         return {
-            fromDate: '',
-            toDate: '',
+            selectedPyGuid: this.py ? this.py.guid : '',
             reportData: ''
         }
     },
@@ -135,17 +127,10 @@ export default {
                 }
             }
         },
-        clearForm: function () {
-            this.toDate = this.py.end_date;
-            this.fromDate = this.py.start_date;
-            this.submitForm();
-        },
-
         submitForm: function () {
             let vm = this;
             let data = {
-                from_date: this.fromDate,
-                to_date: this.toDate,
+                program_year_guid: this.selectedPyGuid,
             }
             axios.post('/ministry/reports/summary', data)
                 .then(function (response) {
@@ -158,9 +143,9 @@ export default {
         }
     },
     mounted() {
-        this.toDate = this.py.end_date;
-        this.fromDate = this.py.start_date;
-        this.submitForm();
+        if (this.selectedPyGuid) {
+            this.submitForm();
+        }
     }
 }
 
