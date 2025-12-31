@@ -14,6 +14,7 @@ use App\Http\Requests\ProgramYearEditRequest;
 use App\Http\Requests\ProgramYearStoreRequest;
 use App\Http\Requests\UtilEditRequest;
 use App\Http\Requests\UtilStoreRequest;
+use App\Models\Allocation;
 use App\Models\Claim;
 use App\Models\Demographic;
 use App\Models\DemographicOption;
@@ -297,6 +298,7 @@ class MaintenanceController extends Controller
     {
         $fromDate = $from;
         $toDate = $to.' 23:59:59';
+        $rows = collect();
 
         if ($type === 'claims') {
             $rows = Claim::select(
@@ -341,6 +343,10 @@ class MaintenanceController extends Controller
                 ->join('institutions', 'institutions.guid', '=', 'institution_staff.institution_guid')
                 ->whereBetween('institution_staff.created_at', [$fromDate, $toDate])
                 ->get();
+        }
+        if ($type === 'allocations') {
+            // No allocations report implemented yet, return empty collection for now.
+            $rows = Allocation::where('id', 0)->get();
         }
 
         $csvData = [];
