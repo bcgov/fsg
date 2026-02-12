@@ -43,8 +43,8 @@ Route::prefix('ministry')->group(function () {
             Route::put('/allocations', [AllocationController::class, 'update'])->name('allocations.update');
             Route::post('/allocations', [AllocationController::class, 'store'])->name('allocations.store');
 
-        Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
-        Route::put('/claims', [ClaimController::class, 'update'])->name('claims.update');
+            Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
+            Route::put('/claims', [ClaimController::class, 'update'])->name('claims.update');
             Route::post('/claims', [ClaimController::class, 'store'])->name('claims.store');
             Route::post('/clear-claim-outcome', [ClaimController::class, 'clearClaimOutcome'])->name('claims.clear-claim-outcome');
 
