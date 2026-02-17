@@ -353,7 +353,7 @@ class UserController extends Controller
             [$valid, $user] = $this->newUser($decodedToken['payload'], $type);
             if ($valid == '200' && $type === Role::Student) {
 
-                Cache::put('bcsc_provider_user_' . $user->id, json_encode($provider_user));
+                Cache::put('bcsc_provider_user_' . $user->id, json_encode($decodedToken['payload']));
                 Auth::login($user);
 
                 \Log::info(' ');
