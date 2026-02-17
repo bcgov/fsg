@@ -402,6 +402,7 @@ class UserController extends Controller
         $user->save();
         \Log::info('We got a name: '.$decodedToken['payload']['name']);
 
+        $request->session()->put('kc_logout_uri', $logoutUrl);
         //else the user has access
         if ($type === Role::Ministry_GUEST) {
             \Log::info('User is Ministry_GUEST. Checking roles and logging in if valid.');
@@ -420,14 +421,14 @@ class UserController extends Controller
             Auth::login($user);
             \Log::info($user->name.' logged in as Ministry_GUEST.');
             \Log::info('User is Ministry_GUEST and has access. Logging in.');
-            \Log::info('User roles: ' . implode(', ', $user->roles()->pluck('name')->toArray()));
-            //log user info
-            \Log::info('User ID: ' . $user->id);
-            \Log::info('User Email: ' . $user->email);
-            \Log::info('User Name: ' . $user->name);
-            \Log::info('User disabled: ' . $user->disabled);
-            \Log::info('User IDIR GUID: ' . $user->idir_user_guid);
-            \Log::info('User is authenticated: ' . (Auth::check() ? 'true' : 'false'));
+            // \Log::info('User roles: ' . implode(', ', $user->roles()->pluck('name')->toArray()));
+            // //log user info
+            // \Log::info('User ID: ' . $user->id);
+            // \Log::info('User Email: ' . $user->email);
+            // \Log::info('User Name: ' . $user->name);
+            // \Log::info('User disabled: ' . $user->disabled);
+            // \Log::info('User IDIR GUID: ' . $user->idir_user_guid);
+            // \Log::info('User is authenticated: ' . (Auth::check() ? 'true' : 'false'));
             
 
             \Log::info('User is Ministry_GUEST and has access. Logging in.');
@@ -438,6 +439,7 @@ class UserController extends Controller
             \Log::info('User is Student. Logging in.');
             Cache::put('bcsc_provider_user_' . $user->id, json_encode($decodedToken['payload']));
             Auth::login($user);
+            $request->session()->put('bcsc_logout_uri', $logoutUrl);
 
             return Redirect::route('student.home');
         }
