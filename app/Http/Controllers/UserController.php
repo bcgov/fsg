@@ -436,7 +436,7 @@ class UserController extends Controller
 
         if ($type === Role::Student) {
             \Log::info('User is Student. Logging in.');
-            Cache::put('bcsc_provider_user_' . $user->id, json_encode($provider_user));
+            Cache::put('bcsc_provider_user_' . $user->id, json_encode($decodedToken['payload']));
             Auth::login($user);
 
             return Redirect::route('student.home');
