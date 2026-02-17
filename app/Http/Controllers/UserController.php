@@ -330,7 +330,7 @@ class UserController extends Controller
                 \Log::info('No bcsc_user_guid but we have bcsc_did: '.$decodedToken['payload']['bcsc_did']);
                 $decodedToken['payload']['bcsc_user_guid'] = $decodedToken['payload']['bcsc_did'];
             }
-            
+
             if (! isset($decodedToken['payload']['bcsc_user_guid'])) {
                 $failMsg = 'Session conflict. Please use incognito window';
             } else {
@@ -383,6 +383,19 @@ class UserController extends Controller
                 'hasAccess' => false,
                 'status' => 'Access denied. Please contact Admin.',
             ]);
+        }
+
+        if ($type === Role::Student) {
+            if (! isset($decodedToken['payload']['name'])){
+                \Log::info('No name found in payload for Student.');
+                $decodedToken['payload']['name'] = $decodedToken['payload']['given_names'] . ' ' . $decodedToken['payload']['family_name'];
+            }
+        }
+        if ($type === Role::Ministry_GUEST) {
+
+        }
+        if ($type === Role::Institution_GUEST) {
+
         }
 
         $user->name = $decodedToken['payload']['name'];
