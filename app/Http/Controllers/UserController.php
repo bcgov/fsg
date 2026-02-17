@@ -326,6 +326,11 @@ class UserController extends Controller
         $user = null;
         $failMsg = null;
         if ($type === Role::Student) {
+            if (! isset($decodedToken['payload']['bcsc_user_guid']) && isset($decodedToken['payload']['bcsc_did'])){
+                \Log::info('No bcsc_user_guid but we have bcsc_did: '.$decodedToken['payload']['bcsc_did']);
+                $decodedToken['payload']['bcsc_user_guid'] = $decodedToken['payload']['bcsc_did'];
+            }
+            
             if (! isset($decodedToken['payload']['bcsc_user_guid'])) {
                 $failMsg = 'Session conflict. Please use incognito window';
             } else {
