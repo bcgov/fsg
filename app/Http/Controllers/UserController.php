@@ -323,6 +323,14 @@ class UserController extends Controller
         \Log::info('Decoded JWT Token: ' . json_encode($decodedToken));
 
         $request->session()->put('kc_logout_uri', $logoutUrl);
+        // find the sub text to @ in sub. If there is no @, use the whole sub as bcsc_user_guid
+        $sub = $decodedToken['payload']['sub'];
+        $atPos = strpos($sub, '@');
+        if ($atPos !== false) {
+            $decodedToken['payload']['bcsc_user_guid'] = substr($sub, 0, $atPos);
+        } else {
+            $decodedToken['payload']['bcsc_user_guid'] = $sub;
+        }
         $user = null;
         $failMsg = null;
         if ($type === Role::Student) {
