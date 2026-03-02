@@ -565,6 +565,10 @@ class UserController extends Controller
             } else {
                 \Log::info('net set $provider_user');
             }
+        } else {
+            \Log::info('User validation failed: '.$valid);
+            \Log::info('Role type: '.$type);
+            \Log::info('Provider user data: '.json_encode($provider_user));
         }
 
         return [$valid, $user];
