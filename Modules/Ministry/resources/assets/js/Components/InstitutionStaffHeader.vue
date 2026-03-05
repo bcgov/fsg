@@ -23,8 +23,6 @@
 </template>
 <script>
 
-import {Inertia} from "@inertiajs/inertia";
-
 export default {
     name: 'InstitutionStaffHeader',
     components: {},
