@@ -17,6 +17,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Vapor Maintenance Mode
+    |--------------------------------------------------------------------------
+    |
+    | Indicates if the application is running on Laravel Vapor.
+    | When enabled, cached services path will be set to a writable location.
+    |
+    */
+    'vapor_maintenance_mode' => env('VAPOR_MAINTENANCE_MODE', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Module Stubs
     |--------------------------------------------------------------------------
     |
@@ -39,12 +50,12 @@ return [
             'package' => 'package.json',
         ],
         'replacements' => [
-            'routes/web' => ['LOWER_NAME', 'STUDLY_NAME', 'MODULE_NAMESPACE', 'CONTROLLER_NAMESPACE'],
-            'routes/api' => ['LOWER_NAME', 'STUDLY_NAME', 'MODULE_NAMESPACE', 'CONTROLLER_NAMESPACE'],
-            'vite' => ['LOWER_NAME', 'STUDLY_NAME'],
-            'json' => ['LOWER_NAME', 'STUDLY_NAME', 'MODULE_NAMESPACE', 'PROVIDER_NAMESPACE'],
+            'routes/web' => ['LOWER_NAME', 'STUDLY_NAME', 'PLURAL_LOWER_NAME', 'KEBAB_NAME', 'MODULE_NAMESPACE', 'CONTROLLER_NAMESPACE'],
+            'routes/api' => ['LOWER_NAME', 'STUDLY_NAME', 'PLURAL_LOWER_NAME', 'KEBAB_NAME', 'MODULE_NAMESPACE', 'CONTROLLER_NAMESPACE'],
+            'vite' => ['LOWER_NAME', 'STUDLY_NAME', 'KEBAB_NAME'],
+            'json' => ['LOWER_NAME', 'STUDLY_NAME', 'KEBAB_NAME', 'MODULE_NAMESPACE', 'PROVIDER_NAMESPACE'],
             'views/index' => ['LOWER_NAME'],
-            'views/master' => ['LOWER_NAME', 'STUDLY_NAME'],
+            'views/master' => ['LOWER_NAME', 'STUDLY_NAME', 'KEBAB_NAME'],
             'scaffold/config' => ['STUDLY_NAME'],
             'composer' => [
                 'LOWER_NAME',
@@ -114,7 +125,9 @@ return [
             'actions' => ['path' => 'app/Actions', 'generate' => false],
             'casts' => ['path' => 'app/Casts', 'generate' => false],
             'channels' => ['path' => 'app/Broadcasting', 'generate' => false],
+            'class' => ['path' => 'app/Classes', 'generate' => false],
             'command' => ['path' => 'app/Console', 'generate' => false],
+            'command_replacements' => ['path' => 'app/Console/Replacements', 'generate' => false],
             'component-class' => ['path' => 'app/View/Components', 'generate' => false],
             'emails' => ['path' => 'app/Emails', 'generate' => false],
             'event' => ['path' => 'app/Events', 'generate' => false],
@@ -157,6 +170,8 @@ return [
             'assets' => ['path' => 'resources/assets', 'generate' => true],
             'component-view' => ['path' => 'resources/views/components', 'generate' => false],
             'views' => ['path' => 'resources/views', 'generate' => true],
+            'inertia' => ['path' => 'resources/js/Pages', 'generate' => false],
+            'inertia-components' => ['path' => 'resources/js/Components', 'generate' => false],
 
             // routes/
             'routes' => ['path' => 'routes', 'generate' => true],
@@ -165,6 +180,38 @@ return [
             'test-feature' => ['path' => 'tests/Feature', 'generate' => true],
             'test-unit' => ['path' => 'tests/Unit', 'generate' => true],
         ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auto Discover of Modules
+    |--------------------------------------------------------------------------
+    |
+    | Here you configure auto discover of module
+    | This is useful for simplify module providers.
+    |
+    */
+    'auto-discover' => [
+        /*
+        |--------------------------------------------------------------------------
+        | Migrations
+        |--------------------------------------------------------------------------
+        |
+        | This option for register migration automatically.
+        |
+        */
+        'migrations' => true,
+
+        /*
+        |--------------------------------------------------------------------------
+        | Translations
+        |--------------------------------------------------------------------------
+        |
+        | This option for register lang file automatically.
+        |
+        */
+        'translations' => false,
+
     ],
 
     /*
@@ -216,21 +263,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Caching
-    |--------------------------------------------------------------------------
-    |
-    | Here is the config for setting up the caching feature.
-    |
-    */
-    'cache' => [
-        'enabled' => env('MODULES_CACHE_ENABLED', false),
-        'driver' => env('MODULES_CACHE_DRIVER', 'file'),
-        'key' => env('MODULES_CACHE_KEY', 'laravel-modules'),
-        'lifetime' => env('MODULES_CACHE_LIFETIME', 60),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Choose what laravel-modules will register as custom namespaces.
     | Setting one to false will require you to register that part
     | in your own Service Provider class.
@@ -257,10 +289,23 @@ return [
         'file' => [
             'class' => FileActivator::class,
             'statuses-file' => base_path('modules_statuses.json'),
-            'cache-key' => 'activator.installed',
-            'cache-lifetime' => 604800,
         ],
     ],
 
     'activator' => 'file',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Inertia
+    |--------------------------------------------------------------------------
+    |
+    | Default Inertia frontend framework used by make commands when no
+    | framework flag (--vue, --react, --svelte) is provided.
+    |
+    | Supported: "vue", "react", "svelte"
+    |
+    */
+    'inertia' => [
+        'frontend' => 'vue',
+    ],
 ];
