@@ -285,6 +285,7 @@ class UserController extends Controller
         //if any of the formData keys are missing don't login the user
         $token = $request->input('token');
         $refreshToken = $request->input('refresh_token');
+        $individualToken = $request->input('individual_token');
         $userType = $request->input('user_type');
         $userId = $request->input('ud');
         $logoutUrl = $request->input('logoutUrl');
