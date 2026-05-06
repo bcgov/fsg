@@ -118,7 +118,10 @@ class ClaimController extends Controller
         $claim = Claim::find($request->id);
         $id = $request->page === 'students' ? $claim->student->id : $claim->institution->id;
 
-        return Redirect::route('ministry.'.$request->page.'.index');
+        if ($request->page === 'claims') {
+            return Redirect::route('ministry.'.$request->page.'.index');
+        }
+        return Redirect::route('ministry.' . $request->page . '.show', [$id, $request->subpage]);
     }
 
     private function paginateClaimsByInstitution($institutionGuid)
