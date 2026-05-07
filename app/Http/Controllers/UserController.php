@@ -292,6 +292,7 @@ class UserController extends Controller
         \Log::info('pdexLogin called with userType: ' . $userType . ', userId: ' . $userId . ', logoutUrl: ' . $logoutUrl);
         \Log::info('Received request: ' . json_encode($request->all()));
         \Log::info('Received individualToken: ' . $individualToken);
+        \Log::info('Received individualToken2: ' . json_encode($individualToken));
 
         if (empty($token) || empty($userType) || empty($userId) || empty($logoutUrl)) {
             return response()->json(['error' => 'Missing data 2239'], 400);
