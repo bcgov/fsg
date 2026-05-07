@@ -4,9 +4,6 @@ import vue from '@vitejs/plugin-vue';
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default defineConfig({
-    build:{
-        sourcemap: true,
-    },
     plugins: [
         laravel({
             input: ['resources/js/app.js'],
