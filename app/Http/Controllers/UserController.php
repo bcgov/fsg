@@ -285,11 +285,14 @@ class UserController extends Controller
         //if any of the formData keys are missing don't login the user
         $token = $request->input('token');
         $refreshToken = $request->input('refresh_token');
+        $individualToken = $request->input('individual_token');
         $userType = $request->input('user_type');
         $userId = $request->input('ud');
         $logoutUrl = $request->input('logoutUrl');
         \Log::info('pdexLogin called with userType: ' . $userType . ', userId: ' . $userId . ', logoutUrl: ' . $logoutUrl);
         \Log::info('Received request: ' . json_encode($request->all()));
+        \Log::info('Received individualToken: ' . $individualToken);
+        \Log::info('Received individualToken2: ' . json_encode($individualToken));
 
         if (empty($token) || empty($userType) || empty($userId) || empty($logoutUrl)) {
             return response()->json(['error' => 'Missing data 2239'], 400);
@@ -310,6 +313,8 @@ class UserController extends Controller
 
         // Proceed with the login logic using the validated formData
         $decodedToken = $this->decodeJWT($token);
+        $decodedIndividualToken = $this->decodeJWT($individualToken);
+        \Log::info('Decoded individual token: ' . json_encode($decodedIndividualToken));
         if (isset($decodedToken['error'])) {
             return response()->json(['error' => $decodedToken['error']], 400);
         }

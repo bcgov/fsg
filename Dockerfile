@@ -5,7 +5,7 @@ ARG TZ=America/Vancouver
 ARG CA_HOSTS_LIST
 ARG USER_ID
 ARG DEBIAN_FRONTEND=noninteractive
-ARG DEVENV=prod
+ARG DEVENV=build
 # set entrypoint variables
 ENV USER_NAME=${USER_ID}
 ENV USER_HOME=/var/www/html
