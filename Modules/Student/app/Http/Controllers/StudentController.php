@@ -22,11 +22,11 @@ use Response;
 
 class StudentController extends Controller
 {
-    public function index($page = 'profile', $error = null)
+    public function index(Request $request, $page = 'profile', $error = null)
     {
         $student = Student::where('user_guid', Auth::user()->guid)->first();
-        $student->individual_data = json_decode(Cache::get('bcsc_pdex_individual_' . Auth::user()->id));
-        
+        $student->individual_data = json_decode($request->session()->get('bcsc_pdex_individual_' . Auth::user()->id));
+
         // Load active demographics with their options
         $demographics = Demographic::with('options')
             ->active()

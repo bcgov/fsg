@@ -477,10 +477,11 @@ class UserController extends Controller
             Auth::login($user);
             $request->session()->put('bcsc_logout_uri', $logoutUrl);
 
-                // Cache the provider user data for later use in the application, such as displaying user info on the frontend
-                if (!is_null($decodedIndividualToken)) {
-                    $request->session()->put('bcsc_pdex_individual_' . $user->id, json_encode($decodedIndividualToken));
-                }
+            // Cache the provider user data for later use in the application, such as displaying user info on the frontend
+            if (!is_null($decodedIndividualToken)) {
+                \Log::info('Caching individual token data for user ID ' . $user->id);
+                $request->session()->put('bcsc_pdex_individual_' . $user->id, json_encode($decodedIndividualToken));
+            }
 
             return Redirect::route('student.home');
         }
