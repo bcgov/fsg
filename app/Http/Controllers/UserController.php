@@ -9,12 +9,15 @@ use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Stevenmaguire\OAuth2\Client\Provider\Keycloak;
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Firebase\JWT\SignatureInvalidException;
 
 class UserController extends Controller
 {
@@ -162,8 +165,8 @@ class UserController extends Controller
             if (is_null($user)) {
                 [$valid, $user] = $this->newUser($provider_user, $type);
                 if ($valid == '200' && $type === Role::Student) {
-
-                    Cache::put('bcsc_provider_user_' . $user->id, json_encode($provider_user));
+                    $request->session()->put('bcsc_provider_user_' . $user->id, json_encode($provider_user));
+                    // Cache::put('bcsc_provider_user_' . $user->id, json_encode($provider_user));
                     Auth::login($user);
 
                     \Log::info(' ');
@@ -219,7 +222,7 @@ class UserController extends Controller
             }
 
             if ($type === Role::Student) {
-                Cache::put('bcsc_provider_user_' . $user->id, json_encode($provider_user));
+                $request->session()->put('bcsc_provider_user_' . $user->id, json_encode($provider_user));
                 Auth::login($user);
 
                 \Log::info(' ');
@@ -313,8 +316,8 @@ class UserController extends Controller
 
         // Proceed with the login logic using the validated formData
         $decodedToken = $this->decodeJWT($token);
-        $decodedIndividualToken = $this->decodeJWT($individualToken);
-        \Log::info('Decoded individual token: ' . json_encode($decodedIndividualToken));
+        //$decodedIndividualToken = $this->decodeJWT($individualToken);
+        // \Log::info('Decoded individual token: ' . json_encode($decodedIndividualToken));
         if (isset($decodedToken['error'])) {
             return response()->json(['error' => $decodedToken['error']], 400);
         }
@@ -326,6 +329,22 @@ class UserController extends Controller
             return response()->json(['error' => 'Missing data 2243'], 400);
         }
         \Log::info('Decoded JWT Token: ' . json_encode($decodedToken));
+
+        if(!is_null($individualToken)) {
+
+            $decodedIndividualToken = null;
+            try {
+                $decodedIndividualToken = JWT::decode($individualToken, new Key(env('PDEX_JWT_SECRET'), 'HS256'));
+               \Log::info('Decoded individual token: ' . json_encode($decodedIndividualToken));
+            } catch (SignatureInvalidException $e) {
+
+            } catch (LogicException $e) {
+                // errors having to do with JWT signature and claims
+            }
+        } else {
+            \Log::info('No individual token provided.');
+        }
+
 
         $request->session()->put('kc_logout_uri', $logoutUrl);
         // find the sub text to @ in sub. If there is no @, use the whole sub as bcsc_user_guid
@@ -365,8 +384,12 @@ class UserController extends Controller
             \Log::info('New user. Attempting to register.');
             [$valid, $user] = $this->newUser($decodedToken['payload'], $type);
             if ($valid == '200' && $type === Role::Student) {
+                // Cache the provider user data for later use in the application, such as displaying user info on the frontend
+                if (!is_null($decodedIndividualToken)) {
+                    $request->session()->put('bcsc_pdex_individual_' . $user->id, json_encode($decodedIndividualToken));
+                }
 
-                Cache::put('bcsc_provider_user_' . $user->id, json_encode($decodedToken['payload']));
+                $request->session()->put('bcsc_provider_user_' . $user->id, json_encode($decodedToken['payload']));
                 Auth::login($user);
 
                 \Log::info(' ');
@@ -450,9 +473,15 @@ class UserController extends Controller
 
         if ($type === Role::Student) {
             \Log::info('User is Student. Logging in.');
-            Cache::put('bcsc_provider_user_' . $user->id, json_encode($decodedToken['payload']));
+            $request->session()->put('bcsc_provider_user_' . $user->id, json_encode($decodedToken['payload']));
             Auth::login($user);
             $request->session()->put('bcsc_logout_uri', $logoutUrl);
+
+            // Cache the provider user data for later use in the application, such as displaying user info on the frontend
+            if (!is_null($decodedIndividualToken)) {
+                \Log::info('Caching individual token data for user ID ' . $user->id);
+                $request->session()->put('bcsc_pdex_individual_' . $user->id, json_encode($decodedIndividualToken));
+            }
 
             return Redirect::route('student.home');
         }
