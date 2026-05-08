@@ -318,7 +318,7 @@ class UserController extends Controller
         // Proceed with the login logic using the validated formData
         $decodedToken = $this->decodeJWT($token);
         //$decodedIndividualToken = $this->decodeJWT($individualToken);
-        \Log::info('Decoded individual token: ' . json_encode($decodedIndividualToken));
+        // \Log::info('Decoded individual token: ' . json_encode($decodedIndividualToken));
         if (isset($decodedToken['error'])) {
             return response()->json(['error' => $decodedToken['error']], 400);
         }
@@ -337,6 +337,7 @@ class UserController extends Controller
             $decodedIndividualToken = null;
             try {
                 $decodedIndividualToken = JWT::decode($individualToken, new Key(env('PDEX_JWT_SECRET'), 'HS256'));
+               \Log::info('Decoded individual token: ' . json_encode($decodedIndividualToken));
             } catch (SignatureInvalidException $e) {
 
             } catch (LogicException $e) {
