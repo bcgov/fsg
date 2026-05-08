@@ -332,7 +332,6 @@ class UserController extends Controller
         \Log::info('Decoded JWT Token: ' . json_encode($decodedToken));
 
         if(!is_null($individualToken)) {
-            \Log::info('Decoded Individual JWT Token: ' . json_encode($decodedIndividualToken));
 
             $decodedIndividualToken = null;
             try {
