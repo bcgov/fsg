@@ -16,6 +16,10 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Stevenmaguire\OAuth2\Client\Provider\Keycloak;
 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Firebase\JWT\SignatureInvalidException;
+
 class UserController extends Controller
 {
     /**
@@ -313,7 +317,7 @@ class UserController extends Controller
 
         // Proceed with the login logic using the validated formData
         $decodedToken = $this->decodeJWT($token);
-        $decodedIndividualToken = $this->decodeJWT($individualToken);
+        //$decodedIndividualToken = $this->decodeJWT($individualToken);
         \Log::info('Decoded individual token: ' . json_encode($decodedIndividualToken));
         if (isset($decodedToken['error'])) {
             return response()->json(['error' => $decodedToken['error']], 400);
@@ -326,6 +330,22 @@ class UserController extends Controller
             return response()->json(['error' => 'Missing data 2243'], 400);
         }
         \Log::info('Decoded JWT Token: ' . json_encode($decodedToken));
+
+        if(!is_null($individualToken)) {
+            \Log::info('Decoded Individual JWT Token: ' . json_encode($decodedIndividualToken));
+
+            $decodedIndividualToken = null;
+            try {
+                $decodedIndividualToken = JWT::decode($individualToken, new Key(env('PDEX_JWT_SECRET'), 'HS256'));
+            } catch (SignatureInvalidException $e) {
+
+            } catch (LogicException $e) {
+                // errors having to do with JWT signature and claims
+            }
+        } else {
+            \Log::info('No individual token provided.');
+        }
+
 
         $request->session()->put('kc_logout_uri', $logoutUrl);
         // find the sub text to @ in sub. If there is no @, use the whole sub as bcsc_user_guid
@@ -365,6 +385,11 @@ class UserController extends Controller
             \Log::info('New user. Attempting to register.');
             [$valid, $user] = $this->newUser($decodedToken['payload'], $type);
             if ($valid == '200' && $type === Role::Student) {
+
+                // Cache the provider user data for later use in the application, such as displaying user info on the frontend
+                if (!is_null($decodedIndividualToken)) {
+                    Cache::put('bcsc_pdex_individual_' . $user->id, json_encode($decodedIndividualToken));
+                }
 
                 Cache::put('bcsc_provider_user_' . $user->id, json_encode($decodedToken['payload']));
                 Auth::login($user);
