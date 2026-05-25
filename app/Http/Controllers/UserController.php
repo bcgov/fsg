@@ -285,6 +285,7 @@ class UserController extends Controller
     public function pdexLogin(Request $request)
     {
 
+        $decodedIndividualToken = null;
         //if any of the formData keys are missing don't login the user
         $token = $request->input('token');
         $refreshToken = $request->input('refresh_token');
@@ -332,13 +333,15 @@ class UserController extends Controller
 
         if(!is_null($individualToken)) {
 
-            $decodedIndividualToken = null;
             try {
                 $decodedIndividualToken = JWT::decode($individualToken, new Key(env('PDEX_JWT_SECRET'), 'HS256'));
                \Log::info('Decoded individual token: ' . json_encode($decodedIndividualToken));
             } catch (SignatureInvalidException $e) {
+                \Log::error('Invalid JWT signature: ' . $e->getMessage());
+                // Handle invalid signature
 
             } catch (LogicException $e) {
+                \Log::error('JWT logic error: ' . $e->getMessage());
                 // errors having to do with JWT signature and claims
             }
         } else {
@@ -481,6 +484,8 @@ class UserController extends Controller
             if (!is_null($decodedIndividualToken)) {
                 \Log::info('Caching individual token data for user ID ' . $user->id);
                 $request->session()->put('bcsc_pdex_individual_' . $user->id, json_encode($decodedIndividualToken));
+            }else {
+                \Log::info('No individual token to cache for user ID ' . $user->id);
             }
 
             return Redirect::route('student.home');

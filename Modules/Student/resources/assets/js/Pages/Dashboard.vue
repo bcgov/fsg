@@ -16,8 +16,9 @@
                     </div>
                 </div>
                 <div class="col-md-9 mb-3">
-                    <DashboardProfile v-bind="$attrs" v-if="page === 'profile'" :error="error" :results="results" :provider-user="providerUser"></DashboardProfile>
                     <DashboardApplications v-bind="$attrs" v-if="page === 'applications' && results != null" :results="results"></DashboardApplications>
+                    <DashboardProfile v-bind="$attrs" v-if="page === 'profile' && results != null && results.individual_data == null" :error="error" :results="results" :provider-user="providerUser"></DashboardProfile>
+                    <DashboardProfileWithPdex v-bind="$attrs" v-if="page === 'profile' && results != null && results.individual_data != null" :error="error" :results="results" :provider-user="providerUser"></DashboardProfileWithPdex>
                 </div>
             </div>
         </div>
@@ -29,13 +30,14 @@
 import AuthenticatedLayout from '../Layouts/Authenticated.vue';
 import { Link, Head } from '@inertiajs/vue3';
 import DashboardProfile from "../Components/DashboardProfile.vue";
+import DashboardProfileWithPdex from "../Components/DashboardProfileWithPdex.vue";
 import DashboardApplications from "../Components/DashboardApplications.vue";
 import DashboardMenu from "../Components/DashboardMenu.vue";
 
 export default {
     name: 'Dashboard',
     components: {
-        DashboardMenu, DashboardProfile, DashboardApplications,
+        DashboardMenu, DashboardProfile, DashboardProfileWithPdex, DashboardApplications,
         AuthenticatedLayout, Head, Link
     },
     props: {
