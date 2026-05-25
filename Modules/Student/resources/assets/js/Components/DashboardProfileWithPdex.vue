@@ -12,12 +12,12 @@
                 <div class="col-md-3">
                     <Label for="inputFirstName" class="form-label" value="Legal Name (First Name)" />
                     <Input type="text" class="form-control" id="inputFirstName" v-model="editForm.first_name" />
-                    <span v-if="individualSuggestion('first_name')" class="badge bg-secondary mt-1 cursor-pointer" style="cursor:pointer" @click="applyIndividualField('first_name', 'first_name')" title="Click to use this value">{{ individualSuggestion('first_name') }}</span>
+                    <span v-if="individualSuggestion('first_name')" class="badge bg-secondary mt-1 cursor-pointer" style="cursor:pointer" @click="applyIndividualField('first_name')" title="Click to use this value">{{ individualSuggestion('first_name') }}</span>
                 </div>
                 <div class="col-md-3">
                     <Label for="inputLastName" class="form-label" value="Legal Name (Last Name)" />
                     <Input type="text" class="form-control" id="inputLastName" v-model="editForm.last_name" />
-                    <span v-if="individualSuggestion('last_name')" class="badge bg-secondary mt-1" style="cursor:pointer" @click="applyIndividualField('last_name', 'last_name')" title="Click to use this value">{{ individualSuggestion('last_name') }}</span>
+                    <span v-if="individualSuggestion('last_name')" class="badge bg-secondary mt-1" style="cursor:pointer" @click="applyIndividualField('last_name')" title="Click to use this value">{{ individualSuggestion('last_name') }}</span>
                 </div>
                 <div class="col-md-3">
                     <Label for="inputEmail" class="form-label" value="Email" />
@@ -29,29 +29,29 @@
                     <Select class="form-select" id="inputGender" v-model="editForm.gender">
                         <option v-for="status in $attrs.utils['Gender']" :value="status.field_name">{{ status.field_name }}</option>
                     </Select>
-                    <span v-if="individualSuggestion('gender')" class="badge bg-secondary mt-1" style="cursor:pointer" @click="applyIndividualField('gender', 'gender')" title="Click to use this value">{{ individualSuggestion('gender') }}</span>
+                    <span v-if="individualSuggestion('gender')" class="badge bg-secondary mt-1" style="cursor:pointer" @click="applyIndividualField('gender')" title="Click to use this value">{{ individualSuggestion('gender') }}</span>
                 </div>
 
                 <div class="col-md-2">
                     <Label for="inputSin" class="form-label" value="SIN" />
                     <Input type="number" min="100000000" max="999999999" class="form-control" id="inputSin" v-model="editForm.sin" />
-                    <span v-if="individualSuggestion('social_insurance_number')" class="badge bg-secondary mt-1" style="cursor:pointer" @click="applyIndividualField('sin', 'social_insurance_number')" title="Click to use this value">{{ individualSuggestion('social_insurance_number') }}</span>
+                    <span v-if="individualSuggestion('sin')" class="badge bg-secondary mt-1" style="cursor:pointer" @click="applyIndividualField('sin')" title="Click to use this value">{{ individualSuggestion('sin') }}</span>
                 </div>
 
                 <div class="col-md-2">
                     <Label for="inputDob" class="form-label" value="Birth Date" />
                     <Input type="date" min="1920-01-01" max="2024-12-31" placeholder="YYYY-MM-DD" class="form-control" id="inputDob" v-model="editForm.dob" />
-                    <span v-if="individualSuggestion('date_of_birth')" class="badge bg-secondary mt-1" style="cursor:pointer" @click="applyIndividualField('dob', 'date_of_birth')" title="Click to use this value">{{ individualSuggestion('date_of_birth') }}</span>
+                    <span v-if="individualSuggestion('dob')" class="badge bg-secondary mt-1" style="cursor:pointer" @click="applyIndividualField('dob')" title="Click to use this value">{{ individualSuggestion('dob') }}</span>
                 </div>
                 <div class="col-md-2">
                     <Label for="inputCity" class="form-label" value="City" />
                     <Input type="text" class="form-control" id="inputCity" v-model="editForm.city" />
-                    <span v-if="individualSuggestion('city')" class="badge bg-secondary mt-1" style="cursor:pointer" @click="applyIndividualField('city', 'city')" title="Click to use this value">{{ individualSuggestion('city') }}</span>
+                    <span v-if="individualSuggestion('city')" class="badge bg-secondary mt-1" style="cursor:pointer" @click="applyIndividualField('city')" title="Click to use this value">{{ individualSuggestion('city') }}</span>
                 </div>
                 <div class="col-md-2">
                     <Label for="inputPostalCode" class="form-label" value="Postal Code" />
                     <Input type="text" maxlength="7" class="form-control" id="inputPostalCode" v-model="editForm.zip_code" />
-                    <span v-if="individualSuggestion('postal_code')" class="badge bg-secondary mt-1" style="cursor:pointer" @click="applyIndividualField('zip_code', 'postal_code')" title="Click to use this value">{{ individualSuggestion('postal_code') }}</span>
+                    <span v-if="individualSuggestion('zip_code')" class="badge bg-secondary mt-1" style="cursor:pointer" @click="applyIndividualField('zip_code')" title="Click to use this value">{{ individualSuggestion('zip_code') }}</span>
                 </div>
                 <div class="col-md-2">
                     <Label for="inputCitizenship" class="form-label" value="Citizenship" />
