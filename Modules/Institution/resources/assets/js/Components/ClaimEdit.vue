@@ -28,8 +28,8 @@
                     </div>
                     <div class="col-md-6">
                         <Label for="inputFundingType" class="form-label" value="Funding Type" />
-                        <span v-if="editStudentClaimForm.program !== null">{{ editStudentClaimForm.program.funding_type }}</span>
-                        <span v-else> - </span>
+                        <p v-if="editStudentClaimForm.program !== null">{{ editStudentClaimForm.program.funding_type }}</p>
+                        <p v-else> - </p>
                     </div>
 
                     <div class="col-md-4">
