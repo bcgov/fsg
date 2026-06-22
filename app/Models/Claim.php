@@ -44,7 +44,7 @@ class Claim extends Model
 
                 // Get the attributes after the update
                 $newAttributes = $claim->getAttributes();
-                $newAttributes['updated_by_user_id'] = Auth::user()->id;
+                $newAttributes['updated_by_user_id'] = Auth::check() ? Auth::user()->id : null;
 
                 // Remove the updated_at field if you don't want to track it
                 unset($newAttributes['updated_at']);

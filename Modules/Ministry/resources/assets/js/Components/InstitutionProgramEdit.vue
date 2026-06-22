@@ -32,8 +32,7 @@
                 <div class="col-md-3">
                     <Label for="inputFundingType" class="form-label" value="Funding Type"/>
                     <Select class="form-select" id="inputFundingType" v-model="editForm.funding_type">
-                        <option value="Gov. Priorities">Gov. Priorities</option>
-                        <option value="Transferable Skills">Transferable Skills</option>
+                        <option v-for="stat in $attrs.utils['Funding Type']" :value="stat.field_name">{{ stat.field_name }}</option>
                     </Select>
                 </div>
 
