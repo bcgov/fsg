@@ -40,11 +40,9 @@
                                 <div class="card h-100 text-center">
                                     <div class="card-header fw-semibold">{{ ft.funding_type }}</div>
                                     <div class="card-body">
-                                        <div class="d-flex justify-content-between"><span>Allocated</span><strong>${{ $formatNumberWithCommas(Number(ft.allocated).toFixed(2)) }}</strong></div>
-                                        <div class="d-flex justify-content-between"><span>Hold</span><strong>${{ $formatNumberWithCommas(Number(ft.hold).toFixed(2)) }}</strong></div>
+                                        <div class="d-flex justify-content-between"><span>Allocation</span><strong>${{ $formatNumberWithCommas(Number(ft.allocated).toFixed(2)) }}</strong></div>
+                                        <div class="d-flex justify-content-between"><span>Holds</span><strong>${{ $formatNumberWithCommas(Number(ft.hold).toFixed(2)) }}</strong></div>
                                         <div class="d-flex justify-content-between"><span>Claimed</span><strong>${{ $formatNumberWithCommas(Number(ft.claimed).toFixed(2)) }}</strong></div>
-                                        <hr class="my-2"/>
-                                        <div class="d-flex justify-content-between"><span>Remaining</span><strong>${{ $formatNumberWithCommas(Number(ft.remaining).toFixed(2)) }}</strong></div>
                                     </div>
                                 </div>
                             </div>
@@ -68,7 +66,13 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12 mb-3">
+                    <div class="col-md-6 mb-3">
+                        <div class="card text-center">
+                            <div class="card-header">Committed Amount (Claimed + Hold)</div>
+                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(Number(committedAmount).toFixed(2)) }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
                         <div class="card text-center">
                             <div class="card-header">Claims Waiting for Outcome Reporting</div>
                             <div class="card-body display-5 m-4">{{ $formatNumberWithCommas((Number(waitingOutcome)).toFixed(2)) }}</div>
@@ -100,6 +104,18 @@ export default {
         programYear: Object,
         allocationSummaries: Array,
         waitingOutcome: Number
+    },
+    computed: {
+        committedAmount() {
+            return (this.allocationSummaries || []).reduce((total, alloc) => {
+                if (alloc.has_funding_types) {
+                    return total + (alloc.funding_types || []).reduce((sum, ft) => {
+                        return sum + Number(ft.hold || 0) + Number(ft.claimed || 0);
+                    }, 0);
+                }
+                return total + Number(alloc.legacy_hold || 0) + Number(alloc.legacy_claimed || 0);
+            }, 0);
+        }
     }
 }
 </script>
