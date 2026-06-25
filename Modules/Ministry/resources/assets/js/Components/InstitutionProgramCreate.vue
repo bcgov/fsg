@@ -34,7 +34,7 @@
                 <div class="col-md-3">
                     <Label for="inputFundingType" class="form-label" value="Funding Type"/>
                     <Select class="form-select" id="inputFundingType" v-model="editForm.funding_type">
-                        <option v-for="stat in $attrs.utils['Funding Type']" :value="stat.field_name">{{ stat.field_name }}</option>
+                        <option v-for="stat in fundingTypeOptions" :value="stat.field_name">{{ stat.field_name }}</option>
                     </Select>
                 </div>
 
@@ -155,6 +155,14 @@ export default {
                 end_date: "",
                 funding_type: '',
             },
+        }
+    },
+    computed: {
+        fundingTypeOptions() {
+            const all = (this.$attrs.utils && this.$attrs.utils['Funding Type']) || [];
+            const active = (this.results && this.results.active_allocation && this.results.active_allocation.funding_types) || [];
+            const allowed = active.map(ft => ft.funding_type);
+            return all.filter(ft => allowed.includes(ft.field_name));
         }
     },
     methods: {

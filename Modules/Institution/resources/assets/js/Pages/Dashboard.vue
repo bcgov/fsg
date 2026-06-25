@@ -19,7 +19,7 @@
                 </div>
             </div>
 
-            <div v-if="activeAllocation == null" class="row">
+            <div v-if="!allocationSummaries || allocationSummaries.length === 0" class="row">
                 <div class="col-12 mb-3">
                     <div class="text-center">
                         You have no active allocations for this program year.
@@ -28,69 +28,54 @@
 
             </div>
             <div v-else>
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <div class="card text-center">
-                            <div class="card-header">Total Gov Allocation (includes Admin)</div>
-                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(((activeAllocation && activeAllocation.ts_percent !== undefined ? (100 - activeAllocation.ts_percent) : 80) / 100 * (activeAllocation ? activeAllocation.total_amount : 0)).toFixed(2)) }}</div>
-                        </div>
+                <div v-for="alloc in allocationSummaries" :key="alloc.guid" class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Total Allocation (includes Admin)</span>
+                        <span class="fw-bold">${{ $formatNumberWithCommas(Number(alloc.total_amount).toFixed(2)) }}</span>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card text-center">
-                            <div class="card-header">Total Transferrable (includes Admin)</div>
-                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(((activeAllocation && activeAllocation.ts_percent !== undefined ? activeAllocation.ts_percent : 20) / 100 * (activeAllocation ? activeAllocation.total_amount : 0)).toFixed(2)) }}</div>
+                    <div class="card-body">
+                        <!-- New per funding type cards -->
+                        <div v-if="alloc.has_funding_types" class="row">
+                            <div v-for="ft in alloc.funding_types" :key="ft.funding_type" class="col-md-4 mb-3">
+                                <div class="card h-100 text-center">
+                                    <div class="card-header fw-semibold">{{ ft.funding_type }}</div>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between"><span>Allocated</span><strong>${{ $formatNumberWithCommas(Number(ft.allocated).toFixed(2)) }}</strong></div>
+                                        <div class="d-flex justify-content-between"><span>Hold</span><strong>${{ $formatNumberWithCommas(Number(ft.hold).toFixed(2)) }}</strong></div>
+                                        <div class="d-flex justify-content-between"><span>Claimed</span><strong>${{ $formatNumberWithCommas(Number(ft.claimed).toFixed(2)) }}</strong></div>
+                                        <hr class="my-2"/>
+                                        <div class="d-flex justify-content-between"><span>Remaining</span><strong>${{ $formatNumberWithCommas(Number(ft.remaining).toFixed(2)) }}</strong></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card text-center">
-                            <div class="card-header">Total Allocation (includes Admin)</div>
-                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(activeAllocation ? activeAllocation.total_amount : 0) }}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <div class="card text-center">
-                            <div class="card-header">Government Hold (includes Admin)</div>
-                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(holdApps) }}</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <div class="card text-center">
-                            <div class="card-header">Government Claimed (includes Admin)</div>
-                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(claimedApps) }}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <div class="card text-center">
-                            <div class="card-header">Transferable Skills Hold (includes Admin)</div>
-                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(tsHoldAmount) }}</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <div class="card text-center">
-                            <div class="card-header">Transferable Skills Claimed (includes Admin)</div>
-                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas(tsClaimedAmount) }}</div>
+                        <!-- Legacy allocation without funding types -->
+                        <div v-else class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card text-center">
+                                    <div class="card-header">Hold (includes Admin)</div>
+                                    <div class="card-body display-6 m-3">${{ $formatNumberWithCommas(Number(alloc.legacy_hold || 0).toFixed(2)) }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card text-center">
+                                    <div class="card-header">Claimed (includes Admin)</div>
+                                    <div class="card-body display-6 m-3">${{ $formatNumberWithCommas(Number(alloc.legacy_claimed || 0).toFixed(2)) }}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <div class="card text-center">
-                            <div class="card-header">Committed Amount (Claimed + Hold)</div>
-                            <div class="card-body display-5 m-4">${{ $formatNumberWithCommas((Number(claimedApps) + Number(holdApps) + Number(tsHoldAmount) + Number(tsClaimedAmount)).toFixed(2)) }}</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-12 mb-3">
                         <div class="card text-center">
                             <div class="card-header">Claims Waiting for Outcome Reporting</div>
                             <div class="card-body display-5 m-4">{{ $formatNumberWithCommas((Number(waitingOutcome)).toFixed(2)) }}</div>
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
 
@@ -112,12 +97,8 @@ export default {
     },
     props: {
         results: Object,
-        activeAllocation: Object,
         programYear: Object,
-        holdApps: Number,
-        claimedApps: Number,
-        tsHoldAmount: Number,
-        tsClaimedAmount: Number,
+        allocationSummaries: Array,
         waitingOutcome: Number
     }
 }

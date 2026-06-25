@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\ClaimSubmitted;
+use App\Models\AllocationFundingType;
 use App\Models\Claim;
 use App\Models\Program;
 use App\Models\Student;
@@ -164,39 +165,42 @@ class ProcessSubmittedClaim
                     $checkStatus = false;
                 }
 
-                // if the program of the claim is of type Transferable Skills, then we need to check the ts_percent
-                if ($checkStatus && $program->funding_type === 'Transferable Skills') {
-                    Log::info('claim is of type Transferable Skills');
-                    // Calculate sum claims of the institution that are not Draft, Cancelled or Expired
-                    // We need the sum of claims that are Claimed and claim.program are of type Transferable Skills
-                    // exclude the current claim
-                    $sum_ts_claims = Claim::where('claim_status', 'Claimed')
-                            ->where('institution_guid', $claim->institution_guid)
-                            ->where('allocation_guid', $claim->allocation_guid)
-                            ->where('id', '!=', $claim->id)
-                            ->whereHas('program', function($q) {
-                                $q->where('funding_type', 'Transferable Skills');
-                            })
-                            ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
+                // Enforce the per-funding-type dollar cap defined on the allocation.
+                // Replaces the legacy ts_percent check: each allocation can now define one or many
+                // funding types, each with its own maximum dollar amount.
+                if ($checkStatus && !empty($claim->funding_type)) {
+                    $fundingTypeAllocation = AllocationFundingType::where('allocation_guid', $claim->allocation_guid)
+                        ->where('funding_type', $claim->funding_type)
+                        ->first();
 
-                    $ts_claims_total = (float) $sum_ts_claims + ((float) $sum_ts_claims / (float) $claim->py_admin_fee);
+                    // Only enforce a cap when the allocation explicitly defines one for this funding type.
+                    if ($fundingTypeAllocation) {
+                        Log::info('checking funding type "'.$claim->funding_type.'" allocation limit');
+                        // Sum the Claimed claims of the institution for the same allocation and funding
+                        // type (the current claim is already saved as Claimed), then add the admin fee
+                        // so the comparison matches the allocation accounting.
+                        $sum_ft_claims = Claim::where('claim_status', 'Claimed')
+                                ->where('institution_guid', $claim->institution_guid)
+                                ->where('allocation_guid', $claim->allocation_guid)
+                                ->where('funding_type', $claim->funding_type)
+                                ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
-                    // Check if the total of the claim is greater than the ts_percent of the allocation
-                    $tsPercent = (float) $claim->allocation->ts_percent;
-                    Log::info('ts_claims_total = '.number_format($ts_claims_total, 0));
+                        $ft_claims_total = (float) $sum_ft_claims + ((float) $sum_ft_claims / (float) $claim->py_admin_fee);
+                        Log::info('funding type claims total = '.number_format($ft_claims_total, 0));
 
-                    // If the total claim amount is greater than the ts_percent, then we need to set it to Hold
-                    if ($ts_claims_total > ((float) $claim->allocation->total_amount * ($tsPercent / 100))) {
+                        // If the funding type total exceeds its allocated dollar amount, set it to Hold
+                        if ($ft_claims_total > (float) $fundingTypeAllocation->amount) {
 
-                        Log::info('ts_claims_total = '.number_format($ts_claims_total, 0) . ' > allocation total_amount * ts_percent = '.number_format((float) $claim->allocation->total_amount * ($tsPercent / 100), 0));
-                        $claim->process_feedback = 'Claim exceeds the Transferable Skills percentage limit.';
-                        $claim->claim_status = 'Hold';
-                        $claim->total_claim_amount = 0;
-                        $claim->program_fee = 0;
-                        $claim->materials_fee = 0;
-                        $claim->registration_fee = 0;
-                        $claim->correction_amount = 0;
-                        $checkStatus = false;
+                            Log::info('funding type total = '.number_format($ft_claims_total, 0) . ' > funding type allocation = '.number_format((float) $fundingTypeAllocation->amount, 0));
+                            $claim->process_feedback = 'Claim exceeds the "'.$claim->funding_type.'" funding type allocation limit.';
+                            $claim->claim_status = 'Hold';
+                            $claim->total_claim_amount = 0;
+                            $claim->program_fee = 0;
+                            $claim->materials_fee = 0;
+                            $claim->registration_fee = 0;
+                            $claim->correction_amount = 0;
+                            $checkStatus = false;
+                        }
                     }
                 }
 

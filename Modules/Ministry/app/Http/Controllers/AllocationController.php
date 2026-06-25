@@ -8,8 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AllocationEditRequest;
 use App\Http\Requests\AllocationStoreRequest;
 use App\Models\Allocation;
+use App\Models\AllocationFundingType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
 use Response;
 
 class AllocationController extends Controller
@@ -29,7 +31,17 @@ class AllocationController extends Controller
      */
     public function store(AllocationStoreRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $allocation = Allocation::create($request->validated());
+        $allocation = Allocation::create($request->safe()->except('funding_types'));
+
+        foreach ($request->input('funding_types', []) as $fundingType) {
+            AllocationFundingType::create([
+                'guid' => Str::orderedUuid()->getHex(),
+                'allocation_guid' => $allocation->guid,
+                'funding_type' => $fundingType['funding_type'],
+                'amount' => $fundingType['amount'],
+                'last_touch_by_user_guid' => $request->user()->guid,
+            ]);
+        }
 
         event(new AllocationCreated($allocation));
 
@@ -41,8 +53,20 @@ class AllocationController extends Controller
      */
     public function update(AllocationEditRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $allocation_id = Allocation::where('id', $request->id)->update($request->validated());
+        Allocation::where('id', $request->id)->update($request->safe()->except('funding_types'));
         $allocation = Allocation::find($request->id);
+
+        // Sync the allocation funding types: remove the existing ones and recreate from the request.
+        $allocation->fundingTypes()->delete();
+        foreach ($request->input('funding_types', []) as $fundingType) {
+            AllocationFundingType::create([
+                'guid' => Str::orderedUuid()->getHex(),
+                'allocation_guid' => $allocation->guid,
+                'funding_type' => $fundingType['funding_type'],
+                'amount' => $fundingType['amount'],
+                'last_touch_by_user_guid' => $request->user()->guid,
+            ]);
+        }
 
         event(new AllocationUpdated($allocation, $request->status));
 

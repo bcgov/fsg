@@ -21,11 +21,34 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
-                    <Label for="inputTSPercent" class="form-label" value="TS %"/>
-                    <div class="input-group mb-3">
-                        <Input type="number" class="form-control" id="inputTSPercent" min="0" max="100" v-model.number="newInstitutionAllocationForm.ts_percent"/>
-                        <span class="input-group-text">%</span>
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <Label class="form-label mb-0" value="Funding Types"/>
+                        <button type="button" class="btn btn-sm btn-outline-success" @click="addFundingType">Add Funding Type</button>
+                    </div>
+
+                    <p v-if="newInstitutionAllocationForm.funding_types.length === 0" class="text-muted small mb-0">
+                        No funding types added. Click "Add Funding Type" to add one.
+                    </p>
+
+                    <div v-for="(row, index) in newInstitutionAllocationForm.funding_types" :key="index" class="row g-2 align-items-end mb-2">
+                        <div class="col-md-6">
+                            <Label :for="'inputFundingType' + index" class="form-label" value="Funding Type"/>
+                            <Select class="form-select" :id="'inputFundingType' + index" v-model="row.funding_type">
+                                <option value=""></option>
+                                <option v-for="ft in fundingTypeOptions" :key="ft.field_name" :value="ft.field_name">{{ ft.field_name }}</option>
+                            </Select>
+                        </div>
+                        <div class="col-md-5">
+                            <Label :for="'inputFundingAmount' + index" class="form-label" value="Amount"/>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <Input type="number" class="form-control" :id="'inputFundingAmount' + index" min="0" v-model.number="row.amount"/>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-sm btn-outline-danger" @click="removeFundingType(index)" aria-label="Remove">&times;</button>
+                        </div>
                     </div>
                 </div>
 
@@ -80,11 +103,25 @@ export default {
                 allocation_guid: "",
                 program_year_guid: "",
                 total_amount: "",
-                ts_percent: 20,
+                funding_types: [],
             },
         }
     },
+    computed: {
+        fundingTypeOptions() {
+            const utils = this.$attrs.utils || {};
+            return utils['Funding Type'] || [];
+        }
+    },
     methods: {
+
+        addFundingType: function () {
+            this.newInstitutionAllocationForm.funding_types.push({ funding_type: "", amount: "" });
+        },
+
+        removeFundingType: function (index) {
+            this.newInstitutionAllocationForm.funding_types.splice(index, 1);
+        },
 
         submitForm: function () {
             // let check = confirm('You are about to create a new Institution Allocation. The new amount will override the previous cap and disable the old active Institution Cap. Are you sure you want to continue?');

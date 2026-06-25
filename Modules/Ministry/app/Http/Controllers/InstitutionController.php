@@ -33,7 +33,7 @@ class InstitutionController extends Controller
     public function show(Institution $institution, $page = 'details')
     {
         $institution = Institution::where('id', $institution->id)->with(
-            ['allocations.py', 'activeAllocation', 'staff.user.roles', 'programs']
+            ['allocations.py', 'allocations.fundingTypes', 'activeAllocation', 'activeAllocation.fundingTypes', 'staff.user.roles', 'programs']
         )->first();
 
         $countries = Cache::remember('countries', 380, function () {
