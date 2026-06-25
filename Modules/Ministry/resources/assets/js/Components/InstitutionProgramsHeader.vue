@@ -10,6 +10,9 @@
             <span>Credential Type</span>
         </th>
         <th scope="col">
+            <span>Funding Type</span>
+        </th>
+        <th scope="col">
             <span>Status</span>
         </th>
     </tr>

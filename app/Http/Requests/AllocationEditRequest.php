@@ -34,6 +34,10 @@ class AllocationEditRequest extends FormRequest
     public function messages()
     {
         return [
+            'funding_types.*.funding_type.required' => 'The Funding Type field is required.',
+            'funding_types.*.funding_type.exists' => 'The selected Funding Type is invalid.',
+            'funding_types.*.amount.required' => 'The Funding Type amount is required.',
+            'funding_types.*.amount.lte' => 'The Funding Type amount cannot be higher than the Total Allowed.',
         ];
     }
 
@@ -51,7 +55,9 @@ class AllocationEditRequest extends FormRequest
             'program_year_guid' => 'required|exists:program_years,guid',
             'total_amount' => 'required|numeric',
             'status' => 'required',
-            'ts_percent' => 'required|numeric|min:0|max:100',
+            'funding_types' => 'nullable|array',
+            'funding_types.*.funding_type' => 'required|string|exists:utils,field_name',
+            'funding_types.*.amount' => 'required|numeric|min:0|lte:total_amount',
         ];
     }
 

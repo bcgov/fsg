@@ -5,6 +5,7 @@ namespace Modules\Institution\Http\Controllers;
 use App\Events\StaffRoleChanged;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InstitutionStaffEditRequest;
+use App\Models\AllocationFundingType;
 use App\Models\Claim;
 use App\Models\InstitutionStaff;
 use App\Models\ProgramYear;
@@ -43,98 +44,95 @@ class InstitutionController extends Controller
 
         $programYear = ProgramYear::where('guid', $cacheProgramYear['default'])->first();
 
-        // Eager load active allocation
+        // Load all active allocations for the program year (a program year may contain several).
         $institution->load(['allocations' => function ($query) use ($programYear) {
             $query->where('program_year_guid', $programYear->guid)->where('status', 'active');
             $query->orderByDesc('created_at');
         }]);
 
-        $instAllocation = $institution->allocations->first();
-        if (! is_null($instAllocation)) {
+        $claimPercent = (float) $programYear->claim_percent;
 
-    //         $claimCounts = Claim::where('institution_guid', $institution->guid)
-    //             ->where('allocation_guid', $instAllocation->guid)
-    //             ->selectRaw("
-    //     SUM(CASE WHEN claim_status = 'Claimed' THEN COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0) ELSE 0 END) as claimed,
-    //     SUM(CASE WHEN claim_status = 'Hold' THEN COALESCE(estimated_hold_amount, 0) ELSE 0 END) as hold
-    // ")
-    //             ->first();
+        // Adds the admin fee to a net claim amount so figures match the allocation accounting.
+        $withAdmin = function ($amount) use ($claimPercent) {
+            $amount = (float) $amount;
+            return ($claimPercent > 0 && $amount) ? $amount + ($amount / $claimPercent) : $amount;
+        };
 
-            
-            $gov_hold = Claim::where('institution_guid', $institution->guid)
-                ->where('allocation_guid', $instAllocation->guid)
-                ->where('claim_status', 'Hold')
-                ->whereHas('program', function($q) {
-                    $q->whereNull('funding_type')->orWhere('funding_type', '!=', 'Transferable Skills');
-                })
-                ->sum(\DB::raw('COALESCE(estimated_hold_amount, 0)'));
+        // Build a per-allocation, per-funding-type summary for the dashboard cards.
+        $allocationSummaries = $institution->allocations->map(function ($allocation) use ($institution, $withAdmin) {
+            $fundingTypes = AllocationFundingType::where('allocation_guid', $allocation->guid)
+                ->orderBy('funding_type')
+                ->get();
 
-            $gov_claimed = Claim::where('institution_guid', $institution->guid)
-                ->where('allocation_guid', $instAllocation->guid)
-                ->where('claim_status', 'Claimed')
-                ->whereHas('program', function($q) {
-                    $q->whereNull('funding_type')->orWhere('funding_type', '!=', 'Transferable Skills');
-                })
-                ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
+            // One card per funding type defined on this allocation.
+            $fundingTypeCards = $fundingTypes->map(function ($ft) use ($institution, $allocation, $withAdmin) {
+                $hold = Claim::where('institution_guid', $institution->guid)
+                    ->where('allocation_guid', $allocation->guid)
+                    ->where('claim_status', 'Hold')
+                    ->where('funding_type', $ft->funding_type)
+                    ->sum(\DB::raw('COALESCE(estimated_hold_amount, 0)'));
 
+                $claimed = Claim::where('institution_guid', $institution->guid)
+                    ->where('allocation_guid', $allocation->guid)
+                    ->where('claim_status', 'Claimed')
+                    ->where('funding_type', $ft->funding_type)
+                    ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
 
-            $ts_hold = Claim::where('institution_guid', $institution->guid)
-                ->where('allocation_guid', $instAllocation->guid)
-                ->where('claim_status', 'Hold')
-                ->whereHas('program', function($q) {
-                    $q->where('funding_type', 'Transferable Skills');
-                })
-                ->sum(\DB::raw('COALESCE(estimated_hold_amount, 0)'));
+                $allocated = (float) $ft->amount;
+                $holdWithAdmin = $withAdmin($hold);
+                $claimedWithAdmin = $withAdmin($claimed);
 
-            $ts_claimed = Claim::where('institution_guid', $institution->guid)
-                ->where('allocation_guid', $instAllocation->guid)
-                ->where('claim_status', 'Claimed')
-                ->whereHas('program', function($q) {
-                    $q->where('funding_type', 'Transferable Skills');
-                })
-                ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'));
+                return [
+                    'funding_type' => $ft->funding_type,
+                    'allocated' => $allocated,
+                    'hold' => $holdWithAdmin,
+                    'claimed' => $claimedWithAdmin,
+                    'remaining' => $allocated - $holdWithAdmin - $claimedWithAdmin,
+                ];
+            })->values();
 
-            $waiting_outcome = Claim::where('institution_guid', $institution->guid)
-                ->where('allocation_guid', $instAllocation->guid)
-                ->where('claim_status', 'Claimed')
-                ->whereNull('outcome_effective_date') //outcome_effective_date', 'outcome_status are not set
-                ->whereNull('outcome_status')
-                ->count();
-
-            if ($programYear->claim_percent == 0) {
-                return Inertia::render('Institution::Dashboard', [
-                    'results' => $institution,
-                    'activeAllocation' => $instAllocation,
-                    'programYear' => $programYear,
-                    'holdApps' => $gov_hold,
-                    'claimedApps' => $gov_claimed,
-                    'tsHoldAmount' => $ts_hold,
-                    'tsClaimedAmount' => $ts_claimed,
-                ]);
-
+            // Legacy fallback: allocations created before funding types existed have none defined.
+            // For those we show combined hold/claimed only (no funding-type split, no TS cards).
+            $legacyHold = null;
+            $legacyClaimed = null;
+            if ($fundingTypes->isEmpty()) {
+                $legacyHold = $withAdmin(
+                    Claim::where('institution_guid', $institution->guid)
+                        ->where('allocation_guid', $allocation->guid)
+                        ->where('claim_status', 'Hold')
+                        ->sum(\DB::raw('COALESCE(estimated_hold_amount, 0)'))
+                );
+                $legacyClaimed = $withAdmin(
+                    Claim::where('institution_guid', $institution->guid)
+                        ->where('allocation_guid', $allocation->guid)
+                        ->where('claim_status', 'Claimed')
+                        ->sum(\DB::raw('COALESCE(program_fee, 0) + COALESCE(materials_fee, 0) + COALESCE(registration_fee, 0) + COALESCE(correction_amount, 0)'))
+                );
             }
 
-            return Inertia::render('Institution::Dashboard', [
-                'results' => $institution,
-                'activeAllocation' => $instAllocation,
-                'programYear' => $programYear,
-                'holdApps' => $gov_hold ? (float) $gov_hold + ((float) $gov_hold / (float) $programYear->claim_percent) : 0,
-                'claimedApps' => $gov_claimed ? (float) $gov_claimed + ((float) $gov_claimed / (float) $programYear->claim_percent) : 0,
-                'tsHoldAmount' => $ts_hold ? (float) $ts_hold + ((float) $ts_hold / (float) $programYear->claim_percent) : 0,
-                'tsClaimedAmount' => $ts_claimed ? (float) $ts_claimed + ((float) $ts_claimed / (float) $programYear->claim_percent) : 0,
-                'waitingOutcome' => $waiting_outcome,
-            ]);
-        }
+            return [
+                'guid' => $allocation->guid,
+                'total_amount' => (float) $allocation->total_amount,
+                'has_funding_types' => $fundingTypes->isNotEmpty(),
+                'funding_types' => $fundingTypeCards,
+                'legacy_hold' => $legacyHold,
+                'legacy_claimed' => $legacyClaimed,
+            ];
+        })->values();
+
+        // Claims awaiting outcome reporting across all active allocations for the program year.
+        $waitingOutcome = Claim::where('institution_guid', $institution->guid)
+            ->whereIn('allocation_guid', $institution->allocations->pluck('guid'))
+            ->where('claim_status', 'Claimed')
+            ->whereNull('outcome_effective_date')
+            ->whereNull('outcome_status')
+            ->count();
 
         return Inertia::render('Institution::Dashboard', [
             'results' => $institution,
-            'activeAllocation' => $instAllocation,
             'programYear' => $programYear,
-            'holdApps' => 0,
-            'claimedApps' => 0,
-            'tsHoldAmount' => 0,
-            'tsClaimedAmount' => 0,
-            'waitingOutcome' => 0,
+            'allocationSummaries' => $allocationSummaries,
+            'waitingOutcome' => $waitingOutcome,
         ]);
     }
 

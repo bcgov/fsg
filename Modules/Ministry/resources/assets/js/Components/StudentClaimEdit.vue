@@ -13,8 +13,9 @@
                 </div>
                 <div class="col-md-3">
                     <Label for="inputFundingType" class="form-label" value="Funding Type" />
-                    <span v-if="editStudentClaimForm.program !== null">{{ editStudentClaimForm.program.funding_type }}</span>
-                    <span v-else> - </span>
+                    <p>{{ editStudentClaimForm.claim_status === 'Claimed'
+                        ? (editStudentClaimForm.funding_type || 'Gov. Priorities')
+                        : ((programs.find(p => p.guid === editStudentClaimForm.program_guid)?.funding_type) || 'Gov. Priorities') }}</p>
                 </div>
 
                 <div class="col-md-3">

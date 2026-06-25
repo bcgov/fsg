@@ -29,11 +29,34 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
-                    <Label for="inputTSPercent" class="form-label" value="TS %"/>
-                    <div class="input-group mb-3">
-                        <Input type="number" class="form-control" id="inputTSPercent" min="0" max="100" v-model.number="editInstitutionAllocationForm.ts_percent"/>
-                        <span class="input-group-text">%</span>
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <Label class="form-label mb-0" value="Funding Types"/>
+                        <button type="button" class="btn btn-sm btn-outline-success" @click="addFundingType">Add Funding Type</button>
+                    </div>
+
+                    <p v-if="editInstitutionAllocationForm.funding_types.length === 0" class="text-muted small mb-0">
+                        No funding types added. Click "Add Funding Type" to add one.
+                    </p>
+
+                    <div v-for="(row, index) in editInstitutionAllocationForm.funding_types" :key="index" class="row g-2 align-items-end mb-2">
+                        <div class="col-md-6">
+                            <Label :for="'inputFundingType' + index" class="form-label" value="Funding Type"/>
+                            <Select class="form-select" :id="'inputFundingType' + index" v-model="row.funding_type">
+                                <option value=""></option>
+                                <option v-for="ft in fundingTypeOptions" :key="ft.field_name" :value="ft.field_name">{{ ft.field_name }}</option>
+                            </Select>
+                        </div>
+                        <div class="col-md-5">
+                            <Label :for="'inputFundingAmount' + index" class="form-label" value="Amount"/>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <Input type="number" class="form-control" :id="'inputFundingAmount' + index" min="0" v-model.number="row.amount"/>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-sm btn-outline-danger" @click="removeFundingType(index)" aria-label="Remove">&times;</button>
+                        </div>
                     </div>
                 </div>
 
@@ -88,14 +111,26 @@ export default {
                 total_amount: "",
                 program_year_guid: "",
                 status: "",
-                ts_percent: ""
+                funding_types: [],
             },
             selectedFedCap: '',
             allowProgramCap: false,
             newAllocation: false
         }
     },
+    computed: {
+        fundingTypeOptions() {
+            const utils = this.$attrs.utils || {};
+            return utils['Funding Type'] || [];
+        }
+    },
     methods: {
+        addFundingType: function () {
+            this.editInstitutionAllocationForm.funding_types.push({ funding_type: "", amount: "" });
+        },
+        removeFundingType: function (index) {
+            this.editInstitutionAllocationForm.funding_types.splice(index, 1);
+        },
         switchStatus: function () {
             if(this.editInstitutionAllocationForm.status === 'active'){
                 this.newAllocation = true;
@@ -130,6 +165,10 @@ export default {
     mounted() {
         this.editInstitutionAllocationFormData = this.allocation;
         this.editInstitutionAllocationFormData.total_amount = this.editInstitutionAllocationFormData.total_amount_formatted;
+        this.editInstitutionAllocationFormData.funding_types = (this.allocation.funding_types || []).map(ft => ({
+            funding_type: ft.funding_type,
+            amount: ft.amount,
+        }));
         this.editInstitutionAllocationForm = useForm(this.editInstitutionAllocationFormData);
     }
 }
