@@ -42,7 +42,8 @@ class StudentController extends Controller
             'page' => $page, 
             'error' => $error,
             'demographics' => $demographics,
-            'existingDemographics' => $existingDemographics
+            'existingDemographics' => $existingDemographics,
+            'individual_data' => $student ? $student->individual_data : null,
         ]);
     }
 
@@ -127,7 +128,8 @@ class StudentController extends Controller
             'results' => $student, 
             'page' => $page,
             'demographics' => $demographics,
-            'existingDemographics' => $existingDemographics
+            'existingDemographics' => $existingDemographics,
+            'individual_data' => $student ? $student->individual_data : null,
         ]);
     }
 
