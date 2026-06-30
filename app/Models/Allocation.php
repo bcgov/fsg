@@ -43,6 +43,11 @@ class Allocation extends Model
         return $this->hasMany(Claim::class, 'allocation_guid', 'guid')->orderByDesc('created_at');
     }
 
+    public function fundingTypes()
+    {
+        return $this->hasMany(AllocationFundingType::class, 'allocation_guid', 'guid');
+    }
+
     // Define the accessor for the computed attribute
     public function getClaimedAttribute()
     {

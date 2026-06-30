@@ -64,15 +64,14 @@ class ApplicationController extends Controller
 
     public function applications(Request $request, $page = 'applications')
     {
-        $providerUser = null;
+        $providerUser = json_decode(Cache::get('bcsc_provider_user_' . Auth::user()->id));
         $student = Student::with('applications')->where('user_guid', Auth::user()->guid)->first();
         if (is_null($student)) {
             $page = 'profile';
-            $providerUser = json_decode(Cache::get('bcsc_provider_user_' . Auth::user()->id));
         }
 
         return Inertia::render('Student::Dashboard', ['status' => true, 'results' => $student,
-            'page' => $page, 'providerUser' => $providerUser]);
+            'page' => $page, 'providerUser' => $providerUser, 'individual_data' => $providerUser ? $providerUser->individual_data : null]);
     }
 
     public function fetchApplications(Request $request)

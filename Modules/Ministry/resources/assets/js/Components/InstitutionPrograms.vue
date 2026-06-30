@@ -15,6 +15,7 @@
                             <td><a href="#" @click="openEditForm(row)">{{ row.program_name }}</a></td>
                             <td>{{ row.delivery_method }}</td>
                             <td>{{ row.credential_type }}</td>
+                            <td>{{ row.funding_type }}</td>
                             <td>
                                 <span v-if="row.active_status" class="badge rounded-pill text-bg-success">Active</span>
                                 <span v-else class="badge rounded-pill text-bg-danger">Inactive</span>

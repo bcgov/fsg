@@ -25,7 +25,9 @@ class StudentController extends Controller
     public function index(Request $request, $page = 'profile', $error = null)
     {
         $student = Student::where('user_guid', Auth::user()->guid)->first();
-        $student->individual_data = json_decode($request->session()->get('bcsc_pdex_individual_' . Auth::user()->id));
+        if(!is_null($student)) {
+            $student->individual_data = json_decode($request->session()->get('bcsc_pdex_individual_' . Auth::user()->id));
+        }
 
         // Load active demographics with their options
         $demographics = Demographic::with('options')
@@ -42,7 +44,8 @@ class StudentController extends Controller
             'page' => $page, 
             'error' => $error,
             'demographics' => $demographics,
-            'existingDemographics' => $existingDemographics
+            'existingDemographics' => $existingDemographics,
+            'individual_data' => $student ? $student->individual_data : null,
         ]);
     }
 
@@ -112,7 +115,10 @@ class StudentController extends Controller
     public function applications($page = 'applications')
     {
         $student = Student::with('applications')->where('user_guid', Auth::user()->guid)->first();
-        
+        if(!is_null($student)) {
+            $student->individual_data = json_decode($request->session()->get('bcsc_pdex_individual_' . Auth::user()->id));
+        }
+
         // Load active demographics with their options
         $demographics = Demographic::with('options')
             ->active()
@@ -127,7 +133,8 @@ class StudentController extends Controller
             'results' => $student, 
             'page' => $page,
             'demographics' => $demographics,
-            'existingDemographics' => $existingDemographics
+            'existingDemographics' => $existingDemographics,
+            'individual_data' => $student ? $student->individual_data : null,
         ]);
     }
 

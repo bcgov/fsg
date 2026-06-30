@@ -143,7 +143,7 @@ class ClaimController extends Controller
 
         foreach ($data as $d) {
             $csvData[] = [$d->program->program_name, $d->sin, $d->first_name, $d->last_name, $d->dob, $d->email, $d->city,
-                $d->zip_code, $d->claim_status, $d->registration_fee, $d->materials_fee, $d->program_fee, $d->claim_percent, $d->program->funding_type,
+                $d->zip_code, $d->claim_status, $d->registration_fee, $d->materials_fee, $d->program_fee, $d->claim_percent, ($d->funding_type ?: optional($d->program)->funding_type),
                 $d->estimated_hold_amount, $d->correction_amount, $d->stable_enrolment_date, $d->expected_stable_enrolment_date,
                 $d->expiry_date, $d->claimed_by_name, $d->updated_at, $d->process_feedback, $d->outcome_effective_date, $d->outcome_status];
         }

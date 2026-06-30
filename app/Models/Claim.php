@@ -26,11 +26,28 @@ class Claim extends Model
         'stable_enrolment_date', 'expiry_date', 'psi_claim_request_date', 'reporting_completed_date',
         'fifty_two_week_affirmation', 'agreement_confirmed', 'registration_confirmed',
         'guid', 'institution_guid', 'allocation_guid', 'program_guid', 'student_guid', 'expected_stable_enrolment_date',
-        'expected_completion_date', 'outcome_effective_date', 'outcome_status', 'correction_amount', 'correction_comment',];
+        'expected_completion_date', 'outcome_effective_date', 'outcome_status', 'correction_amount', 'correction_comment',
+        'funding_type',];
 
     protected static function boot()
     {
         parent::boot();
+
+        static::saving(function ($claim) {
+            // Snapshot the funding type from the program so each claim keeps its own copy.
+            // Once a claim is Claimed the value is frozen, making historical claims immutable
+            // even if the program's funding type is later changed.
+            if (empty($claim->program_guid)) {
+                return;
+            }
+            $isClaimed = $claim->claim_status === 'Claimed';
+            if (!$isClaimed || empty($claim->funding_type)) {
+                $program = Program::where('guid', $claim->program_guid)->first();
+                $claim->funding_type = ($program && $program->funding_type)
+                    ? $program->funding_type
+                    : 'Gov. Priorities';
+            }
+        });
 
         static::updated(function ($claim) {
             $changes = $claim->getChanges();

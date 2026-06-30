@@ -154,8 +154,8 @@ export default {
             const programFee = parseFloat(claim.program_fee) || 0;
             const registrationFee = parseFloat(claim.registration_fee) || 0;
             const materialsFee = parseFloat(claim.materials_fee) || 0;
-            const adminFeePercentage = parseInt(claim.allocation.py_admin_fee) || 0;
-            const correction = parseInt(claim.correction_amount) || 0;
+            const adminFeePercentage = parseFloat(claim.allocation.py_admin_fee) || 0;
+            const correction = parseFloat(claim.correction_amount) || 0;
 
             const total = programFee + registrationFee + materialsFee + correction;
             const adminFee = total * (adminFeePercentage / 100);

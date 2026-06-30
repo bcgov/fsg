@@ -13,8 +13,9 @@
                 </div>
                 <div class="col-md-3">
                     <Label for="inputFundingType" class="form-label" value="Funding Type" />
-                    <span v-if="editStudentClaimForm.program !== null">{{ editStudentClaimForm.program.funding_type }}</span>
-                    <span v-else> - </span>
+                    <p>{{ editStudentClaimForm.claim_status === 'Claimed'
+                        ? (editStudentClaimForm.funding_type || 'Gov. Priorities')
+                        : ((programs.find(p => p.guid === editStudentClaimForm.program_guid)?.funding_type) || 'Gov. Priorities') }}</p>
                 </div>
 
                 <div class="col-md-3">
@@ -384,8 +385,8 @@ export default {
             const programFee = parseFloat(this.editStudentClaimForm.program_fee) || 0;
             const registrationFee = parseFloat(this.editStudentClaimForm.registration_fee) || 0;
             const materialsFee = parseFloat(this.editStudentClaimForm.materials_fee) || 0;
-            const adminFeePercentage = parseInt(this.editStudentClaimForm.allocation.py_admin_fee) || 0;
-            const correction = parseInt(this.editStudentClaimForm.correction_amount) || 0;
+            const adminFeePercentage = parseFloat(this.editStudentClaimForm.allocation.py_admin_fee) || 0;
+            const correction = parseFloat(this.editStudentClaimForm.correction_amount) || 0;
 
             const total = programFee + registrationFee + materialsFee + correction;
             const adminFee = total * (adminFeePercentage / 100);
