@@ -17,8 +17,8 @@
                 </div>
                 <div class="col-md-9 mb-3">
                     <DashboardApplications v-bind="$attrs" v-if="page === 'applications' && results != null" :results="results"></DashboardApplications>
-                    <DashboardProfile v-bind="$attrs" v-if="page === 'profile' && results != null && results.individual_data == null" :error="error" :results="results" :provider-user="providerUser"></DashboardProfile>
-                    <DashboardProfileWithPdex v-bind="$attrs" v-if="page === 'profile' && results != null && results.individual_data != null" :error="error" :results="results" :provider-user="providerUser"></DashboardProfileWithPdex>
+                    <DashboardProfile v-bind="$attrs" v-if="page === 'profile' && results != null && individual_data == null" :error="error" :results="results" :provider-user="providerUser"></DashboardProfile>
+                    <DashboardProfileWithPdex v-bind="$attrs" v-if="page === 'profile' && results != null && individual_data != null" :error="error" :results="results" :provider-user="providerUser"></DashboardProfileWithPdex>
                 </div>
             </div>
         </div>
