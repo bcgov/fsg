@@ -72,7 +72,7 @@ class ApplicationController extends Controller
         }
 
         return Inertia::render('Student::Dashboard', ['status' => true, 'results' => $student,
-            'page' => $page, 'providerUser' => $providerUser]);
+            'page' => $page, 'providerUser' => $providerUser, 'individual_data' => $providerUser ? $providerUser->individual_data : null]);
     }
 
     public function fetchApplications(Request $request)

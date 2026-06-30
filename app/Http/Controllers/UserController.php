@@ -584,10 +584,16 @@ class UserController extends Controller
         }
 
         if ($valid === '200') {
-//            $email = isset($provider_user['email']) ? Str::lower($provider_user['email']) : null;
+            //$providerUser['given_names'] comes from PDEX, $provider_user['given_name'] comes FSG from Keycloak
+        //            $email = isset($provider_user['email']) ? Str::lower($provider_user['email']) : null;
+            $name = isset($provider_user['name']) ? Str::title($provider_user['name']) : "";
+            if($name === "" && isset($provider_user['given_names']) && isset($provider_user['family_name'])) {
+                $name = Str::title($provider_user['given_names'] . ' ' . $provider_user['family_name']);
+            }
+
             $user = new User();
             $user->guid = Str::orderedUuid()->getHex();
-            $user->name = Str::title($provider_user['name']);
+            $user->name = $name;
             $user->first_name = Str::title($provider_user['given_name'] ?? Str::title($provider_user['family_name']));
             $user->last_name = Str::title($provider_user['family_name']);
             $user->email = Str::lower($provider_user['email']);
