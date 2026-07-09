@@ -122,7 +122,8 @@ deploy-web:
 	test -n "$(BUILD_NAMESPACE)"
 	@echo "+\n++ Deploying Web into $(NAMESPACE)\n+"
 	@oc -n $(NAMESPACE) process -f $(DEPLOY_FILE) --param-file=$(PARAM_FILE) | oc -n $(NAMESPACE) apply -f -
-	$(call rollout_and_wait,dc/$(HOST_PREFIX))
+	@oc -n $(NAMESPACE) rollout restart deployment/$(HOST_PREFIX)
+	$(call rollout_and_wait,deployment/$(HOST_PREFIX))
 	@echo "+\n++ FINISHED Deploying Web\n+"
 
 build-patroni:
@@ -147,7 +148,7 @@ db-backup-deploy-postgresql:
 	test -n "$(NAMESPACE)"
 	test -n "$(BUILD_NAMESPACE)"
 	test -n "$(BACKUP_POSTGRESQL_APP_NAME)"
-	@echo "+\n++ Creating deploy config resoures for database backups on $(NAMESPACE)\n+"
+	@echo "+\n++ Creating deployment config resources for database backups on $(NAMESPACE)\n+"
 	oc -n $(NAMESPACE) process -f backup-deploy.yaml \
   	-p BACKUP_POSTGRESQL_APP_NAME=$(BACKUP_POSTGRESQL_APP_NAME) \
   	-p IMAGE_NAMESPACE=$(BUILD_NAMESPACE) \
@@ -166,3 +167,5 @@ db-backup-deploy-postgresql:
 		-p DATABASE_SECRET_PASSWORD_KEY_NAME=superuser-password \
   	-p ENVIRONMENT_FRIENDLY_NAME='$(NAMESPACE) POSTGRESQL DB Backups' \
 		| oc -n $(NAMESPACE) apply -f -
+	@oc -n $(NAMESPACE) rollout restart deployment/$(BACKUP_POSTGRESQL_APP_NAME)
+	$(call rollout_and_wait,deployment/$(BACKUP_POSTGRESQL_APP_NAME))

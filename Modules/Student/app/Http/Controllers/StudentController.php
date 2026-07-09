@@ -97,7 +97,7 @@ class StudentController extends Controller
                 $student = $existingStudent;
 
             } else {
-                return $this->index('profile', 'Failed to connect account');
+                return $this->index($request, 'profile', 'Failed to connect account');
             }
         } else {
             // Create a new student record
