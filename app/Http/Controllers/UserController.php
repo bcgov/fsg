@@ -427,7 +427,8 @@ class UserController extends Controller
         if ($type === Role::Student) {
             if (! isset($decodedToken['payload']['name'])){
                 \Log::info('No name found in payload for Student.');
-                $decodedToken['payload']['name'] = $decodedToken['payload']['given_names'] . ' ' . $decodedToken['payload']['family_name'];
+                // if $decodedToken['payload']['given_names'] is present use it or else only use $decodedToken['payload']['family_name']
+                $decodedToken['payload']['name'] = isset($decodedToken['payload']['given_names']) ? $decodedToken['payload']['given_names'] . ' ' . $decodedToken['payload']['family_name'] : $decodedToken['payload']['family_name'];
             }
         }
         if ($type === Role::Ministry_GUEST) {
