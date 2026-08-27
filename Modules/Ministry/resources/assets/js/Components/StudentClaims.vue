@@ -24,6 +24,7 @@
                                 <td>${{ row.program_fee }}</td>
                                 <td>${{ row.registration_fee }}</td>
                                 <td>${{ row.materials_fee }}</td>
+                                <td>${{ totalFees(row)}}</td>
                                 <td>${{ row.correction_amount }}</td>
                                 <td>
                                     <span v-if="row.claim_status === 'Draft'" class="badge rounded-pill text-bg-info">Draft</span>
@@ -45,6 +46,7 @@
                             <th>${{ countTotals('program_fee') }}</th>
                             <th>${{ countTotals('registration_fee') }}</th>
                             <th>${{ countTotals('materials_fee') }}</th>
+                            <th>${{ countTotals('total_fee') }}</th>
                             <th>${{ countTotals('correction_amount') }}</th>
                             <th></th>
                         </tr>
@@ -106,6 +108,13 @@ export default {
         }
     },
     methods: {
+        totalFees: function (row) {
+            if (!row) return 0;
+            const programFee = parseFloat(row.program_fee) || 0;
+            const registrationFee = parseFloat(row.registration_fee) || 0;
+            const materialsFee = parseFloat(row.materials_fee) || 0;
+            return programFee + registrationFee + materialsFee;
+        },
         countTotals: function (type) {
             if(this.claims.data == null || this.claims.data.length === 0) return 0;
             let total = 0;
@@ -127,6 +136,11 @@ export default {
             if(type === 'materials_fee'){
                 this.claims.data.forEach(item => {
                     total += parseFloat(item.materials_fee);
+                });
+            }
+            if(type === 'total_fee'){
+                this.claims.data.forEach(item => {
+                    total += this.totalFees(item);
                 });
             }
             if(type === 'correction_amount'){
