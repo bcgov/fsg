@@ -15,6 +15,11 @@ export default {
         loginAttempt: Boolean,
         hasAccess: Boolean,
         status: String,
+    },
+    data() {
+        return {
+            ministryName: 'PSEL',
+        }
     }
 }
 </script>
@@ -89,9 +94,9 @@ img.bceid_rev{
             <div class="card-body">
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <p class="text-start fw-bold">PSFS Ministry: Admin staff login only</p>
-                        <p class="text-start">Only available to PSFS Ministry admin staff only. Click on Student Login to apply for the grant.</p>
-                        <a href="/applogin" class="btn btn-bc-gov mb-3 w-100 fw-light">PSFS Ministry Staff Login</a>
+                        <p class="text-start fw-bold">{{ ministryName }} Ministry: Admin staff login only</p>
+                        <p class="text-start">Only available to {{ ministryName }} Ministry admin staff only. Click on Student Login to apply for the grant.</p>
+                        <a href="/applogin" class="btn btn-bc-gov mb-3 w-100 fw-light">{{ ministryName }} Ministry Staff Login</a>
                     </div>
                 </div>
             </div>
