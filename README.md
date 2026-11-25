@@ -1,5 +1,4 @@
 <p align="center">
-  <strong>Ministry of Post-Secondary Education and Future Skills</strong><br/>
   Student Services Division<br/><br/>
   <strong>StrongerBC Future Skills Grant</strong><br/><br/>
 
